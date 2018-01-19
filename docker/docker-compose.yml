@@ -8,7 +8,32 @@ services:
             - ../public_html:/usr/share/nginx/html
         ports:
             - 80:80
-
-
+    msg_handler:
+        build: messageHandler/
+        restart: always
+        volumes:
+            - ../src/msgHandler:/code
+        depends_on:
+            - rabbitmq
+        links:
+            - rabbitmq
+    rabbitmq:
+        image: rabbitmq:3-management
+        restart: always
+        environment:
+            - RABBITMQ_DEFAULT_USER=root
+            - RABBITMQ_DEFAULT_PASS=toor
+        volumes:
+            - ds_rabbitmq_home:/var/lib/rabbitmq
+        ports:
+            - 15672:15672
+            - 5672:5672
 
 ###
+
+
+
+### Volumes and networking
+volumes: ## TODO read about the differences with the other way of volumes definition
+    ds_rabbitmq_home:
+
