@@ -1,6 +1,13 @@
 version: '2'
 services:
 ###
+    web_analyzer:
+        image: nginx
+        restart: always
+        volumes:
+            - ../public_html:/usr/share/nginx/html
+        ports:
+            - 80:80
 
 
 
