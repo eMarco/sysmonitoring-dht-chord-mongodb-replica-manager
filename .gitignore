@@ -1,3 +1,6 @@
+# VIM files
+.*.sw[op]
+
 # Compiled class file
 *.class
 
