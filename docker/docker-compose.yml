@@ -17,6 +17,9 @@ services:
             - rabbitmq
         links:
             - rabbitmq
+        environment: # TODO groups of environment vars if possible
+            - RABBIT_USER=root
+            - RABBIT_PASS=toor
     rabbitmq:
         image: rabbitmq:3-management
         restart: always
@@ -28,6 +31,17 @@ services:
         ports:
             - 15672:15672
             - 5672:5672
+    bastion:
+        build: bastion_node/
+        volumes:
+            - ../:/code
+        links:
+            - rabbitmq
+            - msg_handler
+            - web_analyzer
+        environment:
+            - RABBIT_USER=root
+            - RABBIT_PASS=toor
 
     scanner:
         build: scanner/
