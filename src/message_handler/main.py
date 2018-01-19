@@ -1,6 +1,7 @@
 import sys
 import pika
 import requests
+import websockets
 import time
 
 while True:
