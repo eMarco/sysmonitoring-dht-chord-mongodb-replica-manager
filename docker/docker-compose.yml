@@ -29,6 +29,16 @@ services:
             - 15672:15672
             - 5672:5672
 
+    scanner:
+        build: scanner/
+        restart: always
+        volumes:
+            - ../src/scanner:/code
+        # depends_on:
+            # - rabbitmq
+
+
+
 ###
 
 
