@@ -9,10 +9,10 @@ services:
         ports:
             - 80:80
     msg_handler:
-        build: messageHandler/
+        build: message_handler/
         restart: always
         volumes:
-            - ../src/msgHandler:/code
+            - ../src/message_handler:/code
         depends_on:
             - rabbitmq
         links:
