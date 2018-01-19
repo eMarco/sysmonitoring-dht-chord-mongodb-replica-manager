@@ -28,6 +28,14 @@ services:
         ports:
             - 15672:15672
             - 5672:5672
+    bastion:
+        build: bastion_node/
+        volumes:
+            - ../:/code
+        links:
+            - rabbitmq
+            - msg_handler
+            - web_analyzer
 
 ###
 
