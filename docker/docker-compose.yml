@@ -17,6 +17,9 @@ services:
             - rabbitmq
         links:
             - rabbitmq
+        environment: # TODO groups of environment vars if possible
+            - RABBIT_USER=root
+            - RABBIT_PASS=toor
     rabbitmq:
         image: rabbitmq:3-management
         restart: always
@@ -36,6 +39,9 @@ services:
             - rabbitmq
             - msg_handler
             - web_analyzer
+        environment:
+            - RABBIT_USER=root
+            - RABBIT_PASS=toor
 
 ###
 
