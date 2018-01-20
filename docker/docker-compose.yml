@@ -48,9 +48,21 @@ services:
         restart: always
         volumes:
             - ../src/scanner:/code
-        # depends_on:
-            # - rabbitmq
 
+    datamanager:
+        build:
+            context: .
+            dockerfile: ./datamanager/Dockerfile
+            args:
+                - WILDFLY_ADMIN=root
+                - WILDFLY_PASSWORD=toor
+                # - USER=$USER
+        restart: always
+        volumes:
+            - ../src/datamanager/build:/opt/jboss/wildfly/standalone/deployments
+        ports:
+            - 8080:8080
+            - 9990:9990
 
 
 ###

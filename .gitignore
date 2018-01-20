@@ -21,5 +21,17 @@
 *.tar.gz
 *.rar
 
+# KDE
+.directory
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+/src/datamanager/nbproject/private/
+/src/datamanager/datamanager-war/nbproject/private/
+/src/datamanager/datamanager-ejb/nbproject/private/
+/src/datamanager/dist/
+/src/datamanager/build/
+/src/datamanager/datamanager-ejb/dist/
+/src/datamanager/datamanager-ejb/build/
+/src/datamanager/datamanager-war/build/
+/src/datamanager/datamanager-war/dist/
