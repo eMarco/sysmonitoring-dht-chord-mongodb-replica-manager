@@ -35,3 +35,12 @@ hs_err_pid*
 /src/datamanager/datamanager-ejb/build/
 /src/datamanager/datamanager-war/build/
 /src/datamanager/datamanager-war/dist/
+/src/replicamanager/nbproject/private/
+/src/replicamanager/replicamanager-war/nbproject/private/
+/src/replicamanager/replicamanager-ejb/nbproject/private/
+/src/replicamanager/dist/
+/src/replicamanager/build/
+/src/replicamanager/replicamanager-ejb/build/
+/src/replicamanager/replicamanager-ejb/dist/
+/src/replicamanager/replicamanager-war/build/
+/src/replicamanager/replicamanager-war/dist/

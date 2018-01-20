@@ -17,6 +17,7 @@ services:
             - rabbitmq
         links:
             - rabbitmq
+            - datamanager
         environment: # TODO groups of environment vars if possible
             - RABBIT_USER=root
             - RABBIT_PASS=toor
@@ -63,6 +64,25 @@ services:
         ports:
             - 8080:8080
             - 9990:9990
+
+    replicamanager:
+        build:
+            context: .
+            dockerfile: ./replicamanager/Dockerfile
+            args:
+                - WILDFLY_ADMIN=root
+                - WILDFLY_PASSWORD=toor
+                # - USER=$USER
+        restart: always
+        volumes:
+            - ../src/replicamanager/build:/opt/jboss/wildfly/standalone/deployments
+        ports:
+            - 8081:8080
+            - 9991:9990
+        # depends_on:
+        #    - datamanager
+        # links:
+        #    - datamanager
 
 
 ###
