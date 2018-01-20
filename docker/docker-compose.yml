@@ -1,4 +1,4 @@
-version: '2'
+version: '2.2'
 services:
 ###
     web_analyzer:
@@ -49,6 +49,14 @@ services:
         restart: always
         volumes:
             - ../src/scanner:/code
+        depends_on:
+            - rabbitmq
+        links:
+            - rabbitmq
+        # Limit container resources
+        cpus: 0.05 # < 5% of host CPU time
+        mem_limit: 128m # < 128MB of host RAM
+        memswap_limit: 128m # do not allow swap (https://docs.docker.com/engine/admin/resource_constraints/#--memory-swap-details)
 
     datamanager:
         build:
