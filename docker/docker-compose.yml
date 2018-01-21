@@ -5,7 +5,7 @@ services:
         image: nginx
         restart: always
         volumes:
-            - ../public_html:/usr/share/nginx/html
+            - ../src/analyzer:/usr/share/nginx/html
         ports:
             - 80:80
     msg_handler:
