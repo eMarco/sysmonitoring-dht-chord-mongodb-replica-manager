@@ -1,5 +1,4 @@
 # Simple Debian Docker container for the scanners
-
 FROM debian:stable-slim
 
 # Install Python3 and stress from repos
@@ -11,11 +10,21 @@ ADD https://raw.githubusercontent.com/rabbitmq/rabbitmq-management/v3.7.2/bin/ra
 # ... and make it executable
 RUN chmod +x /usr/local/bin/rabbitmqadmin.py
 
+# Symbolic linking python3 to python
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
+# Dependencies for scanner
+RUN apt-get install -y procps iproute sysstat
+
 # Bash completion
 # RUN sh -c 'rabbitmqadmin --bash-completion > /etc/bash_completion.d/rabbitmqadmin'
+
+COPY crontab /root/crontab
+RUN crontab -u root /root/crontab
 
 # Make code dir
 RUN mkdir /code
 WORKDIR /code
 
-ENTRYPOINT ["sh", "./scanner.sh"]
+ENTRYPOINT ["sh", "./stress.sh"]
+

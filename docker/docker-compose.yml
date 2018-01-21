@@ -49,6 +49,9 @@ services:
         restart: always
         volumes:
             - ../src/scanner:/code
+        environment:
+            - RABBIT_USER=root
+            - RABBIT_PASS=toor
         depends_on:
             - rabbitmq
         links:
