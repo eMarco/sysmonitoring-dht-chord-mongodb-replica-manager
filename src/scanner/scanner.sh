@@ -52,7 +52,7 @@ function get_if_stats {
 function send {
     TOPIC=$1
     BODY=$2
-    rabbitmqadmin.py --user=${RABBIT_USER} --pass=${RABBIT_PASS} -H rabbitmq publish exchange=amq.topic routing_key="$TOPIC" payload="$BODY"
+    #rabbitmqadmin.py --user=${RABBIT_USER} --pass=${RABBIT_PASS} -H rabbitmq publish exchange=amq.topic routing_key="$TOPIC" payload="$BODY"
     echo -e "$TOPIC\t===>\t$BODY"
 }
 
