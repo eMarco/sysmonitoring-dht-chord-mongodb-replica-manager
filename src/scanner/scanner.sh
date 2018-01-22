@@ -52,16 +52,15 @@ function get_if_stats {
 function send {
     TOPIC=$1
     BODY=$2
-    #rabbitmqadmin.py --user=${RABBIT_USER} --pass=${RABBIT_PASS} -H rabbitmq publish exchange=amq.topic routing_key="$TOPIC" payload="$BODY"
+    rabbitmqadmin.py --user=${RABBIT_USER} --pass=${RABBIT_PASS} -H rabbitmq publish exchange=amq.topic routing_key="$TOPIC" payload="$BODY"
     echo -e "$TOPIC\t===>\t$BODY"
 }
 
 ### Concurrent topic sends
-send "$TOPIC_PREFIX.uptime" "$(get_uptime)" &
-send "$TOPIC_PREFIX.memory" "$(get_mem_usage)" &
-send "$TOPIC_PREFIX.cpu" "$(get_cpu_usage)" &
-send "$TOPIC_PREFIX.ifs" "$(get_if_stats)" &
-send "$TOPIC_PREFIX.ios" "$(get_io_stats | sed 's/,\]/]/')" &
+send "$TOPIC_PREFIX.monitor.uptime" "$(get_uptime)" &
+send "$TOPIC_PREFIX.monitor.memory" "$(get_mem_usage)" &
+send "$TOPIC_PREFIX.monitor.cpu" "$(get_cpu_usage)" &
+send "$TOPIC_PREFIX.monitor.ifs" "$(get_if_stats)" &
+send "$TOPIC_PREFIX.monitor.ios" "$(get_io_stats | sed 's/,\]/]/')" &
 
 sleep 5 # TODO DELETE when send will be implemented with rabbitmqadmin tool (just for tests)
-

@@ -3,7 +3,7 @@ echo "[Scanner Entrypoint] Up and running"
 /etc/init.d/cron restart
 
 echo "Looking for my replica ID"
-MYIP=$(ip addr show eth0 | grep inet[^6] | sed 's/.*inet \(.*\)\/[0-9]* scope.*/\1/')
+MYIP=$(ip addr show eth0 | grep inet[^6] | sed 's/.*inet \(.*\)\/[0-9]* \(.* \)*scope.*/\1/')
 REPLICA_ID=1
 PREFIX=distsystems_scanner
 
