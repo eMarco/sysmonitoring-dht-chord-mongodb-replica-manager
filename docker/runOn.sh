@@ -4,5 +4,7 @@ if [ $# -ne 2 ]; then
     echo "Example ./runOn.sh scanner \"bash scanner.sh\""
     exit
 fi
-
-docker exec -t $(docker-compose ps -q $1) $2
+for i in $(docker-compose ps -q $1)
+do
+    docker exec -it $i $2
+done

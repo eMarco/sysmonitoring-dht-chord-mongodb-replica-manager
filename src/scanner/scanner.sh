@@ -4,7 +4,7 @@
 # TODO FIX
 RABBIT_USER="root"
 RABBIT_PASS="toor"
-
+TOPIC_PREFIX=$(</tmp/replica_id)
 # Pretty print the date using rfc3339
 function get_timestamp {
     echo "\"timestamp\": \"$(date --rfc-3339=ns)\""
@@ -57,11 +57,11 @@ function send {
 }
 
 ### Concurrent topic sends
-send "mytopic.uptime" "$(get_uptime)" &
-send "mytopic.memory" "$(get_mem_usage)" &
-send "mytopic.cpu" "$(get_cpu_usage)" &
-send "mytopic.ifs" "$(get_if_stats)" &
-send "mytopic.ios" "$(get_io_stats | sed 's/,\]/]/')" &
+send "$TOPIC_PREFIX.uptime" "$(get_uptime)" &
+send "$TOPIC_PREFIX.memory" "$(get_mem_usage)" &
+send "$TOPIC_PREFIX.cpu" "$(get_cpu_usage)" &
+send "$TOPIC_PREFIX.ifs" "$(get_if_stats)" &
+send "$TOPIC_PREFIX.ios" "$(get_io_stats | sed 's/,\]/]/')" &
 
 sleep 5 # TODO DELETE when send will be implemented with rabbitmqadmin tool (just for tests)
 
