@@ -56,6 +56,7 @@ services:
             - rabbitmq
         links:
             - rabbitmq
+        scale: 3
         # Limit container resources
         cpus: 0.15 # < 5% of host CPU time
         mem_limit: 128m # < 128MB of host RAM

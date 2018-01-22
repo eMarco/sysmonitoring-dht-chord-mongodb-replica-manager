@@ -16,6 +16,8 @@ RUN ln -s /usr/bin/python3 /usr/bin/python
 # Dependencies for scanner
 RUN apt-get install -y procps iproute sysstat
 
+# Dependencies for Replica identification
+RUN apt-get install -y host
 # Bash completion
 # RUN sh -c 'rabbitmqadmin --bash-completion > /etc/bash_completion.d/rabbitmqadmin'
 
@@ -26,5 +28,5 @@ RUN crontab -u root /root/crontab
 RUN mkdir /code
 WORKDIR /code
 
-ENTRYPOINT ["sh", "./stress.sh"]
+ENTRYPOINT ["bash", "./stress.sh"]
 
