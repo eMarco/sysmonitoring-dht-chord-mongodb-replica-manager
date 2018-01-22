@@ -1,10 +1,10 @@
 #!/bin/bash
 # A very nice esotheric scanner (Dependencies: sysstat***, gnu-coreutils, perl, awk, iproute, procps)
 
-# TODO FIX
-RABBIT_USER="root"
-RABBIT_PASS="toor"
-TOPIC_PREFIX=$(</tmp/replica_id)
+TOPIC_PREFIX=$(</var/run/replica_id)
+RABBIT_USER=$TOPIC_PREFIX
+RABBIT_PASS="somepass"
+
 # Pretty print the date using rfc3339
 function get_timestamp {
     echo "\"timestamp\": \"$(date --rfc-3339=ns)\""

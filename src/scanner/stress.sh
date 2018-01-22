@@ -14,7 +14,7 @@ do
 done
 echo "I am distsystems_scanner_$REPLICA_ID."
 
-echo "${PREFIX}_${REPLICA_ID}" > /tmp/replica_id
+echo "${PREFIX}_${REPLICA_ID}" > /var/run/replica_id
 
 while true
 do
