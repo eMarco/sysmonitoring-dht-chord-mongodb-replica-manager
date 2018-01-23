@@ -34,7 +34,7 @@ do
   rabbitmqctl set_permissions -p / distsystems_scanner_$i ".*" ".*" ".*"  >> /var/log/init.log # ".*" "a^" "[\w]*\.monitor\.[\w]*" >> /var/log/init.log
   # rabbitmqctl set_permissions -p / distsystems_scanner_$i "monitor_queue" "amq.topic" "amq.topic"  >> /var/log/init.log # "distsystems_scanner_$i\.monitor\.[\w]*" "distsystems_scanner_$i\.monitor\.[\w]*" >> /var/log/init.log
               #set_topic_permissions [-p <vhost>] <username> <exchange> <write_pattern> <read_pattern>
-  rabbitmqctl set_topic_permissions -p / distsystems_scanner_$i ".*a^" "distsystems_scanner_$i\.monitor\.[\w]*" "distsystems_scanner_$i\.monitor\.[\w]*" >> /var/log/init.log
+  rabbitmqctl set_topic_permissions -p / distsystems_scanner_$i "amp.topic" "distsystems_scanner_$i\.monitor\.[\w]*" "distsystems_scanner_$i\.monitor\.[\w]*" >> /var/log/init.log
 done
 
 
@@ -52,6 +52,6 @@ rabbitmqctl add_user message_handler somepass >> /var/log/init.log
 rabbitmqctl set_permissions -p / message_handler ".*" ".*" ".*"  >> /var/log/init.log # ".*" "a^" "[\w]*\.monitor\.[\w]*" >> /var/log/init.log
 
             #set_topic_permissions [-p <vhost>] <username> <exchange> <write_pattern> <read_pattern>
-rabbitmqctl set_topic_permissions -p / message_handler ".*" "a^" "[\w]*\.monitor\.[\w]*" >> /var/log/init.log
+rabbitmqctl set_topic_permissions -p / message_handler "amp.topic" "a^" "[\w]*\.monitor\.[\w]*" >> /var/log/init.log
 
 tail -f /var/log/rabbit.log
