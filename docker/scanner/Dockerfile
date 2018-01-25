@@ -2,13 +2,9 @@
 FROM debian:stable-slim
 
 # Install Python3 and stress from repos
-RUN apt-get update && apt-get install -y python3 stress
+RUN apt-get update && apt-get install -y python3 python3-pip curl stress
+RUN pip3 install pika
 
-# Download RabbitMQadmin script...
-ADD https://raw.githubusercontent.com/rabbitmq/rabbitmq-management/v3.7.2/bin/rabbitmqadmin /usr/local/bin/rabbitmqadmin.py
-
-# ... and make it executable
-RUN chmod +x /usr/local/bin/rabbitmqadmin.py
 
 # Symbolic linking python3 to python
 RUN ln -s /usr/bin/python3 /usr/bin/python

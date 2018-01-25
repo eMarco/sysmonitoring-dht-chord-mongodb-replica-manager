@@ -4,6 +4,7 @@
 TOPIC_PREFIX=$(</var/run/replica_id)
 RABBIT_USER=$TOPIC_PREFIX
 RABBIT_PASS="somepass"
+EXCHANGE="amq.topic"
 
 # Pretty print the date using rfc3339
 function get_timestamp {
@@ -52,7 +53,7 @@ function get_if_stats {
 function send {
     TOPIC=$1
     BODY=$2
-    rabbitmqadmin.py --user=${RABBIT_USER} --pass=${RABBIT_PASS} -H rabbitmq publish exchange=amq.topic routing_key="$TOPIC" payload="$BODY"
+    python3 /code/send.py --username=${RABBIT_USER} --password=${RABBIT_PASS} --exchange=${EXCHANGE} --routingkey="$TOPIC" --message="$BODY"
     echo -e "$TOPIC\t===>\t$BODY"
 }
 
