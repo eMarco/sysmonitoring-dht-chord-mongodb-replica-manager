@@ -19,5 +19,5 @@ echo "${PREFIX}_${REPLICA_ID}" > /var/run/replica_id
 while true
 do
     echo "Stress me..."
-    sleep 5
+    sleep 60
 done
