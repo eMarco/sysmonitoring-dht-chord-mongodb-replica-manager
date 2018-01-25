@@ -34,10 +34,25 @@ def parse_parameters():
 
 
 def run(options):
+    import time
 
     credentials = pika.PlainCredentials(options.username, options.password)
-    connection  = pika.BlockingConnection(pika.ConnectionParameters(host=options.broker, credentials=credentials))
-    channel     = connection.channel()
+
+    connection = None
+    while True:
+        try:
+            connection  = pika.BlockingConnection(pika.ConnectionParameters(host=options.broker, credentials=credentials))
+            break
+        except pika.exceptions.ConnectionClosed as e:
+            print("[INFO] Cannot reach the broker:" + str(e) + "\nRetrying in 5s")
+
+        except pika.exceptions.ProbableAuthenticationError as e:
+            # if e[0] == 403:
+            print("[ERROR] Probable authentication error:" + str(e) +"\nWrong credentials? Retrying in 5s")
+
+        time.sleep(5)
+
+    channel = connection.channel()
 
     channel.exchange_declare(exchange=options.exchange,
                              exchange_type='topic', passive=True)
@@ -68,7 +83,7 @@ def main():
 
     # Parse args
     args = parse_parameters()
-    print(args)
+    
     # Run the algorithm
     run(options=args)
 
