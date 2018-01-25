@@ -48,7 +48,7 @@ def run(options):
     connection  = pika.BlockingConnection(pika.ConnectionParameters(host=options.broker, credentials=credentials))
     channel     = connection.channel()
 
-    channel.exchange_declare(exchange=options.exchange, exchange_type='topic', durable=True)
+    channel.exchange_declare(exchange=options.exchange, exchange_type='topic', passive=True)
 
     channel.basic_publish(exchange=options.exchange,
                           routing_key=options.routing_key,
