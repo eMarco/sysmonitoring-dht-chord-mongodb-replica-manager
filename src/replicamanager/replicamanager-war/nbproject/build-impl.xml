@@ -18,6 +18,7 @@
 
         -->
 <project xmlns:webproject1="http://www.netbeans.org/ns/web-project/1" xmlns:webproject2="http://www.netbeans.org/ns/web-project/2" xmlns:webproject3="http://www.netbeans.org/ns/web-project/3" basedir=".." default="default" name="replicamanager-war-impl">
+    <import file="rest-build.xml"/>
     <import file="ant-deploy.xml"/>
     <fail message="Please build using Ant 1.7.1 or higher.">
         <condition>
@@ -853,9 +854,15 @@ exists or setup the property manually. For example like this:
                 COMPILATION SECTION
             -->
     <target depends="init" if="no.dist.ear.dir" name="deps-module-jar" unless="no.deps">
+        <ant antfile="${project.Utils}/build.xml" inheritall="false" target="jar">
+            <property name="deploy.on.save" value="false"/>
+        </ant>
         <ant antfile="${project.replicamanager-ejb}/build.xml" inheritall="false" target="dist"/>
     </target>
     <target depends="init" if="dist.ear.dir" name="deps-ear-jar" unless="no.deps">
+        <ant antfile="${project.Utils}/build.xml" inheritall="false" target="jar">
+            <property name="deploy.on.save" value="false"/>
+        </ant>
         <ant antfile="${project.replicamanager-ejb}/build.xml" inheritall="false" target="dist-ear">
             <property location="${build.dir}" name="dist.ear.dir"/>
         </ant>
@@ -1003,10 +1010,15 @@ exists or setup the property manually. For example like this:
     </target>
     <target depends="init,compile,compile-jsps,-pre-dist,-do-dist-with-manifest,-do-dist-without-manifest" name="do-dist"/>
     <target depends="init" if="dist.ear.dir" name="library-inclusion-in-manifest">
+        <copyfiles files="${file.reference.src-libs}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${reference.Utils.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <mkdir dir="${build.web.dir}/META-INF"/>
         <manifest file="${build.web.dir}/META-INF/MANIFEST.MF" mode="update"/>
     </target>
-    <target depends="init" name="library-inclusion-in-archive" unless="dist.ear.dir"/>
+    <target depends="init" name="library-inclusion-in-archive" unless="dist.ear.dir">
+        <copyfiles files="${file.reference.src-libs}" todir="${build.web.dir}/WEB-INF/classes"/>
+        <copyfiles files="${reference.Utils.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
+    </target>
     <target depends="init" if="dist.ear.dir" name="-clean-webinf-lib">
         <delete dir="${build.web.dir}/WEB-INF/lib"/>
     </target>
@@ -1419,6 +1431,7 @@ exists or setup the property manually. For example like this:
                 CLEANUP SECTION
             -->
     <target depends="init" name="deps-clean" unless="no.deps">
+        <ant antfile="${project.Utils}/build.xml" inheritall="false" target="clean"/>
         <ant antfile="${project.replicamanager-ejb}/build.xml" inheritall="false" target="clean"/>
     </target>
     <target depends="init" name="do-clean">
