@@ -29,3 +29,8 @@ hs_err_pid*
 /src/**/private
 /src/**/dist
 /src/**/build
+/src/utils2/target/
+/src/datamanager/datamanager-ejb/target/
+/src/datamanager/datamanager-web/target/
+/src/datamanager/datamanager-ear/target/
+/src/datamanager/target/
