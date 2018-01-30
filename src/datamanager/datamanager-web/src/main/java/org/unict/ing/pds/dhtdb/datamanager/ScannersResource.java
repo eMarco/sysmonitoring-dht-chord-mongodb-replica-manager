@@ -7,19 +7,20 @@ package org.unict.ing.pds.dhtdb.datamanager;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PUT;
 import javax.enterprise.context.RequestScoped;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
+import org.unict.ing.pds.dhtdb.utils.datamanager.DataManagerSessionBeanRemote;
 
 /**
  * REST Web Service
@@ -32,6 +33,8 @@ public class ScannersResource {
 
     DataManagerSessionBeanRemote dataManagerSessionBean = lookupDataManagerSessionBeanRemote();
 
+
+
     @Context
     private UriInfo context;
 
@@ -43,6 +46,8 @@ public class ScannersResource {
 
     /**
      * Retrieves representation of an instance of org.unict.ing.pds.dhtdb.datamanager.ScannersResource
+     * @param tsStart
+     * @param tsEnd
      * @return an instance of java.lang.String
      */
     @GET
@@ -51,8 +56,7 @@ public class ScannersResource {
     public String getAll(            
             @PathParam(value="tsStart") String tsStart,
             @PathParam(value="tsEnd") String tsEnd) {
-        
-        return dataManagerSessionBean.get(null, null, tsStart, tsEnd);
+        return dataManagerSessionBean.get(null, null, tsStart.substring(1), tsEnd.substring(1));
     }
 
     
@@ -71,7 +75,7 @@ public class ScannersResource {
             @PathParam(value="tsStart") String tsStart,
             @PathParam(value="tsEnd") String tsEnd) {
         
-        return dataManagerSessionBean.get(scanner, null, tsStart, tsEnd);
+        return dataManagerSessionBean.get(scanner, null, tsStart.substring(1), tsEnd.substring(1));
     }
 
     
@@ -84,19 +88,9 @@ public class ScannersResource {
             @PathParam(value="tsEnd")   String tsEnd,
             @PathParam(value="scanner") String scanner) {
         
-        return dataManagerSessionBean.get(scanner, topic, tsStart, tsEnd);
+        return dataManagerSessionBean.get(scanner, topic, tsStart.substring(1), tsEnd.substring(1));
     }
-    /**
-     * PUT method for updating or creating an instance of ScannersResource
-     * @param content representation for the resource
-     */
-    @PUT
-    @Consumes(MediaType.TEXT_PLAIN)
-    public void putText(String content) {
-    }
-    
-        
-    
+
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
     @Path(value="/{scanner:[0-9]+}/{topic:[a-zA-Z]+}")
@@ -109,7 +103,7 @@ public class ScannersResource {
     private DataManagerSessionBeanRemote lookupDataManagerSessionBeanRemote() {
         try {
             javax.naming.Context c = new InitialContext();
-            return (DataManagerSessionBeanRemote) c.lookup("java:global/org.unict.ing.pds.dhtdb_datamanager-ear_ear_1.0-SNAPSHOT/org.unict.ing.pds.dhtdb_datamanager-ejb_ejb_1.0-SNAPSHOT/DataManagerSessionBean!org.unict.ing.pds.dhtdb.datamanager.DataManagerSessionBeanRemote");
+            return (DataManagerSessionBeanRemote) c.lookup("java:global/org.unict.ing.pds.dhtdb_datamanager-ear_ear_1.0-SNAPSHOT/org.unict.ing.pds.dhtdb_datamanager-ejb_ejb_1.0-SNAPSHOT/DataManagerSessionBean!org.unict.ing.pds.dhtdb.utils.datamanager.DataManagerSessionBeanRemote");
         } catch (NamingException ne) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
             throw new RuntimeException(ne);

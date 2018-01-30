@@ -5,6 +5,9 @@
  */
 package org.unict.ing.pds.dhtdb.replica.p2p;
 
+import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.client.MongoDatabase;
 import javax.annotation.Resource;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
@@ -27,7 +30,14 @@ public class NodeSessionBean extends BaseNode {
     private String serviceURL;
     
     private NodeReference successor, predecessor;
-
+    
+    // TODO move in a factory/singleton (or another EJB?)
+    // Mongo fields to be created once, so in a singleton.
+    private MongoClient     mongo;
+    private MongoCredential credential;
+    private MongoDatabase   database;
+    
+    
     public NodeSessionBean() {
 
     }

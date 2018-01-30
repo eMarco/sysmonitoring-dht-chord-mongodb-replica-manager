@@ -5,6 +5,7 @@
  */
 package org.unict.ing.pds.dhtdb.datamanager;
 
+import org.unict.ing.pds.dhtdb.utils.datamanager.DataManagerSessionBeanRemote;
 import com.google.gson.Gson;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,6 +33,7 @@ import org.unict.ing.pds.dhtdb.utils.model.CPUStat;
 public class TopicsResource {
 
     DataManagerSessionBeanRemote dataManagerSessionBean = lookupDataManagerSessionBeanRemote();
+
 
     @Context
     private UriInfo context;
@@ -86,25 +88,16 @@ public class TopicsResource {
         
         return dataManagerSessionBean.get(scanner, topic, tsStart, tsEnd);
     }
-    
-    
-    /**
-     * PUT method for updating or creating an instance of TopicsResource
-     * @param content representation for the resource
-     */
-    @PUT
-    @Consumes(MediaType.TEXT_PLAIN)
-    public void putText(String content) {
-    }
 
     private DataManagerSessionBeanRemote lookupDataManagerSessionBeanRemote() {
         try {
             javax.naming.Context c = new InitialContext();
-            return (DataManagerSessionBeanRemote) c.lookup("java:global/org.unict.ing.pds.dhtdb_datamanager-ear_ear_1.0-SNAPSHOT/org.unict.ing.pds.dhtdb_datamanager-ejb_ejb_1.0-SNAPSHOT/DataManagerSessionBean!org.unict.ing.pds.dhtdb.datamanager.DataManagerSessionBeanRemote");
+            return (DataManagerSessionBeanRemote) c.lookup("java:global/datamanager-ear/datamanager-ejb-1.0-SNAPSHOT/DataManagerSessionBean!org.unict.ing.pds.dhtdb.utils.datamanager.DataManagerSessionBeanRemote");
         } catch (NamingException ne) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
             throw new RuntimeException(ne);
         }
     }
+    
 
 }

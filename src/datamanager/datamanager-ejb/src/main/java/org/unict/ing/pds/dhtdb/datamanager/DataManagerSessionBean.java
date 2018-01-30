@@ -5,11 +5,12 @@
  */
 package org.unict.ing.pds.dhtdb.datamanager;
 
+import org.unict.ing.pds.dhtdb.utils.datamanager.DataManagerSessionBeanRemote;
 import com.google.gson.Gson;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
-import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
+import org.unict.ing.pds.dhtdb.utils.model.*;
 
 /**
  *
