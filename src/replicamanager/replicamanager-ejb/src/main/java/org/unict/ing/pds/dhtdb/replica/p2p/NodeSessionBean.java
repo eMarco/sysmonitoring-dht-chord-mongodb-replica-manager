@@ -17,7 +17,7 @@ import javax.ejb.Singleton;
 @Singleton
 //@Remote(BaseNode.class)
 @ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
-public class Node extends BaseNode {
+public class NodeSessionBean extends BaseNode {
     private FingerTable fingerTable;
     
     @Resource(type = Storage.class)
@@ -28,18 +28,18 @@ public class Node extends BaseNode {
     
     private NodeReference successor, predecessor;
 
-    public Node() {
+    public NodeSessionBean() {
 
     }
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
 
-//    public Node(String hostname, short port, NodeID nodeID) {
+//    public NodeSessionBean(String hostname, short port, NodeID nodeID) {
 //        super(hostname, port, nodeID);
 //    }
 //    
-//    public Node(String hostname, NodeID nodeID) {
+//    public NodeSessionBean(String hostname, NodeID nodeID) {
 //        super(hostname, DEFAULT_PORT, nodeID);
 //    }  
     
