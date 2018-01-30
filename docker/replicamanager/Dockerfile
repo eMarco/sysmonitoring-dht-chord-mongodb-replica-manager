@@ -12,4 +12,4 @@ ARG USER
 USER $USER
 
 # This will boot WildFly in the standalone mode and bind to all interface
-CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-bmanagement", "0.0.0.0"]
+CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]
