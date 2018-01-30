@@ -2,21 +2,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.unict.ing.pds.dhtdb</groupId>
-  <artifactId>datamanager</artifactId>
+  <artifactId>replicamanager</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>datamanager</name>
+  <name>replicamanager</name>
   <modules>
-    <module>datamanager-ear</module>
-    <module>datamanager-web</module>
-    <module>datamanager-ejb</module>
+    <module>replicamanager-ear</module>
+    <module>replicamanager-web</module>
+    <module>replicamanager-ejb</module>
   </modules>
     <dependencies>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.0</version>
-        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>utils2</artifactId>

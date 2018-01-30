@@ -20,7 +20,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
-import org.unict.ing.pds.dhtdb.utils2.model.CPUStat;
+import org.unict.ing.pds.dhtdb.utils.model.CPUStat;
 
 /**
  * REST Web Service

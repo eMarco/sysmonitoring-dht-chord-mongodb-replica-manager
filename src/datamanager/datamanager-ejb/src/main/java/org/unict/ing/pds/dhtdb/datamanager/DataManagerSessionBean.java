@@ -9,7 +9,7 @@ import com.google.gson.Gson;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
-import org.unict.ing.pds.dhtdb.utils2.model.GenericStat;
+import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
 
 /**
  *

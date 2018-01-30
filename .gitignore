@@ -34,3 +34,9 @@ hs_err_pid*
 /src/datamanager/datamanager-web/target/
 /src/datamanager/datamanager-ear/target/
 /src/datamanager/target/
+/src/replicamanager2/replicamanager2-ejb/target/
+/src/replicamanager/replicamanager2-ejb/target/
+/src/replicamanager/replicamanager-ear/target/
+/src/replicamanager/replicamanager-web/target/
+/src/replicamanager/replicamanager-ejb/target/
+/src/utils/target/
