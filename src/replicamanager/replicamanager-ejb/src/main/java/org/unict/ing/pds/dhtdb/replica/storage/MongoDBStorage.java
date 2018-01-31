@@ -5,6 +5,7 @@
  */
 package org.unict.ing.pds.dhtdb.replica.storage;
 
+import com.google.gson.Gson;
 import com.mongodb.Block;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -33,27 +34,29 @@ public class MongoDBStorage implements Storage {
     private final MongoDatabase db;
     private final MongoCollection<Document> collection;
     
-    public MongoDBStorage(MongoDatabase db) {
+    public MongoDBStorage() {
         // Using a single connection to provide better (query-oriented) scalability
         this.db = dbSessionBean.getDatabase();
         this.collection = db.getCollection("myMonitor");
     }
     
     @Override
-    public void insert(GenericStat elem) {
+    public void insert(GenericStat elem, String k) {
         
-        Document document = new Document("stat", elem).append("topic", elem.getClass().getSimpleName());
+        Document document = new Document("stat", new Gson().toJson(elem))
+                .append("topic", elem.getClass().getSimpleName())
+                .append("key", k);
         collection.insertOne(document);
     }
 
     @Override
     public void update(GenericStat elem, String primaryKey) {
-        collection.updateOne(Filters.eq("_id", primaryKey), Updates.set("stat", elem));
+        collection.updateOne(Filters.eq("key", primaryKey), Updates.set("stat", elem));
     }
 
     @Override
     public void remove(String primaryKey) {
-        collection.deleteOne(Filters.eq("_id", primaryKey));
+        collection.deleteOne(Filters.eq("key", primaryKey));
     }
 
     @Override
@@ -62,14 +65,14 @@ public class MongoDBStorage implements Storage {
             if (primaryKey == null) {
                 iterDoc = collection.find();
             } else {
-                iterDoc = collection.find(Filters.eq("_id", primaryKey));
+                iterDoc = collection.find(Filters.eq("key", primaryKey));
             }
             List<GenericStat> ret = new ArrayList();
             
             iterDoc.forEach((Block<Document>)(Document t) -> {
                 try {
                     Class<? extends GenericStat> topicClass = Class.forName("org.unict.ing.pds.dhtdb.utils.model." + t.get("topic", String.class)).asSubclass(GenericStat.class);
-                    ret.add(t.get("elem", topicClass));
+                    ret.add(new Gson().fromJson(t.get("stat", String.class), topicClass));
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(MongoDBStorage.class.getName()).log(Level.SEVERE, null, ex);
                 }

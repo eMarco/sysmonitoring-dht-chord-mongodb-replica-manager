@@ -31,4 +31,8 @@ public class FingerTable {
         return table.lower(node);
     }
     
+    public void addNode(NodeReference node) {
+        table.add(node);
+    }
+    
 }

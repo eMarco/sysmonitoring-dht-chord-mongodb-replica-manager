@@ -14,7 +14,7 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
  */
 public interface Storage {
     public List<GenericStat> find(String primaryKey);
-    public void insert(GenericStat elem);
+    public void insert(GenericStat elem, String k);
     public void update(GenericStat elem, String primaryKey);
     public void remove(String primaryKey);
     public List<String> getTopics();

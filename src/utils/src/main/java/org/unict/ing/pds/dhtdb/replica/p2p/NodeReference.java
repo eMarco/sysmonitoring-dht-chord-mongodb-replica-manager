@@ -53,7 +53,7 @@ public class NodeReference implements Comparable<NodeReference> {
         return this.nodeId.compareTo(o.nodeId);
     }
 
-    NodeReference findSuccessor(NodeReference nodeRef) {
+    public NodeReference findSuccessor(NodeReference nodeRef) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
