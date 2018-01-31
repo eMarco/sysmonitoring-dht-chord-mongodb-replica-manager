@@ -10,7 +10,7 @@ package org.unict.ing.pds.dhtdb.utils.model;
  * 
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
-public abstract class GenericStat {
+public abstract class GenericStat extends GenericValue {
     private final long timestamp;
     private String scannerId;
 
