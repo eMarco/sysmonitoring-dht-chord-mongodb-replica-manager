@@ -19,6 +19,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.ws.rs.core.MediaType;
 import org.unict.ing.pds.dhtdb.replica.p2p.LocalNodeSessionBeanLocal;
+import org.unict.ing.pds.dhtdb.replica.p2p.NodeSessionBeanRemote;
 
 /**
  * REST Web Service
@@ -30,7 +31,7 @@ import org.unict.ing.pds.dhtdb.replica.p2p.LocalNodeSessionBeanLocal;
 public class GenericResource {
 
     LocalNodeSessionBeanLocal localNodeSessionBean = lookupLocalNodeSessionBeanLocal();
-
+    NodeSessionBeanRemote nodeSessionBeanRemote = lookupNodeSessionBeanRemote();
 
     @Context
     private UriInfo context;
@@ -50,7 +51,7 @@ public class GenericResource {
     public String getText() {
         //TODO return proper representation object
         String ret = "ciaoasdddasds\n";
-        ret += localNodeSessionBean.myTest();
+        ret += nodeSessionBeanRemote.myTest();
         return ret;
     }
 
@@ -67,6 +68,16 @@ public class GenericResource {
         try {
             javax.naming.Context c = new InitialContext();
             return (LocalNodeSessionBeanLocal) c.lookup("java:global/replicamanager-ear-1.0-SNAPSHOT/replicamanager-ejb-1.0-SNAPSHOT/LocalNodeSessionBean!org.unict.ing.pds.dhtdb.replica.p2p.LocalNodeSessionBeanLocal");
+        } catch (NamingException ne) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
+            throw new RuntimeException(ne);
+        }
+    }
+    
+    private NodeSessionBeanRemote lookupNodeSessionBeanRemote() {
+        try {
+            javax.naming.Context c = new InitialContext();
+            return (NodeSessionBeanRemote) c.lookup("java:global/replicamanager-ear-1.0-SNAPSHOT/replicamanager-ejb-1.0-SNAPSHOT/NodeSessionBean!org.unict.ing.pds.dhtdb.replica.p2p.NodeSessionBeanRemote");
         } catch (NamingException ne) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
             throw new RuntimeException(ne);
