@@ -5,11 +5,11 @@
  */
 package org.unict.ing.pds.dhtdb.datamanager;
 
-import org.unict.ing.pds.dhtdb.utils.datamanager.DataManagerSessionBeanRemote;
 import com.google.gson.Gson;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
+import org.unict.ing.pds.dhtdb.utils.datamanager.DataManagerSessionBeanRemote;
 import org.unict.ing.pds.dhtdb.utils.model.*;
 
 /**
@@ -28,7 +28,7 @@ public class DataManagerSessionBean implements DataManagerSessionBeanRemote {
             
             // TODO create the query
             // TODO calculate the dht node to send the query
-            // TODO send the query to the proper dht node
+            // TODO send the query to the proper dht node  
         } catch (ClassNotFoundException ex) {
             // Wrong topic in request
             Logger.getLogger(DataManagerSessionBean.class.getName()).log(Level.SEVERE, null, ex);

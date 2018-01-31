@@ -5,8 +5,6 @@
  */
 package org.unict.ing.pds.dhtdb.datamanager;
 
-import org.unict.ing.pds.dhtdb.utils.datamanager.DataManagerSessionBeanRemote;
-import com.google.gson.Gson;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.core.Context;
@@ -15,13 +13,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PUT;
 import javax.enterprise.context.RequestScoped;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
-import org.unict.ing.pds.dhtdb.utils.model.CPUStat;
+import org.unict.ing.pds.dhtdb.utils.datamanager.DataManagerSessionBeanRemote;
 
 /**
  * REST Web Service
@@ -43,9 +40,11 @@ public class TopicsResource {
      */
     public TopicsResource() {
     }
-
+    
     /**
      * Retrieves representation of an instance of org.unict.ing.pds.dhtdb.datamanager.TopicsResource
+     * @param tsStart
+     * @param tsEnd
      * @return an instance of java.lang.String
      */
     @GET
@@ -57,7 +56,6 @@ public class TopicsResource {
         
         return dataManagerSessionBean.get(null, null, tsStart, tsEnd);
     }
-
     /**
      * 
      * @param topic
