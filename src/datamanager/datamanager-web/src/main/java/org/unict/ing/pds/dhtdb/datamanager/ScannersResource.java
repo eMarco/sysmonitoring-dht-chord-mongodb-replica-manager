@@ -103,7 +103,7 @@ public class ScannersResource {
     private DataManagerSessionBeanRemote lookupDataManagerSessionBeanRemote() {
         try {
             javax.naming.Context c = new InitialContext();
-            return (DataManagerSessionBeanRemote) c.lookup("java:global/org.unict.ing.pds.dhtdb_datamanager-ear_ear_1.0-SNAPSHOT/org.unict.ing.pds.dhtdb_datamanager-ejb_ejb_1.0-SNAPSHOT/DataManagerSessionBean!org.unict.ing.pds.dhtdb.utils.datamanager.DataManagerSessionBeanRemote");
+            return (DataManagerSessionBeanRemote) c.lookup("java:global/datamanager-ear-1.0-SNAPSHOT/datamanager-ejb-1.0-SNAPSHOT/DataManagerSessionBean!org.unict.ing.pds.dhtdb.utils.datamanager.DataManagerSessionBeanRemote");
         } catch (NamingException ne) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
             throw new RuntimeException(ne);

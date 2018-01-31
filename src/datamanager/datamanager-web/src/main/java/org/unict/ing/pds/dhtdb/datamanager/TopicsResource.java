@@ -92,7 +92,7 @@ public class TopicsResource {
     private DataManagerSessionBeanRemote lookupDataManagerSessionBeanRemote() {
         try {
             javax.naming.Context c = new InitialContext();
-            return (DataManagerSessionBeanRemote) c.lookup("java:global/datamanager-ear/datamanager-ejb-1.0-SNAPSHOT/DataManagerSessionBean!org.unict.ing.pds.dhtdb.utils.datamanager.DataManagerSessionBeanRemote");
+            return (DataManagerSessionBeanRemote) c.lookup("java:global/datamanager-ear-1.0-SNAPSHOT/datamanager-ejb-1.0-SNAPSHOT/DataManagerSessionBean!org.unict.ing.pds.dhtdb.utils.datamanager.DataManagerSessionBeanRemote");
         } catch (NamingException ne) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
             throw new RuntimeException(ne);
