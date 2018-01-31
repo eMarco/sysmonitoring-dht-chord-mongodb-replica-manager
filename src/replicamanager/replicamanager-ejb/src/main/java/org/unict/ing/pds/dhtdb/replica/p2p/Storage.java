@@ -13,9 +13,9 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 public interface Storage {
-    public List<GenericStat> find(String primaryKey, String topic);
-    public void insert(GenericStat elem, String topic);
-    public void update(GenericStat elem, String primaryKey, String topic);
-    public void remove(String primaryKey, String topic);
+    public List<GenericStat> find(String primaryKey);
+    public void insert(GenericStat elem);
+    public void update(GenericStat elem, String primaryKey);
+    public void remove(String primaryKey);
     public List<String> getTopics();
 }

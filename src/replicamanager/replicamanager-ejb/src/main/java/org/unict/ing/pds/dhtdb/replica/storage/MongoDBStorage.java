@@ -31,35 +31,33 @@ public class MongoDBStorage implements Storage {
     DBConnectionSingletonSessionBeanLocal dbSessionBean = lookupDBConnectionSingletonSessionBeanLocal();
     
     private final MongoDatabase db;
-
+    private final MongoCollection<Document> collection;
+    
     public MongoDBStorage(MongoDatabase db) {
         // Using a single connection to provide better (query-oriented) scalability
         this.db = dbSessionBean.getDatabase();
+        this.collection = db.getCollection("myMonitor");
     }
     
     @Override
-    public void insert(GenericStat elem, String topic) {
-        MongoCollection<Document> collection = db.getCollection(topic);
-        Document document = new Document("stat", elem);
+    public void insert(GenericStat elem) {
+        
+        Document document = new Document("stat", elem).append("topic", elem.getClass().getSimpleName());
         collection.insertOne(document);
     }
 
     @Override
-    public void update(GenericStat elem, String primaryKey, String topic) {
-        MongoCollection<Document> collection = db.getCollection(topic);
+    public void update(GenericStat elem, String primaryKey) {
         collection.updateOne(Filters.eq("_id", primaryKey), Updates.set("stat", elem));
     }
 
     @Override
-    public void remove(String primaryKey, String topic) {
-        MongoCollection<Document> collection = db.getCollection(topic);
+    public void remove(String primaryKey) {
         collection.deleteOne(Filters.eq("_id", primaryKey));
     }
 
     @Override
-    public List<GenericStat> find(String primaryKey, String topic) {
-        try {
-            MongoCollection<Document> collection = db.getCollection(topic);
+    public List<GenericStat> find(String primaryKey) {
             FindIterable<Document> iterDoc;
             if (primaryKey == null) {
                 iterDoc = collection.find();
@@ -67,15 +65,16 @@ public class MongoDBStorage implements Storage {
                 iterDoc = collection.find(Filters.eq("_id", primaryKey));
             }
             List<GenericStat> ret = new ArrayList();
-            Class<? extends GenericStat> topicClass = Class.forName("org.unict.ing.pds.dhtdb.utils.model." + topic).asSubclass(GenericStat.class); 
+            
             iterDoc.forEach((Block<Document>)(Document t) -> {
-                ret.add(t.get("elem", topicClass));
+                try {
+                    Class<? extends GenericStat> topicClass = Class.forName("org.unict.ing.pds.dhtdb.utils.model." + t.get("topic", String.class)).asSubclass(GenericStat.class);
+                    ret.add(t.get("elem", topicClass));
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(MongoDBStorage.class.getName()).log(Level.SEVERE, null, ex);
+                }
             });
             return ret;
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(MongoDBStorage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
     }
  
     @Override
