@@ -45,7 +45,7 @@ public class NodeReference implements Comparable<NodeReference> {
 
     @Override
     public String toString() {
-        return nodeId + "\t" + ip;
+        return "http://" + ip + ":8080/";
     }
 
     @Override

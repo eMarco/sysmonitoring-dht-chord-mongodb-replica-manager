@@ -5,6 +5,7 @@
  */
 package org.unict.ing.pds.dhtdb.replica.p2p;
 
+import java.io.Serializable;
 import java.util.Objects;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -12,7 +13,7 @@ import org.apache.commons.codec.digest.DigestUtils;
  *
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
-public final class Key implements Comparable<Key> {
+public final class Key implements Comparable<Key>, Serializable {
     private final String key;
 
     public Key(String key) {
