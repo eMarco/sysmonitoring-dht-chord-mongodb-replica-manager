@@ -12,7 +12,7 @@ import java.util.TreeSet;
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 public class FingerTable {
-    private final TreeSet<NodeReference> table = new TreeSet<>((NodeReference p1, NodeReference p2) -> p1.nodeID.compareTo(p2.nodeID));
+    private final TreeSet<NodeReference> table = new TreeSet<>((NodeReference p1, NodeReference p2) -> p1.compareTo(p2));
 
     /**
      *

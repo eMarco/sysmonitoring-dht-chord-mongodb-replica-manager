@@ -6,20 +6,28 @@
 package org.unict.ing.pds.dhtdb.replica.p2p;
 
 import java.util.Objects;
+import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  *
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
-public final class NodeID implements Comparable<NodeID> {
-    private final int id;
+public final class Key implements Comparable<Key> {
+    private final String key;
 
-    public NodeID(int id) {
-        this.id = id;
+    public Key(String key) {
+        this(key, true);
+    }
+    
+    public Key(String key, Boolean toHash) {
+        if (toHash)
+            this.key = DigestUtils.sha512Hex(key);
+        else
+            this.key = key;
     }
 
-    public int getId() {
-        return id;
+    public String getId() {
+        return key;
     }
 
     @Override
@@ -39,13 +47,19 @@ public final class NodeID implements Comparable<NodeID> {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final NodeID other = (NodeID) obj;
-        return Objects.equals(this.id, other.id);
+        final Key other = (Key) obj;
+        return Objects.equals(this.key, other.key);
     }
 
     @Override
-    public int compareTo(NodeID o) {
+    public int compareTo(Key o) {
         // TODO : Add modulo?
-        return Integer.compare(this.id, o.id);
-    }   
+        return this.key.compareTo(o.key);
+    }
+
+    @Override
+    public String toString() {
+        return key;
+    }
+
 }

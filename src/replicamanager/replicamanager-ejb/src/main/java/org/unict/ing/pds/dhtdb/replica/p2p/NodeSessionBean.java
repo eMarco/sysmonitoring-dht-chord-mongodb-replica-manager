@@ -8,6 +8,10 @@ package org.unict.ing.pds.dhtdb.replica.p2p;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.client.MongoDatabase;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
@@ -26,17 +30,11 @@ public class NodeSessionBean extends BaseNode {
     @Resource(type = Storage.class)
     private Storage storage;
     
-    @Resource(name="serviceURL", lookup="url/myurl")
+    //@Resource(name="serviceURL", lookup="url/myurl")
     private String serviceURL;
     
     private NodeReference successor, predecessor;
-    
-    // TODO move in a factory/singleton (or another EJB?)
-    // Mongo fields to be created once, so in a singleton.
-    private MongoClient     mongo;
-    private MongoCredential credential;
-    private MongoDatabase   database;
-    
+    private long id;
     
     public NodeSessionBean() {
 
@@ -53,6 +51,17 @@ public class NodeSessionBean extends BaseNode {
 //        super(hostname, DEFAULT_PORT, nodeID);
 //    }  
     
+    private void init() {
+        try {
+            String ip = InetAddress.getLocalHost().getHostAddress();
+            System.out.println(ip);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(NodeSessionBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    private long successor(long k) {
+        return 0;
+    }
     private void stabilize() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -88,13 +97,14 @@ public class NodeSessionBean extends BaseNode {
     @Override
     public NodeReference findSuccessor(NodeReference nodeRef) {
         // Check if this.NodeID < nodeRef.NodeID <= successor.NodeID
-        if ((this.nodeID.compareTo(nodeRef.getNodeID()) < 0) && (nodeRef.getNodeID().compareTo(successor.getNodeID()) <= 0))
+        /*if ((this.nodeID.compareTo(nodeRef.getNodeID()) < 0) && (nodeRef.getNodeID().compareTo(successor.getNodeID()) <= 0))
             // return successor
             return successor;
         else {
             // get the closest preceding node and trigger the findSuccessor
             return fingerTable.getClosestPrecedingNode(nodeRef).findSuccessor(nodeRef);
-        }
+        }*/
+        return null;
     }
 
 }

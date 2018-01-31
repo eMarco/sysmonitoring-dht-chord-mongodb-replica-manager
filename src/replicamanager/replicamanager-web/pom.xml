@@ -21,6 +21,17 @@
     
     <dependencies>
         <dependency>
+            <groupId>org.unict.ing.pds.dhtdb</groupId>
+            <artifactId>replicamanager-ejb</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.unict.ing.pds.dhtdb</groupId>
+            <artifactId>utils</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
             <version>7.0</version>

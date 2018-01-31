@@ -13,12 +13,12 @@ import javax.ejb.Remote;
  */
 @Remote
 public abstract class BaseNode implements DHTNode, ChordNode {  
-    protected NodeID nodeID;
+    protected Key nodeID;
 
     public BaseNode() {
     }
 
-    public NodeID getNodeID() {
+    public Key getNodeID() {
         return nodeID;
     }
       
