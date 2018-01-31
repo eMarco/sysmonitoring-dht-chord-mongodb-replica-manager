@@ -5,6 +5,9 @@
  */
 package org.unict.ing.pds.dhtdb.replica.p2p;
 
+import java.util.List;
+import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
+
 /**
  *
  * @author Marco Grassia <marco.grassia@studium.unict.it>
@@ -14,10 +17,11 @@ public interface DHTNode {
     /**
      *
      */
-    public void put();
+    public Boolean put(Key k, GenericStat elem);
 
     /**
      *
+     * @param key
      */
-    public void get();
+    public List<GenericStat> get(Key k);
 }

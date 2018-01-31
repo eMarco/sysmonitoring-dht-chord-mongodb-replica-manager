@@ -12,18 +12,6 @@ import javax.ejb.Remote;
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 @Remote
-public abstract class BaseNode {  
-    protected Key nodeID;
-
-    public BaseNode() {
-    }
-
-    public BaseNode(Key nodeID) {
-        this.nodeID = nodeID;
-    }
-
-    public Key getNodeID() {
-        return nodeID;
-    }
-      
+public interface NodeSessionBeanRemote extends DHTNode, ChordNode {
+    public String myTest();
 }

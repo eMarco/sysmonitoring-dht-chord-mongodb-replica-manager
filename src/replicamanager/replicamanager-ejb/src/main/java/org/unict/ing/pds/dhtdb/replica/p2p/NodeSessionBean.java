@@ -5,17 +5,14 @@
  */
 package org.unict.ing.pds.dhtdb.replica.p2p;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoCredential;
-import com.mongodb.client.MongoDatabase;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.annotation.Resource;
+import com.google.gson.Gson;
+import java.util.List;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.Singleton;
+import org.unict.ing.pds.dhtdb.replica.storage.MongoDBStorage;
+import org.unict.ing.pds.dhtdb.utils.model.CPUStat;
+import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
 
 /**
  *
@@ -24,41 +21,45 @@ import javax.ejb.Singleton;
 @Singleton
 //@Remote(BaseNode.class)
 @ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
-public class NodeSessionBean extends BaseNode {
-    private FingerTable fingerTable;
-    
-    @Resource(type = Storage.class)
-    private Storage storage;
-    
-    //@Resource(name="serviceURL", lookup="url/myurl")
-    private String serviceURL;
-    
-    private NodeReference successor, predecessor;
-    private long id;
-    
+public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
+    private NodeReference thisRef;
+    private RemoteNodeProxy successor, predecessor;
+    private FingerTable   fingerTable;
+    private Storage       storage;
+        
     public NodeSessionBean() {
 
     }
-
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
-
-//    public NodeSessionBean(String hostname, short port, NodeID nodeID) {
-//        super(hostname, port, nodeID);
-//    }
-//    
-//    public NodeSessionBean(String hostname, NodeID nodeID) {
-//        super(hostname, DEFAULT_PORT, nodeID);
-//    }  
     
     private void init() {
-        try {
-            String ip = InetAddress.getLocalHost().getHostAddress();
-            System.out.println(ip);
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(NodeSessionBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        this.thisRef     = new NodeReference(new Key("asd"), "172.18.0.3");
+        this.fingerTable = new FingerTable();
+        this.successor   = this.predecessor = new RemoteNodeProxy(this.thisRef, this.thisRef.getNodeId());
+        this.fingerTable.addNode(thisRef);
+        this.storage = new MongoDBStorage();
     }
+    
+    // triggered by http://localhost:8081/replicamanager-web/webresources/generic
+    public String myTest() {
+        this.init();
+        //return this.thisRef.toString();
+        CPUStat x = new CPUStat((float)0.4, 4, "asd");
+        
+        //return new Gson().toJson(x);
+        // Using this node's id as key, just for tests
+        
+        put(thisRef.getNodeId(), x);
+        System.out.println("DB: " + new Gson().toJson(get(thisRef.getNodeId())));
+//        return new Gson().toJson(get(thisRef.getNodeId()));
+        RemoteNodeProxy thisRefRemote = new RemoteNodeProxy(thisRef, thisRef.getNodeId());
+        
+        List<GenericStat> ret = thisRefRemote.get(thisRef.getNodeId());
+        System.out.println("GOT " + ret.toString());
+        
+        return new Gson().toJson(ret);
+//        return findSuccessor(new NodeReference(thisRef.getNodeId(), "")).toString();
+    }
+
     private long successor(long k) {
         return 0;
     }
@@ -75,13 +76,28 @@ public class NodeSessionBean extends BaseNode {
     }
     
     @Override
-    public void put() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Boolean put(Key k, GenericStat elem) {
+        if (findSuccessor(new NodeReference(k, "")).equals(thisRef)) {
+            this.storage.insert(elem, k.toString());
+            return true;
+        } else {
+            // TODO Forward to the proper node
+            return false;
+        }
+        
     }
 
     @Override
-    public void get() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<GenericStat> get(Key k) {
+        if (findSuccessor(new NodeReference(k, "")).equals(thisRef)) {
+            System.out.println("SEARCHING DB FOR KEY: " + k.toString());
+            
+            System.out.println("FOUND " + this.storage.find(k.toString()).toString());
+            return this.storage.find(k.toString());
+        } else {
+            //TODO forward to another suitable node using the fingertable
+        }
+        return null;
     }
 
     @Override
@@ -96,15 +112,16 @@ public class NodeSessionBean extends BaseNode {
      */
     @Override
     public NodeReference findSuccessor(NodeReference nodeRef) {
-        // Check if this.NodeID < nodeRef.NodeID <= successor.NodeID
-        /*if ((this.nodeID.compareTo(nodeRef.getNodeID()) < 0) && (nodeRef.getNodeID().compareTo(successor.getNodeID()) <= 0))
+        // Each key, nodeRef.nodeId (TODO fix), is stored on the first node 
+        //whose identifier, nodeId, is equal to or follows nodeRef.nodeId 
+        // in the identifier space; (TODO no equal sign on second (successor) condition? Needed in only one replica scenario)
+        if ((this.thisRef.compareTo(nodeRef) <= 0) && (successor.getNodeRef().compareTo(nodeRef) >= 0))
             // return successor
-            return successor;
+            return successor.getNodeRef();
         else {
-            // get the closest preceding node and trigger the findSuccessor
+            // get the closest preceding node and trigger the findSuccessor (remote)
             return fingerTable.getClosestPrecedingNode(nodeRef).findSuccessor(nodeRef);
-        }*/
-        return null;
+        }
     }
 
 }
