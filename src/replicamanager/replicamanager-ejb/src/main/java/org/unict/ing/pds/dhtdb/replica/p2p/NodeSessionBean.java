@@ -12,7 +12,7 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import org.unict.ing.pds.dhtdb.replica.storage.MongoDBStorage;
 import org.unict.ing.pds.dhtdb.utils.model.CPUStat;
-import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
+import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**
  *
@@ -101,13 +101,13 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
     }
 
     @Override
-    public Boolean put(Key k, GenericStat elem) {
+    public Boolean put(Key k, GenericValue elem) {
         this.storage.insert(elem, k.toString());
         return true;
     }
 
     @Override
-    public List<GenericStat> get(Key k) {
+    public List<GenericValue> get(Key k) {
         System.out.println("SEARCHING DB FOR KEY: " + k.toString());
         System.out.println("FOUND " + this.storage.find(k.toString()).toString());
         // The returned list has length 0 or more
@@ -118,7 +118,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
     // Check if this.nodeRef is responsible for the given k or forward until the
     // proper node is found to return the result
     @Override
-    public List<GenericStat> lookup(Key k) {
+    public List<GenericValue> lookup(Key k) {
         System.out.println("LOOKUP!!!!");
         NodeReference theOwner = this.findSuccessor(new NodeReference(k, ""));
         if (theOwner.equals(this.nodeRef))
@@ -131,7 +131,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
     // Check if this.nodeRef is responsible for the given k or forward until the
     // proper node is found to return the result
     @Override
-    public Boolean write(Key k, GenericStat elem) {
+    public Boolean write(Key k, GenericValue elem) {
        System.out.println("Trying to write");
         NodeReference theOwner = this.findSuccessor(new NodeReference(k, ""));
         if (theOwner.equals(this.nodeRef))

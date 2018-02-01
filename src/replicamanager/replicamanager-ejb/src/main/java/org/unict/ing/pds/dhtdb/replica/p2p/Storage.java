@@ -6,16 +6,16 @@
 package org.unict.ing.pds.dhtdb.replica.p2p;
 
 import java.util.List;
-import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
+import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**
  *
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 public interface Storage {
-    public List<GenericStat> find(String primaryKey);
-    public void insert(GenericStat elem, String k);
-    public void update(GenericStat elem, String primaryKey);
+    public List<GenericValue> find(String primaryKey);
+    public void insert(GenericValue elem, String k);
+    public void update(GenericValue elem, String primaryKey);
     public void remove(String primaryKey);
     public List<String> getTopics();
 }

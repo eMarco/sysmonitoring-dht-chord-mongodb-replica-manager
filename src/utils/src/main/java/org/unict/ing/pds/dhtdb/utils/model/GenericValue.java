@@ -5,12 +5,23 @@
  */
 package org.unict.ing.pds.dhtdb.utils.model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
-public class GenericValue {
+public class GenericValue implements Serializable {
     
-    Class<?> type;
+    protected String type;
+    
+    public GenericValue() {
+        this.type = this.getClass().getSimpleName();
+        System.out.println("TYPE " + this.type);
+    }
+    
+    public String getType() {
+        return type;
+    }
     
 }

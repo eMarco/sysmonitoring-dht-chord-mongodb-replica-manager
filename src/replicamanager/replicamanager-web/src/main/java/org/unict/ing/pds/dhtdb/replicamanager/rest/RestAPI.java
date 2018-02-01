@@ -23,7 +23,6 @@ import javax.ws.rs.core.MediaType;
 import org.unict.ing.pds.dhtdb.replica.p2p.Key;
 import org.unict.ing.pds.dhtdb.replica.p2p.NodeReference;
 import org.unict.ing.pds.dhtdb.replica.p2p.NodeSessionBeanRemote;
-import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**
@@ -57,11 +56,22 @@ public class RestAPI {
     @Path(value="{key : ([A-Za-z0-9]+)}")
     @Consumes(MediaType.TEXT_PLAIN)
     public String put(@PathParam(value="key") String k, String u) {
-        GenericStat value = new Gson().fromJson(u, GenericStat.class);
-        Key key = new Key(k);
         
-        nodeSessionBean.put(key, value);
-        return key + " " + value;
+        try {
+            GenericValue genericValue = new Gson().fromJson(u, GenericValue.class);
+            
+            Class<? extends GenericValue> t = Class.forName("org.unict.ing.pds.dhtdb.utils.model." + genericValue.getType()).asSubclass(GenericValue.class);
+            GenericValue value = new Gson().fromJson(u, t);
+            
+            Key key = new Key(k);
+            
+            nodeSessionBean.put(key, value);
+            return key + " " + value;
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(RestAPI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return "ERROR";
     }
     
     /**

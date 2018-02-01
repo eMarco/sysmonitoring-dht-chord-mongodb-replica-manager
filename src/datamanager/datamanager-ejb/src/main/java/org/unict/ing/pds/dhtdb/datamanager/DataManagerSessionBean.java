@@ -23,8 +23,8 @@ public class DataManagerSessionBean implements DataManagerSessionBeanRemote {
     public void put(String scanner, String topic, String content) {
         try {
             // Convert the request in the proper model object
-            Class<? extends GenericStat> t = Class.forName("org.unict.ing.pds.dhtdb.utils.model." + topic).asSubclass(GenericStat.class);
-            GenericStat fromJson = new Gson().fromJson(content, t); // is it going to work?
+            Class<? extends GenericValue> t = Class.forName("org.unict.ing.pds.dhtdb.utils.model." + topic).asSubclass(GenericValue.class);
+            GenericValue fromJson = new Gson().fromJson(content, t); // is it going to work?
             
             // TODO create the query
             // TODO calculate the dht node to send the query

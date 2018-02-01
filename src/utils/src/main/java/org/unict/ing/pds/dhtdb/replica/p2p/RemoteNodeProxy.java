@@ -10,8 +10,11 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import java.lang.reflect.Type;
+import java.util.LinkedList;
 import java.util.List;
-import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**
  *
@@ -24,7 +27,7 @@ public class RemoteNodeProxy extends BaseNode implements DHTNode, ChordNode{
     }
 
     @Override
-    public Boolean put(Key key, GenericStat elem) {
+    public Boolean put(Key key, GenericValue elem) {
         Client client = Client.create();
         
         WebResource webResource = client.resource(nodeRef.getEndpoint() + "/replicamanager-web/webresources/replicamanager/" + key.toString());
@@ -47,7 +50,7 @@ public class RemoteNodeProxy extends BaseNode implements DHTNode, ChordNode{
     }
 
     @Override
-    public List<GenericStat> get(Key key) {
+    public List<GenericValue> get(Key key) {
         Client client = Client.create();
         
         WebResource webResourceGET = client.resource(nodeRef.getEndpoint()+ "/replicamanager-web/webresources/replicamanager/" + key.toString());
@@ -62,8 +65,21 @@ public class RemoteNodeProxy extends BaseNode implements DHTNode, ChordNode{
         
         System.out.println("TEST1" + " ADDR "+ nodeRef.toString() + "/replicamanager-web/webresources/replicamanager/" + key.toString() + " RET " + ret);
         
-        Type token = new TypeToken<List<GenericStat>>() {}.getType();
-        return new Gson().fromJson(ret, token);
+        // TODO CAST?
+        Type token = new TypeToken<List<GenericValue>>() {}.getType();
+        List<GenericValue> ret = new LinkedList<>();
+        
+        for (GenericValue genericValue : (List<GenericValue>) new Gson().fromJson(res, token)) {
+            Class<? extends GenericValue> t;
+            try {
+                t = Class.forName("org.unict.ing.pds.dhtdb.utils.model." + genericValue.getType()).asSubclass(GenericValue.class);
+                ret.add(t.cast(genericValue));
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        return ret;
     }
 
     @Override

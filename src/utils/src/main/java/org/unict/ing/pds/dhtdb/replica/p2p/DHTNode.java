@@ -6,7 +6,7 @@
 package org.unict.ing.pds.dhtdb.replica.p2p;
 
 import java.util.List;
-import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
+import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**
  *
@@ -16,12 +16,16 @@ public interface DHTNode {
 
     /**
      *
+     * @param k
+     * @param elem
+     * @return 
      */
-    public Boolean put(Key k, GenericStat elem);
+    public Boolean put(Key k, GenericValue elem);
 
     /**
      *
-     * @param key
+     * @param k
+     * @return 
      */
-    public List<GenericStat> get(Key k);
+    public List<GenericValue> get(Key k);
 }

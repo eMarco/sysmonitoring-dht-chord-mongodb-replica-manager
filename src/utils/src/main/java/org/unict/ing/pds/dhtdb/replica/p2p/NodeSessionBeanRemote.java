@@ -7,7 +7,7 @@ package org.unict.ing.pds.dhtdb.replica.p2p;
 
 import java.util.List;
 import javax.ejb.Remote;
-import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
+import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**
  *
@@ -17,7 +17,7 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
 public interface NodeSessionBeanRemote extends DHTNode, ChordNode {
     public String myTest();
 
-    public Boolean write(Key k, GenericStat elem);
+    public Boolean write(Key k, GenericValue elem);
 
-    public List<GenericStat> lookup(Key k);
+    public List<GenericValue> lookup(Key k);
 }

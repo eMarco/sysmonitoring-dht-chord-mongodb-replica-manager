@@ -22,7 +22,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import org.bson.Document;
 import org.unict.ing.pds.dhtdb.replica.p2p.Storage;
-import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
+import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**
  *
@@ -42,7 +42,7 @@ public class MongoDBStorage implements Storage {
     }
     
     @Override
-    public void insert(GenericStat elem, String k) {
+    public void insert(GenericValue elem, String k) {
         
         Document document = new Document("stat", new Gson().toJson(elem))
                 .append("topic", elem.getClass().getSimpleName())
@@ -51,7 +51,7 @@ public class MongoDBStorage implements Storage {
     }
 
     @Override
-    public void update(GenericStat elem, String primaryKey) {
+    public void update(GenericValue elem, String primaryKey) {
         collection.updateOne(Filters.eq("key", primaryKey), Updates.set("stat", elem));
     }
 
@@ -61,18 +61,18 @@ public class MongoDBStorage implements Storage {
     }
 
     @Override
-    public List<GenericStat> find(String primaryKey) {
+    public List<GenericValue> find(String primaryKey) {
             FindIterable<Document> iterDoc;
             if (primaryKey == null) {
                 iterDoc = collection.find();
             } else {
                 iterDoc = collection.find(Filters.eq("key", primaryKey));
             }
-            List<GenericStat> ret = new LinkedList();
+            List<GenericValue> ret = new LinkedList();
             
             iterDoc.forEach((Block<Document>)(Document t) -> {
                 try {
-                    Class<? extends GenericStat> topicClass = Class.forName("org.unict.ing.pds.dhtdb.utils.model." + t.get("topic", String.class)).asSubclass(GenericStat.class);
+                    Class<? extends GenericValue> topicClass = Class.forName("org.unict.ing.pds.dhtdb.utils.model." + t.get("topic", String.class)).asSubclass(GenericValue.class);
                     ret.add(new Gson().fromJson(t.get("stat", String.class), topicClass));
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(MongoDBStorage.class.getName()).log(Level.SEVERE, null, ex);
