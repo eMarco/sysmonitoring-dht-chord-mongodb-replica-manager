@@ -12,6 +12,7 @@ import java.util.List;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.Singleton;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.unict.ing.pds.dhtdb.replica.storage.MongoDBStorage;
 import org.unict.ing.pds.dhtdb.utils.model.CPUStat;
 import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
@@ -50,9 +51,9 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
         //return new Gson().toJson(x);
         // Using this node's id as key, just for tests
         
-        put(nodeRef.getNodeId(), x);
+        //put(nodeRef.getNodeId(), x);
         //System.out.println("DB: " + new Gson().toJson(get(nodeRef.getNodeId())));
-        return new Gson().toJson(get(nodeRef.getNodeId()));
+        //return new Gson().toJson(get(nodeRef.getNodeId()));
         //RemoteNodeProxy thisRefRemote = new RemoteNodeProxy(nodeRef);
         
         //List<GenericStat> ret = thisRefRemote.get(nodeRef.getNodeId());
@@ -60,6 +61,18 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
         
         //return new Gson().toJson(ret);
 //        return findSuccessor(new NodeReference(thisRef.getNodeId(), "")).toString();
+
+        int idToAdd = 1;
+        if (this.nodeRef.getHostname().equals("distsystems_replicamanager_1"))
+            idToAdd = 2;
+        
+        String node2 = "distsystems_replicamanager_" + idToAdd;
+        NodeReference theOtherNode = new NodeReference(node2);
+        this.fingerTable.addNode(theOtherNode);
+        this.successor = this.predecessor = new RemoteNodeProxy(theOtherNode);
+        Key myKey = new Key(x.toString());
+        write(myKey, x);
+        return new Gson().toJson(lookup(nodeRef.getNodeId()));
     }
 
     private NodeReference successor(Key k) {
@@ -78,8 +91,10 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
     }
     
     private boolean myKey(Key k) {
-        NodeReference keySuccessor = findSuccessor(new NodeReference(k, ""));
-        return keySuccessor.equals(nodeRef);
+        System.out.println("ASASASASASASS" + k.getId());
+        System.out.println("ASDASASASAS" + this.nodeRef.getNodeId().getId());
+        System.out.println(successor(k).getNodeId());
+        return true;
     }
     @Override
     public Boolean put(Key k, GenericStat elem) {
@@ -96,11 +111,39 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
         if (myKey(k)) {
             System.out.println("SEARCHING DB FOR KEY: " + k.toString());
             System.out.println("FOUND " + this.storage.find(k.toString()).toString());
-            
+            // The returned list has length 0 or more
             return this.storage.find(k.toString());
         }
         // The client asked the wrong node for the given key
-        return new ArrayList();
+        return null;
+    }
+    
+    // Acting as a client (TODO move to the right class)
+    // Check if this.nodeRef is responsible for the given k or forward until the
+    // proper node is found to return the result
+    @Override
+    public List<GenericStat> lookup(Key k) {
+        List<GenericStat> ret = get(k);
+        if (ret == null) {
+            RemoteNodeProxy n = new RemoteNodeProxy(successor(k));
+            while ((ret = n.get(k)) == null)
+                n = new RemoteNodeProxy(n.findSuccessor(new NodeReference(k,"")));
+        }
+        return ret;
+    }
+    
+    // Acting as a client (TODO move to the right class)
+    // Check if this.nodeRef is responsible for the given k or forward until the
+    // proper node is found to return the result
+    @Override
+    public Boolean write(Key k, GenericStat elem) {
+        if (!put(k, elem)) {
+            RemoteNodeProxy n = new RemoteNodeProxy(successor(k));
+            
+            while (!(n.getNodeReference().equals(this.nodeRef) || n.put(k, elem)))
+                n = new RemoteNodeProxy(n.findSuccessor(new NodeReference(k,"")));
+        }
+        return true;
     }
 
     @Override
@@ -123,8 +166,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
             return successor.getNodeReference();
         else {
             // get the closest preceding node and trigger the findSuccessor (remote)
-            return fingerTable.getClosestPrecedingNode(nodeRef).findSuccessor(nodeRef);
+            return new RemoteNodeProxy(fingerTable.getClosestPrecedingNode(nodeRef)).findSuccessor(nodeRef);
         }
     }
-
 }

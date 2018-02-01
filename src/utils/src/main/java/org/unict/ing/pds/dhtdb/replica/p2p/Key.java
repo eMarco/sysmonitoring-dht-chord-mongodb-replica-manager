@@ -15,11 +15,21 @@ import org.apache.commons.codec.digest.DigestUtils;
  */
 public final class Key implements Comparable<Key>, Serializable {
     private final String key;
-
+    
+    /**
+     * Overloaded constructor for Key (toHash default to True)
+     * the key will be hashed
+     * @param key 
+     */
     public Key(String key) {
         this(key, true);
     }
     
+    /**
+     * Constructor for Key
+     * @param key
+     * @param toHash if true the key argument will be passed to the hash function
+     */
     public Key(String key, Boolean toHash) {
         if (toHash)
             this.key = DigestUtils.sha512Hex(key);

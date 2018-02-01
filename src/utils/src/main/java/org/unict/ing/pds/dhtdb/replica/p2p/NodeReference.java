@@ -7,6 +7,7 @@ package org.unict.ing.pds.dhtdb.replica.p2p;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -64,6 +65,24 @@ public class NodeReference implements Comparable<NodeReference> {
 
     public NodeReference findSuccessor(NodeReference nodeRef) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final NodeReference other = (NodeReference) obj;
+        if (!Objects.equals(this.nodeId, other.nodeId)) {
+            return false;
+        }
+        return true;
     }
     
 }
