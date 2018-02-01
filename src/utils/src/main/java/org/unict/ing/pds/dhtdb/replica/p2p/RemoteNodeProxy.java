@@ -29,7 +29,7 @@ public class RemoteNodeProxy extends BaseNode implements DHTNode, ChordNode{
     public Boolean put(Key key, GenericStat elem) {
         Client client = Client.create();
         
-        WebResource webResource = client.resource(nodeRef.toString() + "replicamanager-web/webresources/replicamanager/" + key.toString());
+        WebResource webResource = client.resource(nodeRef.getEndpoint() + "/replicamanager-web/webresources/replicamanager/" + key.toString());
         
         String _elem = new Gson().toJson(elem);
         
@@ -46,13 +46,13 @@ public class RemoteNodeProxy extends BaseNode implements DHTNode, ChordNode{
     public List<GenericStat> get(Key key) {
         Client client = Client.create();
         
-        WebResource webResourceGET = client.resource(nodeRef.toString() + "replicamanager-web/webresources/replicamanager/" + key.toString());
+        WebResource webResourceGET = client.resource(nodeRef.getEndpoint()+ "/replicamanager-web/webresources/replicamanager/" + key.toString());
         
         ClientResponse clientResponseGET = webResourceGET.get(ClientResponse.class);
         
         String ret = clientResponseGET.getEntity(String.class);
         
-        System.out.println("TEST1" + " ADDR "+ nodeRef.toString() + "replicamanager-web/webresources/replicamanager/" + key.toString() + " RET " + ret);
+        System.out.println("TEST1" + " ADDR "+ nodeRef.toString() + "/replicamanager-web/webresources/replicamanager/" + key.toString() + " RET " + ret);
         
         Type token = new TypeToken<List<GenericStat>>() {}.getType();
         
@@ -69,7 +69,7 @@ public class RemoteNodeProxy extends BaseNode implements DHTNode, ChordNode{
     public NodeReference findSuccessor(NodeReference nodeRef) {
         Client client = Client.create();
         
-        WebResource webResource = client.resource(nodeRef.toString() + "/replicamanager-web/webresources/replicamanager/successor");
+        WebResource webResource = client.resource(nodeRef.getEndpoint() + "/replicamanager-web/webresources/replicamanager/successor");
         
         String _nodeRef = new Gson().toJson(nodeRef);
         
