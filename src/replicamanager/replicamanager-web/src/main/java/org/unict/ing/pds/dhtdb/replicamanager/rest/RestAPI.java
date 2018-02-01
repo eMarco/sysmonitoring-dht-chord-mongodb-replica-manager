@@ -54,7 +54,7 @@ public class RestAPI {
      * @return an instance of java.lang.String
      */
     @POST
-    @Path(value="{key : /([A-Za-z0-9]+)}")   
+    @Path(value="{key : ([A-Za-z0-9]+)}")
     @Consumes(MediaType.TEXT_PLAIN)
     public String put(@PathParam(value="key") String k, String u) {
         GenericStat value = new Gson().fromJson(u, GenericStat.class);
