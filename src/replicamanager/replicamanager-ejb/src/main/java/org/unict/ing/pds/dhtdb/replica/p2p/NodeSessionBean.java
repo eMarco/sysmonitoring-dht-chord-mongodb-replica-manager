@@ -106,34 +106,36 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    private boolean myKey(Key k) {
-        NodeReference keySuccessor = findSuccessor(new NodeReference(k, ""));
+    /*private boolean myKey(Key k) {
+        return true;
+        /*NodeReference keySuccessor = findSuccessor(new NodeReference(k, ""));
         System.out.println("SUCCESSOR: " + keySuccessor.toString());
         
         System.out.println((keySuccessor.equals(nodeRef)) ? "ME" : "NOT ME");
-        return keySuccessor.equals(nodeRef);
-    }
+        //return keySuccessor.equals(nodeRef);*/
+        
+    /*}*/
 
     @Override
     public Boolean put(Key k, GenericStat elem) {
-        if (myKey(k)) {
+        //if (myKey(k)) {
             this.storage.insert(elem, k.toString());
-            return true;
-        }
+        //    return true;
+        //}
         // The client asked the wrong node for the given key
         return false;
     }
 
     @Override
     public List<GenericStat> get(Key k) {
-        if (myKey(k)) {
+        //if (myKey(k)) {
             System.out.println("SEARCHING DB FOR KEY: " + k.toString());
             System.out.println("FOUND " + this.storage.find(k.toString()).toString());
             // The returned list has length 0 or more
             return this.storage.find(k.toString());
-        }
+        //}
         // The client asked the wrong node for the given key
-        return null;
+        //return null;
     }
     
     // Acting as a client (TODO move to the right class)
@@ -142,21 +144,11 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
     @Override
     public List<GenericStat> lookup(Key k) {
         System.out.println("LOOKUP!!!!");
-        List<GenericStat> ret = get(k);
-        if (ret == null) {
-            RemoteNodeProxy n = new RemoteNodeProxy(this.findSuccessor(new NodeReference(k, "")));
-            ret = n.get(k);
-            /*System.out.println("I'm not the owner");
-            RemoteNodeProxy n = new RemoteNodeProxy(successor(k));
-            System.out.println("Checking for " + n.getNodeReference().getNodeId());
-            while ((ret = n.get(k)) == null) {
-                System.out.println("The Get returned null, checking another node near the current one, before a candidate");
-                n = new RemoteNodeProxy(n.findSuccessor(new NodeReference(k,"")));
-            }*/
-        }
-        return ret;
-        
-        
+        NodeReference theOwner = this.findSuccessor(new NodeReference(k, ""));
+        if (theOwner.equals(this.nodeRef))
+            return get(k);
+        else
+            return new RemoteNodeProxy(theOwner).get(k);        
     }
     
     // Acting as a client (TODO move to the right class)
