@@ -10,11 +10,8 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
-import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**
  *
@@ -24,9 +21,6 @@ public class RemoteNodeProxy extends BaseNode implements DHTNode, ChordNode{
 
     public RemoteNodeProxy(NodeReference nodeRef) {
         super(nodeRef);
-        System.out.println("CREATED REMOTE PROXY");
-        System.out.println(nodeRef.getNodeId());
-        System.out.println(nodeRef.getHostname());
     }
 
     @Override

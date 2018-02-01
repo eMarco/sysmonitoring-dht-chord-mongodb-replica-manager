@@ -56,7 +56,7 @@ public class NodeReference implements Comparable<NodeReference>, Serializable {
 
     @Override
     public String toString() {
-        return "http://" + hostname + ":8080";
+        return hostname + "\t" + nodeId;
     }
     
     public String getEndpoint() {
