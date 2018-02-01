@@ -51,7 +51,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
         //return new Gson().toJson(x);
         // Using this node's id as key, just for tests
         
-        //put(nodeRef.getNodeId(), x);
+        put(nodeRef.getNodeId(), x);
         //System.out.println("DB: " + new Gson().toJson(get(nodeRef.getNodeId())));
         //return new Gson().toJson(get(nodeRef.getNodeId()));
         //RemoteNodeProxy thisRefRemote = new RemoteNodeProxy(nodeRef);
@@ -62,6 +62,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
         //return new Gson().toJson(ret);
 //        return findSuccessor(new NodeReference(thisRef.getNodeId(), "")).toString();
 
+        System.out.println("PUT DONE");
         int idToAdd = 1;
         if (this.nodeRef.getHostname().equals("distsystems_replicamanager_1"))
             idToAdd = 2;
@@ -70,6 +71,13 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
         NodeReference theOtherNode = new NodeReference(node2);
         this.fingerTable.addNode(theOtherNode);
         this.successor = this.predecessor = new RemoteNodeProxy(theOtherNode);
+        
+        System.out.println("PRINTING FINGERTABLE: ");
+        this.fingerTable.getTable().forEach((t) -> {
+            System.out.println("NODE " + t.getHostname() + " " + t.getNodeId());
+        });     
+        
+        
         Key myKey = new Key(x.toString());
         write(myKey, x);
         return new Gson().toJson(lookup(nodeRef.getNodeId()));
@@ -91,11 +99,13 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
     }
     
     private boolean myKey(Key k) {
-        System.out.println("ASASASASASASS" + k.getId());
-        System.out.println("ASDASASASAS" + this.nodeRef.getNodeId().getId());
-        System.out.println(successor(k).getNodeId());
-        return true;
+        NodeReference keySuccessor = findSuccessor(new NodeReference(k, ""));
+        System.out.println("SUCCESSOR: " + keySuccessor.toString());
+        
+        System.out.println((keySuccessor.equals(nodeRef)) ? "ME" : "NOT ME");
+        return keySuccessor.equals(nodeRef);
     }
+    
     @Override
     public Boolean put(Key k, GenericStat elem) {
         if (myKey(k)) {
