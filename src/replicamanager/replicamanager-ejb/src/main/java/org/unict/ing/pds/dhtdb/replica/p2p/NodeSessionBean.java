@@ -6,6 +6,8 @@
 package org.unict.ing.pds.dhtdb.replica.p2p;
 
 import com.google.gson.Gson;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
@@ -75,29 +77,30 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+    private boolean myKey(Key k) {
+        NodeReference keySuccessor = findSuccessor(new NodeReference(k, ""));
+        return keySuccessor.equals(nodeRef);
+    }
     @Override
     public Boolean put(Key k, GenericStat elem) {
-        if (findSuccessor(new NodeReference(k, "")).equals(nodeRef)) {
+        if (myKey(k)) {
             this.storage.insert(elem, k.toString());
             return true;
-        } else {
-            // TODO Forward to the proper node
-            return false;
         }
-        
+        // The client asked the wrong node for the given key
+        return false;
     }
 
     @Override
     public List<GenericStat> get(Key k) {
-        if (findSuccessor(new NodeReference(k, "")).equals(nodeRef)) {
+        if (myKey(k)) {
             System.out.println("SEARCHING DB FOR KEY: " + k.toString());
-            
             System.out.println("FOUND " + this.storage.find(k.toString()).toString());
+            
             return this.storage.find(k.toString());
-        } else {
-            //TODO forward to another suitable node using the fingertable
         }
-        return null;
+        // The client asked the wrong node for the given key
+        return new ArrayList();
     }
 
     @Override
