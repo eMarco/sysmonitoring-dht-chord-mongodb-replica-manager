@@ -80,7 +80,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
 
         Key myKey = new Key(x.toString());
         Key myKey2 = new Key(y.toString());
-        //write(myKey, x);
+        write(myKey, x);
         //write(myKey2, y);
         return new Gson().toJson(lookup(myKey));
     }
@@ -132,7 +132,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
     // proper node is found to return the result
     @Override
     public Boolean write(Key k, GenericValue elem) {
-       System.out.println("Trying to write");
+        System.out.println("Trying to write");
         NodeReference theOwner = this.findSuccessor(new NodeReference(k, ""));
         if (theOwner.equals(this.nodeRef))
             return put(k, elem);
