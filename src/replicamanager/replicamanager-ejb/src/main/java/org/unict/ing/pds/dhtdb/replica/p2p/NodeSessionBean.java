@@ -23,7 +23,7 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
  */
 @Singleton
 //@Remote(BaseNode.class)
-@ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
+@ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
     
     private RemoteNodeProxy successor, predecessor;
