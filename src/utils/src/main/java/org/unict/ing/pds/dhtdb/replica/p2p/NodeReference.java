@@ -17,6 +17,27 @@ public class NodeReference implements Comparable<NodeReference>, Serializable {
     
     private Key nodeId;
     private String hostname;
+    
+    @SuppressWarnings("empty-statement")
+    public static NodeReference getLocal() {
+        NodeReference nodeRef = new NodeReference();
+        try {
+            int i = 0;
+            nodeRef.hostname   = "distsystems_replicamanager_";
+            // Docker compose workaround to use container_name (IP Address is not static, 
+            // the hash could be different than an old one for the same replica
+            while (!InetAddress.getLocalHost().getHostAddress()
+                    .equals(InetAddress.getByName(
+                            nodeRef.hostname + ++i).getHostAddress()));
+            nodeRef.hostname += i;
+            nodeRef.nodeId = new Key(nodeRef.hostname);
+            System.out.println("[INFO] My Container name is: " + nodeRef.hostname);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(NodeReference.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return nodeRef;
+    }
 
     public NodeReference(Key nodeId, String ip) {
         this.nodeId = nodeId;
@@ -28,22 +49,8 @@ public class NodeReference implements Comparable<NodeReference>, Serializable {
         this.hostname = ip;
     }
 
-    @SuppressWarnings("empty-statement")
+
     public NodeReference() {
-        try {
-            int i = 0;
-            hostname   = "distsystems_replicamanager_";
-            // Docker compose workaround to use container_name (IP Address is not static, 
-            // the hash could be different than an old one for the same replica
-            while (!InetAddress.getLocalHost().getHostAddress()
-                    .equals(InetAddress.getByName(
-                            hostname + ++i).getHostAddress()));
-            hostname += i;
-            nodeId = new Key(hostname);
-            System.out.println("[INFO] My Container name is: " + hostname);
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(NodeReference.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
     
     public Key getNodeId() {

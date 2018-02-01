@@ -34,7 +34,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
     
     @PostConstruct
     private void init() {
-        this.nodeRef     = new NodeReference();
+        this.nodeRef     = NodeReference.getLocal();
         this.fingerTable = new FingerTable();
         this.successor   = this.predecessor = new RemoteNodeProxy(this.nodeRef);
         
