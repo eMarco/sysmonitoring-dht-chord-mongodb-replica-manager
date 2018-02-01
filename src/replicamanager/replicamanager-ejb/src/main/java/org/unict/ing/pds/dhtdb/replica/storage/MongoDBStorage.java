@@ -13,6 +13,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -67,7 +68,7 @@ public class MongoDBStorage implements Storage {
             } else {
                 iterDoc = collection.find(Filters.eq("key", primaryKey));
             }
-            List<GenericStat> ret = new ArrayList();
+            List<GenericStat> ret = new LinkedList();
             
             iterDoc.forEach((Block<Document>)(Document t) -> {
                 try {
