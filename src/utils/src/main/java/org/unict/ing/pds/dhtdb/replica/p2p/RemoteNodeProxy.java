@@ -65,15 +65,24 @@ public class RemoteNodeProxy extends BaseNode implements DHTNode, ChordNode{
         
         System.out.println("TEST1" + " ADDR "+ nodeRef.toString() + "/replicamanager-web/webresources/replicamanager/" + key.toString() + " RET " + ret);
         
-        // TODO CAST?
-        Type token = new TypeToken<List<GenericValue>>() {}.getType();
+        // TODO : Improve me!
+        Type token = new TypeToken<List<String>>() {}.getType();
         List<GenericValue> ret = new LinkedList<>();
         
-        for (GenericValue genericValue : (List<GenericValue>) new Gson().fromJson(res, token)) {
-            Class<? extends GenericValue> t;
+        GenericValue genericValue;
+        Class<? extends GenericValue> t;
+        
+        // Unmarshall received JSON to List<String>
+        for (String u : (List<String>) new Gson().fromJson(res, token)) {
             try {
+                // Unmarshall JSON object to GenericValue
+                genericValue = new Gson().fromJson(u, GenericValue.class);
+                
+                // Use Reflections to obtain the correct SubClass of GenericValue
                 t = Class.forName("org.unict.ing.pds.dhtdb.utils.model." + genericValue.getType()).asSubclass(GenericValue.class);
-                ret.add(t.cast(genericValue));
+                
+                // Unmarshall JSON object to the SubClass and add it to the return list
+                ret.add(new Gson().fromJson(u, t));                
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
             }

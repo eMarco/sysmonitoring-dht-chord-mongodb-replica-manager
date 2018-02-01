@@ -6,6 +6,8 @@
 package org.unict.ing.pds.dhtdb.replicamanager.rest;
 
 import com.google.gson.Gson;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.core.Context;
@@ -83,11 +85,13 @@ public class RestAPI {
     @Consumes(MediaType.TEXT_PLAIN)
     public String get(@PathParam(value="key") String k) {
         Key key = new Key(k);
-        
-        System.out.println("RECEIVED REQUEST FOR KEY " + key.toString());
-        System.out.println(nodeSessionBean.get(key));
-        
-        return new Gson().toJson(nodeSessionBean.get(key));
+                
+        List<String> ret = new LinkedList<>();
+        for (GenericValue v : nodeSessionBean.get(key) ) {
+            ret.add(new Gson().toJson(v));
+        }
+
+        return new Gson().toJson(ret);
     }
 
     /**
