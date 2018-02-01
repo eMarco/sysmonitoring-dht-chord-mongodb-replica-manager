@@ -14,22 +14,31 @@ import java.util.logging.Logger;
 public class NodeReference implements Comparable<NodeReference> {
     
     private Key nodeId;
-    private String ip;
+    private String hostname;
 
     public NodeReference(Key nodeId, String ip) {
         this.nodeId = nodeId;
-        this.ip = ip;
+        this.hostname = ip;
     }
     
     public NodeReference(String ip) {
         this.nodeId = new Key(ip);
-        this.ip = ip;
+        this.hostname = ip;
     }
 
+    @SuppressWarnings("empty-statement")
     public NodeReference() {
         try {
-            this.ip   = InetAddress.getLocalHost().getHostAddress();
-            this.nodeId = new Key(ip);
+            int i = 0;
+            hostname   = "distsystems_replicamanager_";
+            // Docker compose workaround to use container_name (IP Address is not static, 
+            // the hash could be different than an old one for the same replica
+            while (!InetAddress.getLocalHost().getHostAddress()
+                    .equals(InetAddress.getByName(
+                            hostname + ++i).getHostAddress()));
+            hostname += i;
+            nodeId = new Key(hostname);
+            System.out.println("[INFO] My Container name is: " + hostname);
         } catch (UnknownHostException ex) {
             Logger.getLogger(NodeReference.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -39,13 +48,13 @@ public class NodeReference implements Comparable<NodeReference> {
         return nodeId;
     }
 
-    public String getIp() {
-        return ip;
+    public String getHostname() {
+        return hostname;
     }
 
     @Override
     public String toString() {
-        return "http://" + ip + ":8080/";
+        return "http://" + hostname + ":8080/";
     }
 
     @Override
