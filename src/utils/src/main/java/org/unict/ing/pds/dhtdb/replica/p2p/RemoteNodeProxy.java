@@ -10,6 +10,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -36,10 +37,10 @@ public class RemoteNodeProxy extends BaseNode implements DHTNode, ChordNode{
         
         ClientResponse clientResponse = webResource.post(ClientResponse.class, _elem);
         
-        /*if (clientResponse.getStatusInfo() != ClientResponse.Status.OK) {
-            System.out.println("[ERROR] Error in fetching PUT response");
+        if (clientResponse.getStatus() != 200) {
+            System.out.println("[ERROR] Error in fetching PUT response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
             return false;
-        }*/
+        }
         
         _elem = clientResponse.getEntity(String.class);
         
@@ -58,10 +59,13 @@ public class RemoteNodeProxy extends BaseNode implements DHTNode, ChordNode{
         ClientResponse clientResponse = webResourceGET.get(ClientResponse.class);
         String ret = clientResponse.getEntity(String.class);
         System.out.println("GET RESPONSE: " + ret);
-        /*if (clientResponse.getStatusInfo() != ClientResponse.Status.OK) {
-            System.out.println("[ERROR] Error in fetching GET response");
+        String res = clientResponse.getEntity(String.class);
+        System.out.println("GET RESPONSE: " + res);
+        
+        if (clientResponse.getStatus() != 200) {
+            System.out.println("[ERROR] Error in fetching GET response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
             return new ArrayList<>();
-        }*/
+        }
         
         System.out.println("TEST1" + " ADDR "+ nodeRef.toString() + "/replicamanager-web/webresources/replicamanager/" + key.toString() + " RET " + ret);
         
@@ -105,10 +109,11 @@ public class RemoteNodeProxy extends BaseNode implements DHTNode, ChordNode{
         
         ClientResponse clientResponse = webResource.get(ClientResponse.class);
         
-        /*if (clientResponse.getStatusInfo() != ClientResponse.Status.OK) {
-            System.out.println("[ERROR] Error in fetching findSuccessor response");
-            return nodeRef;
-        }*/
+        if (clientResponse.getStatus() != 200) {
+            System.out.println("[ERROR] Error in fetching findSuccessor response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
+            return null;
+        }
+        
         String _key = clientResponse.getEntity(String.class);
         System.out.println("REQUEST RESPONSE: " + _key);
         return new Gson().fromJson(_key, NodeReference.class);
