@@ -12,5 +12,5 @@ package org.unict.ing.pds.dhtdb.replica.p2p;
 public interface ChordNode {
     public void bootstrap(NodeReference nodeRef);
     
-    public NodeReference findSuccessor(NodeReference nodeRef);
+    public NodeReference findSuccessor(Key key);
 }

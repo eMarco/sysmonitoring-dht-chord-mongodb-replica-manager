@@ -86,7 +86,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
     }
 
     private NodeReference successor(Key k) {
-        return findSuccessor(new NodeReference(k, ""));
+        return findSuccessor(k);
     }
     private void stabilize() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -120,7 +120,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
     @Override
     public List<GenericValue> lookup(Key k) {
         System.out.println("LOOKUP!!!!");
-        NodeReference theOwner = this.findSuccessor(new NodeReference(k, ""));
+        NodeReference theOwner = this.findSuccessor(k);
         if (theOwner.equals(this.nodeRef))
             return get(k);
         else
@@ -133,7 +133,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
     @Override
     public Boolean write(Key k, GenericValue elem) {
        System.out.println("Trying to write");
-        NodeReference theOwner = this.findSuccessor(new NodeReference(k, ""));
+        NodeReference theOwner = this.findSuccessor(k);
         if (theOwner.equals(this.nodeRef))
             return put(k, elem);
         else
@@ -147,20 +147,16 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
 
     /***
      * 
-     * @param nodeRef
+     * @param key
      * @return 
      */
     @Override
-    public NodeReference findSuccessor(NodeReference nodeRef) {
+    public NodeReference findSuccessor(Key key) {
         // Each key, nodeRef.nodeId (TODO fix), is stored on the first node 
         // whose identifier, nodeId, is equal to or follows nodeRef.nodeId 
         // in the identifier space; (TODO no equal sign on second (successor) condition? Needed in only one replica scenario)
 
-        /*System.out.println("FINDSUCCESSOR: ");
-        System.out.println("ME: " + this.nodeRef.getNodeId());
-        System.out.println("OTHER: " + this.successor.getNodeReference().getNodeId());
-        System.out.println("KEY:  " + nodeRef.getNodeId());*/
-        if (fingerTable.getClosestPrecedingNode(nodeRef).equals(this.nodeRef)) {
+        if (fingerTable.getClosestPrecedingNode(key).equals(this.nodeRef)) {
             // return me
             System.out.println("I am the owner of this key's interval");
         
@@ -168,9 +164,9 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
         }
         else {
             // get the closest preceding node and trigger the findSuccessor (remote)
-            NodeReference remote = fingerTable.getClosestPrecedingNode(nodeRef);
+            NodeReference remote = fingerTable.getClosestPrecedingNode(key);
             System.out.println("Looking for a candidate remote node as successor for the given key: " + remote);
-            return new RemoteNodeProxy(remote).findSuccessor(nodeRef);
+            return new RemoteNodeProxy(remote).findSuccessor(key);
         }
     }
 }

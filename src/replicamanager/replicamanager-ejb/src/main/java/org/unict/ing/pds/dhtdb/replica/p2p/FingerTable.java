@@ -24,6 +24,15 @@ public class FingerTable {
 
     /**
      * 
+     * @param key
+     * @return 
+     */    
+    public NodeReference getClosestPrecedingNode(Key key) {
+        return getClosestPrecedingNode(new NodeReference(key, ""));
+    }
+    
+    /**
+     * 
      * @param node
      * @return 
      */    

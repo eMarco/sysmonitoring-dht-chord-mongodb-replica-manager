@@ -100,9 +100,9 @@ public class RestAPI {
     @Path("/successor")
     @Consumes(MediaType.TEXT_PLAIN)
     public String findSuccessor(String u) {
-        NodeReference nodeRef = new Gson().fromJson(u, NodeReference.class);
+        Key key = new Gson().fromJson(u, Key.class);
         
-        return new Gson().toJson(nodeSessionBean.findSuccessor(nodeRef));
+        return new Gson().toJson(nodeSessionBean.findSuccessor(key));
     }
     
     private NodeSessionBeanRemote lookupNodeSessionBeanRemote() {
