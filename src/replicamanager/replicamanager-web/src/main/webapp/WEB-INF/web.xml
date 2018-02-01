@@ -10,9 +10,4 @@
         <ejb-ref-type>Session</ejb-ref-type>
         <remote>org.unict.ing.pds.dhtdb.replica.p2p.NodeSessionBeanRemote</remote>
     </ejb-ref>
-    <ejb-local-ref>
-        <ejb-ref-name>LocalNodeSessionBean</ejb-ref-name>
-        <ejb-ref-type>Session</ejb-ref-type>
-        <local>org.unict.ing.pds.dhtdb.replica.p2p.LocalNodeSessionBeanLocal</local>
-    </ejb-local-ref>
 </web-app>
