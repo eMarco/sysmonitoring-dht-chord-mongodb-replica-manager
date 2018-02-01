@@ -5,6 +5,7 @@
  */
 package org.unict.ing.pds.dhtdb.replica.p2p;
 
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Objects;
@@ -12,7 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public class NodeReference implements Comparable<NodeReference> {
+public class NodeReference implements Comparable<NodeReference>, Serializable {
     
     private Key nodeId;
     private String hostname;
