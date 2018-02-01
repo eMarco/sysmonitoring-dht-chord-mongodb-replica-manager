@@ -13,17 +13,16 @@ import javax.ejb.Remote;
  */
 @Remote
 public abstract class BaseNode {  
-    protected Key nodeID;
-
+    protected NodeReference   nodeRef;
     public BaseNode() {
     }
 
-    public BaseNode(Key nodeID) {
-        this.nodeID = nodeID;
+    public BaseNode(NodeReference ref) {
+        this.nodeRef = ref;
     }
 
-    public Key getNodeID() {
-        return nodeID;
+    public NodeReference getNodeReference() {
+        return nodeRef;
     }
       
 }

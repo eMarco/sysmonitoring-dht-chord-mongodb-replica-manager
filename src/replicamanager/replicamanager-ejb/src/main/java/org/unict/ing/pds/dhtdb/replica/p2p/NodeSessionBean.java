@@ -22,20 +22,20 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
 //@Remote(BaseNode.class)
 @ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
 public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
-    private NodeReference thisRef;
+    
     private RemoteNodeProxy successor, predecessor;
-    private FingerTable   fingerTable;
-    private Storage       storage;
+    private FingerTable     fingerTable;
+    private Storage         storage;
         
     public NodeSessionBean() {
 
     }
     
     private void init() {
-        this.thisRef     = new NodeReference(new Key("asd"), "172.18.0.3");
+        this.nodeRef     = new NodeReference();
         this.fingerTable = new FingerTable();
-        this.successor   = this.predecessor = new RemoteNodeProxy(this.thisRef, this.thisRef.getNodeId());
-        this.fingerTable.addNode(thisRef);
+        this.successor   = this.predecessor = new RemoteNodeProxy(this.nodeRef);
+        this.fingerTable.addNode(nodeRef);
         this.storage = new MongoDBStorage();
     }
     
@@ -48,20 +48,20 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
         //return new Gson().toJson(x);
         // Using this node's id as key, just for tests
         
-        put(thisRef.getNodeId(), x);
-        System.out.println("DB: " + new Gson().toJson(get(thisRef.getNodeId())));
-//        return new Gson().toJson(get(thisRef.getNodeId()));
-        RemoteNodeProxy thisRefRemote = new RemoteNodeProxy(thisRef, thisRef.getNodeId());
+        put(nodeRef.getNodeId(), x);
+        //System.out.println("DB: " + new Gson().toJson(get(nodeRef.getNodeId())));
+        return new Gson().toJson(get(nodeRef.getNodeId()));
+        //RemoteNodeProxy thisRefRemote = new RemoteNodeProxy(nodeRef);
         
-        List<GenericStat> ret = thisRefRemote.get(thisRef.getNodeId());
-        System.out.println("GOT " + ret.toString());
+        //List<GenericStat> ret = thisRefRemote.get(nodeRef.getNodeId());
+        //System.out.println("GOT " + ret.toString());
         
-        return new Gson().toJson(ret);
+        //return new Gson().toJson(ret);
 //        return findSuccessor(new NodeReference(thisRef.getNodeId(), "")).toString();
     }
 
-    private long successor(long k) {
-        return 0;
+    private NodeReference successor(Key k) {
+        return findSuccessor(new NodeReference(k, ""));
     }
     private void stabilize() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -77,7 +77,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
     
     @Override
     public Boolean put(Key k, GenericStat elem) {
-        if (findSuccessor(new NodeReference(k, "")).equals(thisRef)) {
+        if (findSuccessor(new NodeReference(k, "")).equals(nodeRef)) {
             this.storage.insert(elem, k.toString());
             return true;
         } else {
@@ -89,7 +89,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
 
     @Override
     public List<GenericStat> get(Key k) {
-        if (findSuccessor(new NodeReference(k, "")).equals(thisRef)) {
+        if (findSuccessor(new NodeReference(k, "")).equals(nodeRef)) {
             System.out.println("SEARCHING DB FOR KEY: " + k.toString());
             
             System.out.println("FOUND " + this.storage.find(k.toString()).toString());
@@ -113,11 +113,11 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
     @Override
     public NodeReference findSuccessor(NodeReference nodeRef) {
         // Each key, nodeRef.nodeId (TODO fix), is stored on the first node 
-        //whose identifier, nodeId, is equal to or follows nodeRef.nodeId 
+        // whose identifier, nodeId, is equal to or follows nodeRef.nodeId 
         // in the identifier space; (TODO no equal sign on second (successor) condition? Needed in only one replica scenario)
-        if ((this.thisRef.compareTo(nodeRef) <= 0) && (successor.getNodeRef().compareTo(nodeRef) >= 0))
+        if ((this.nodeRef.compareTo(nodeRef) <= 0) && (successor.getNodeReference().compareTo(nodeRef) >= 0))
             // return successor
-            return successor.getNodeRef();
+            return successor.getNodeReference();
         else {
             // get the closest preceding node and trigger the findSuccessor (remote)
             return fingerTable.getClosestPrecedingNode(nodeRef).findSuccessor(nodeRef);
