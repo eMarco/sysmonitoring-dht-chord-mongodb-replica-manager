@@ -90,19 +90,17 @@ public class RemoteNodeProxy extends BaseNode implements DHTNode, ChordNode{
     @Override
     public NodeReference findSuccessor(Key key) {
         Client client = Client.create();
-        String requestURI = this.nodeRef.getEndpoint() + "/replicamanager-web/webresources/replicamanager/successor";
+        String requestURI = this.nodeRef.getEndpoint() + "/replicamanager-web/webresources/replicamanager/successor/" + key.toString();
         System.out.println("REQUEST URI: " + requestURI);
         WebResource webResource = client.resource(requestURI);
         
-        String _key = new Gson().toJson(key);
-        System.out.println("REQUEST PAYLOAD: " + _key);
-        ClientResponse clientResponse = webResource.post(ClientResponse.class, _key);
+        ClientResponse clientResponse = webResource.get(ClientResponse.class);
         
         /*if (clientResponse.getStatusInfo() != ClientResponse.Status.OK) {
             System.out.println("[ERROR] Error in fetching findSuccessor response");
             return nodeRef;
         }*/
-        _key = clientResponse.getEntity(String.class);
+        String _key = clientResponse.getEntity(String.class);
         System.out.println("REQUEST RESPONSE: " + _key);
         return new Gson().fromJson(_key, NodeReference.class);
     }   

@@ -21,7 +21,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import org.unict.ing.pds.dhtdb.replica.p2p.Key;
-import org.unict.ing.pds.dhtdb.replica.p2p.NodeReference;
 import org.unict.ing.pds.dhtdb.replica.p2p.NodeSessionBeanRemote;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
@@ -93,14 +92,14 @@ public class RestAPI {
 
     /**
      * Retrieves representation of an instance of org.unict.ing.pds.dhtdb.replicamanager.rest.RestAPI
-     * @param u
+     * @param k
      * @return an instance of java.lang.String
      */
-    @POST
-    @Path("/successor")
+    @GET
+    @Path(value="/successor/{key : ([A-Za-z0-9]+)}")
     @Consumes(MediaType.TEXT_PLAIN)
-    public String findSuccessor(String u) {
-        Key key = new Gson().fromJson(u, Key.class);
+    public String findSuccessor(@PathParam(value="key") String k) {
+        Key key = new Key(k);
         
         return new Gson().toJson(nodeSessionBean.findSuccessor(key));
     }
