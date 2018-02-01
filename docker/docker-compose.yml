@@ -86,11 +86,12 @@ services:
                 - WILDFLY_PASSWORD=toor
                 # - USER=$USER
         restart: always
+        scale: 2
         volumes:
             - ../src/replicamanager/replicamanager-ear:/code
-        ports:
-            - 8081:8080
-            - 9991:9990
+        #ports:
+        #    - 8081:8080
+        #    - 9991:9990
         # depends_on:
         #    - datamanager
         # links:

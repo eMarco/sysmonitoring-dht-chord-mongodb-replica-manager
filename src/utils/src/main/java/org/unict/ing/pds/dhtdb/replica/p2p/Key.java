@@ -32,7 +32,7 @@ public final class Key implements Comparable<Key>, Serializable {
      */
     public Key(String key, Boolean toHash) {
         if (toHash)
-            this.key = DigestUtils.sha512Hex(key);
+            this.key = DigestUtils.shaHex(key);
         else
             this.key = key;
     }

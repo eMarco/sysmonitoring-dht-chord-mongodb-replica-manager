@@ -24,6 +24,9 @@ public class RemoteNodeProxy extends BaseNode implements DHTNode, ChordNode{
 
     public RemoteNodeProxy(NodeReference nodeRef) {
         super(nodeRef);
+        System.out.println("CREATED REMOTE PROXY");
+        System.out.println(nodeRef.getNodeId());
+        System.out.println(nodeRef.getHostname());
     }
 
     @Override
@@ -36,10 +39,10 @@ public class RemoteNodeProxy extends BaseNode implements DHTNode, ChordNode{
         
         ClientResponse clientResponse = webResource.post(ClientResponse.class, _elem);
         
-        if (clientResponse.getStatusInfo() != ClientResponse.Status.OK) {
+        /*if (clientResponse.getStatusInfo() != ClientResponse.Status.OK) {
             System.out.println("[ERROR] Error in fetching PUT response");
             return false;
-        }
+        }*/
         
         _elem = clientResponse.getEntity(String.class);
         
@@ -57,11 +60,11 @@ public class RemoteNodeProxy extends BaseNode implements DHTNode, ChordNode{
         
         ClientResponse clientResponse = webResourceGET.get(ClientResponse.class);
         String ret = clientResponse.getEntity(String.class);
-        
-        if (clientResponse.getStatusInfo() != ClientResponse.Status.OK) {
+        System.out.println("GET RESPONSE: " + ret);
+        /*if (clientResponse.getStatusInfo() != ClientResponse.Status.OK) {
             System.out.println("[ERROR] Error in fetching GET response");
             return new ArrayList<>();
-        }
+        }*/
         
         System.out.println("TEST1" + " ADDR "+ nodeRef.toString() + "/replicamanager-web/webresources/replicamanager/" + key.toString() + " RET " + ret);
         
@@ -77,19 +80,20 @@ public class RemoteNodeProxy extends BaseNode implements DHTNode, ChordNode{
     @Override
     public NodeReference findSuccessor(NodeReference nodeRef) {
         Client client = Client.create();
-        
-        WebResource webResource = client.resource(nodeRef.getEndpoint() + "/replicamanager-web/webresources/replicamanager/successor");
+        String requestURI = this.nodeRef.getEndpoint() + "/replicamanager-web/webresources/replicamanager/successor";
+        System.out.println("REQUEST URI: " + requestURI);
+        WebResource webResource = client.resource(requestURI);
         
         String _nodeRef = new Gson().toJson(nodeRef);
-        
+        System.out.println("REQUEST PAYLOAD: " + _nodeRef);
         ClientResponse clientResponse = webResource.post(ClientResponse.class, _nodeRef);
         
-        if (clientResponse.getStatusInfo() != ClientResponse.Status.OK) {
+        /*if (clientResponse.getStatusInfo() != ClientResponse.Status.OK) {
             System.out.println("[ERROR] Error in fetching findSuccessor response");
             return nodeRef;
-        }
+        }*/
         _nodeRef = clientResponse.getEntity(String.class);
-
+        System.out.println("REQUEST RESPONSE: " + _nodeRef);
         return new Gson().fromJson(_nodeRef, NodeReference.class);
     }   
 }

@@ -28,7 +28,10 @@ public class FingerTable {
      * @return 
      */    
     public NodeReference getClosestPrecedingNode(NodeReference node) {
-        return table.lower(node);
+        NodeReference lower = table.lower(node);
+        if (lower == null)
+            return table.last();
+        return lower;
     }
     
     public void addNode(NodeReference node) {

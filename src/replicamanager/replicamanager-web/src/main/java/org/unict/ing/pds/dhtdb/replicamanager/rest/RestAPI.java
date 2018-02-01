@@ -53,7 +53,7 @@ public class RestAPI {
      * @param u
      * @return an instance of java.lang.String
      */
-    @PUT
+    @POST
     @Path(value="{key : /([A-Za-z0-9]+)}")   
     @Consumes(MediaType.TEXT_PLAIN)
     public String put(@PathParam(value="key") String k, String u) {
