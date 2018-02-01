@@ -10,6 +10,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
@@ -34,6 +35,12 @@ public class RemoteNodeProxy extends BaseNode implements DHTNode, ChordNode{
         String _elem = new Gson().toJson(elem);
         
         ClientResponse clientResponse = webResource.post(ClientResponse.class, _elem);
+        
+        if (clientResponse.getStatusInfo() != ClientResponse.Status.OK) {
+            System.out.println("[ERROR] Error in fetching PUT response");
+            return false;
+        }
+        
         _elem = clientResponse.getEntity(String.class);
         
         System.out.println("VALUE:" + _elem);
@@ -48,16 +55,18 @@ public class RemoteNodeProxy extends BaseNode implements DHTNode, ChordNode{
         
         WebResource webResourceGET = client.resource(nodeRef.getEndpoint()+ "/replicamanager-web/webresources/replicamanager/" + key.toString());
         
-        ClientResponse clientResponseGET = webResourceGET.get(ClientResponse.class);
+        ClientResponse clientResponse = webResourceGET.get(ClientResponse.class);
+        String ret = clientResponse.getEntity(String.class);
         
-        String ret = clientResponseGET.getEntity(String.class);
+        if (clientResponse.getStatusInfo() != ClientResponse.Status.OK) {
+            System.out.println("[ERROR] Error in fetching GET response");
+            return new ArrayList<>();
+        }
         
         System.out.println("TEST1" + " ADDR "+ nodeRef.toString() + "/replicamanager-web/webresources/replicamanager/" + key.toString() + " RET " + ret);
         
         Type token = new TypeToken<List<GenericStat>>() {}.getType();
-        
-        return new LinkedList<GenericStat>();
-//        return new Gson().fromJson(ret, token);
+        return new Gson().fromJson(ret, token);
     }
 
     @Override
@@ -74,9 +83,13 @@ public class RemoteNodeProxy extends BaseNode implements DHTNode, ChordNode{
         String _nodeRef = new Gson().toJson(nodeRef);
         
         ClientResponse clientResponse = webResource.post(ClientResponse.class, _nodeRef);
-        _nodeRef = clientResponse.getEntity(String.class);
         
-        System.out.println("NODEREF:" + _nodeRef);
+        if (clientResponse.getStatusInfo() != ClientResponse.Status.OK) {
+            System.out.println("[ERROR] Error in fetching findSuccessor response");
+            return nodeRef;
+        }
+        _nodeRef = clientResponse.getEntity(String.class);
+
         return new Gson().fromJson(_nodeRef, NodeReference.class);
     }   
 }
