@@ -64,7 +64,6 @@ public final class Key implements Comparable<Key>, Serializable {
 
     @Override
     public int compareTo(Key o) {
-        // TODO : Add modulo?
         return this.key.compareTo(o.key);
     }
 

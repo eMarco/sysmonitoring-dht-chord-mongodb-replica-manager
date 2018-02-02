@@ -65,7 +65,7 @@ public class RestAPI {
             Class<? extends GenericValue> t = Class.forName("org.unict.ing.pds.dhtdb.utils.model." + genericValue.getType()).asSubclass(GenericValue.class);
             GenericValue value = new Gson().fromJson(u, t);
 
-            Key key = new Key(k);
+            Key key = new Key(k, false);
 
             nodeSessionBean.put(key, value);
             return key + " " + value;
@@ -85,7 +85,7 @@ public class RestAPI {
     @Path(value="{key : ([A-Za-z0-9]+)}")
     @Consumes(MediaType.TEXT_PLAIN)
     public String get(@PathParam(value="key") String k) {
-        Key key = new Key(k);
+        Key key = new Key(k, false);
 
         List<String> ret = new LinkedList<>();
         for (GenericValue v : nodeSessionBean.get(key) ) {
@@ -104,7 +104,8 @@ public class RestAPI {
     @Path(value="/successor/{key : ([A-Za-z0-9]+)}")
     @Consumes(MediaType.TEXT_PLAIN)
     public String findSuccessor(@PathParam(value="key") String k) {
-        Key key = new Key(k);
+        
+        Key key = new Key(k, false);
 
         return new Gson().toJson(nodeSessionBean.findSuccessor(key));
     }

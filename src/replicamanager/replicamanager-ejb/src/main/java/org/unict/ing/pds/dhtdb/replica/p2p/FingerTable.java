@@ -40,6 +40,8 @@ public class FingerTable {
      */    
     public NodeReference getClosestPrecedingNode(NodeReference node) {
         NodeReference lower = table.lower(node);
+        System.out.println("TABLE " + this.table.toString());
+        System.out.println("LOWER: " + lower);
         if (lower == null)
             return table.last();
         return lower;

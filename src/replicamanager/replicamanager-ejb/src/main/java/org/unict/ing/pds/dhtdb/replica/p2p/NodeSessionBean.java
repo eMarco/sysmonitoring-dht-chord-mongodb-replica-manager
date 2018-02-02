@@ -91,13 +91,23 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
         Key myKey = new Key(x.toString());
         Key myKey2 = new Key(y.toString());
-        write(myKey, x);
+        //write(myKey, x);
         //write(myKey2, y);
         return new Gson().toJson(lookup(myKey));
     }
 
+    @Override
     public String myTest2() {
-        return String.valueOf(this.checkPredecessor());
+        String ret = String.valueOf(this.checkPredecessor());
+        CPUStat x = new CPUStat((float)0.5, 4, "asd");
+        CPUStat y = new CPUStat((float)0.8, 4, "asd");
+        Key myKey = new Key(x.toString());
+        Key myKey2 = new Key(y.toString());
+        //write(myKey, x);
+        //write(myKey2, y);
+        ret += new Gson().toJson(lookup(myKey));
+        
+        return ret;  
     }
     
     private NodeReference successor(Key k) {
@@ -153,8 +163,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     // proper node is found to return the result
     @Override
     public List<GenericValue> lookup(Key k) {
-        System.out.println("LOOKUP!!!!");
-
+        System.out.println("LOOKUP FOR " + k + "!!!!");
+        
         return this.getReference(this.findSuccessor(k)).get(k);
     }
 
@@ -186,7 +196,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         NodeReference nodeRef;
 
         nodeRef = fingerTable.getClosestPrecedingNode(key);
-
+        
         if (isLocal(nodeRef)) {
             // return me
 
@@ -196,7 +206,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         }
         else {
             // get the closest preceding node and trigger the findSuccessor (remote)
-            System.out.println("Looking for a candidate remote node as successor for the given key: " + nodeRef);
+            System.out.println("Looking for a candidate remote node as successor for the given key (" + key +") : " + nodeRef);
 
             return new RemoteNodeProxy(nodeRef).findSuccessor(key);
         }
