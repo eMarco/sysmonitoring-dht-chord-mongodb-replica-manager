@@ -57,8 +57,6 @@ public class RemoteNodeProxy extends BaseNode implements DHTNode, ChordNode{
         WebResource webResourceGET = client.resource(nodeRef.getEndpoint()+ "/replicamanager-web/webresources/replicamanager/" + key.toString());
         
         ClientResponse clientResponse = webResourceGET.get(ClientResponse.class);
-        String ret = clientResponse.getEntity(String.class);
-        System.out.println("GET RESPONSE: " + ret);
         String res = clientResponse.getEntity(String.class);
         System.out.println("GET RESPONSE: " + res);
         
@@ -67,7 +65,7 @@ public class RemoteNodeProxy extends BaseNode implements DHTNode, ChordNode{
             return new ArrayList<>();
         }
         
-        System.out.println("TEST1" + " ADDR "+ nodeRef.toString() + "/replicamanager-web/webresources/replicamanager/" + key.toString() + " RET " + ret);
+        System.out.println("TEST1" + " ADDR "+ nodeRef.toString() + "/replicamanager-web/webresources/replicamanager/" + key.toString() + " RET " + res);
         
         // TODO : Improve me!
         Type token = new TypeToken<List<String>>() {}.getType();
