@@ -97,8 +97,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     }
 
     public String myTest2() {
-        
-        return "";
+        return String.valueOf(this.checkPredecessor());
     }
     
     private NodeReference successor(Key k) {
@@ -233,5 +232,11 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
         System.out.println("JOIN FAILED");
         return null;
+    }
+    
+    public boolean checkPredecessor() {
+        return this.predecessor.getNodeReference()
+                .equals(new RemoteNodeProxy(this.predecessor
+                        .getNodeReference()).ping());
     }
 }

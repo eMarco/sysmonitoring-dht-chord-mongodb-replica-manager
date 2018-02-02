@@ -126,4 +126,9 @@ public class RemoteNodeProxy extends BaseNode {
 
         return client.resource(this.nodeRef.getEndpoint() + PATH + path);
     }
+    
+    public NodeReference ping() {
+        String clientResponse = getWebResource("/ping").get(String.class);
+        return new Gson().fromJson(clientResponse, NodeReference.class);
+    }
 }
