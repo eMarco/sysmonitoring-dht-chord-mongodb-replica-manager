@@ -38,10 +38,12 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     private void init() {
         this.nodeRef     = NodeReference.getLocal();
         this.fingerTable = new FingerTable();
-        this.successor  = getReference(this.nodeRef);
-
         this.fingerTable.addNode(this.nodeRef);
         this.storage = new MongoDBStorage();
+
+        // Init the ring
+        this.create();
+
         int idToAdd = 1;
         if (this.nodeRef.getHostname().equals("distsystems_replicamanager_1"))
             idToAdd = 2;
@@ -105,6 +107,14 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     private void fixFingers() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /***
+     * Create new Chord Ring
+     */
+    private void create() {
+        this.predecessor    = null;
+        this.successor      = getReference(this.nodeRef);
     }
 
     private Boolean join(NodeReference _entryPoint) {
