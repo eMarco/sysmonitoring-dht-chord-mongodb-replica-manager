@@ -27,7 +27,7 @@ public class NodeReference implements Comparable<NodeReference>, Serializable {
         try {
             int i = 0;
             nodeRef.hostname   = HOSTNAME_PREFIX;
-            // Docker compose workaround to use container_name (IP Address is not static, 
+            // Docker compose workaround to use container_name (IP Address is not static,
             // the hash could be different than an old one for the same replica
             while (!InetAddress.getLocalHost().getHostAddress()
                     .equals(InetAddress.getByName(
@@ -38,7 +38,7 @@ public class NodeReference implements Comparable<NodeReference>, Serializable {
         } catch (UnknownHostException ex) {
             Logger.getLogger(NodeReference.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return nodeRef;
     }
 
@@ -46,7 +46,7 @@ public class NodeReference implements Comparable<NodeReference>, Serializable {
         this.nodeId = nodeId;
         this.hostname = ip;
     }
-    
+
     public NodeReference(String ip) {
         this.nodeId = new Key(ip);
         this.hostname = ip;
@@ -55,7 +55,7 @@ public class NodeReference implements Comparable<NodeReference>, Serializable {
 
     public NodeReference() {
     }
-    
+
     public Key getNodeId() {
         return nodeId;
     }
@@ -68,7 +68,7 @@ public class NodeReference implements Comparable<NodeReference>, Serializable {
     public String toString() {
         return hostname + "\t" + nodeId;
     }
-    
+
     public String getEndpoint() {
         return "http://" + hostname + ":" + REMOTE_PORT + RESOURCES_PATH;
     }
@@ -76,10 +76,6 @@ public class NodeReference implements Comparable<NodeReference>, Serializable {
     @Override
     public int compareTo(NodeReference o) {
         return this.nodeId.compareTo(o.nodeId);
-    }
-
-    public NodeReference findSuccessor(NodeReference nodeRef) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -99,5 +95,5 @@ public class NodeReference implements Comparable<NodeReference>, Serializable {
         }
         return true;
     }
-    
+
 }

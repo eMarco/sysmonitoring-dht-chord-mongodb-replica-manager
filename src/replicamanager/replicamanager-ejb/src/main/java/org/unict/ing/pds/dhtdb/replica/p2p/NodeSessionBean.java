@@ -170,9 +170,9 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     }
 
     /***
-     * 
+     *
      * @param key
-     * @return 
+     * @return
      */
     @Override
     public NodeReference findSuccessor(Key key) {

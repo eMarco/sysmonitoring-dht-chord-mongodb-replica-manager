@@ -15,7 +15,6 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PUT;
 import javax.enterprise.context.RequestScoped;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -38,7 +37,7 @@ import org.unict.ing.pds.dhtdb.utils.replicamanager.RemoteNodeProxy;
 public class RestAPI {
 
     NodeSessionBeanLocal nodeSessionBean = lookupNodeSessionBeanLocal();
-    
+
 
     @Context
     private UriInfo context;
@@ -59,35 +58,35 @@ public class RestAPI {
     @Path(value="{key : ([A-Za-z0-9]+)}")
     @Consumes(MediaType.TEXT_PLAIN)
     public String put(@PathParam(value="key") String k, String u) {
-        
+
         try {
             GenericValue genericValue = new Gson().fromJson(u, GenericValue.class);
-            
+
             Class<? extends GenericValue> t = Class.forName("org.unict.ing.pds.dhtdb.utils.model." + genericValue.getType()).asSubclass(GenericValue.class);
             GenericValue value = new Gson().fromJson(u, t);
-            
+
             Key key = new Key(k);
-            
+
             nodeSessionBean.put(key, value);
             return key + " " + value;
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(RestAPI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return "ERROR";
     }
-    
+
     /**
      * Get Data
      * @param k
      * @return an instance of java.lang.String
      */
     @GET
-    @Path(value="{key : ([A-Za-z0-9]+)}")        
+    @Path(value="{key : ([A-Za-z0-9]+)}")
     @Consumes(MediaType.TEXT_PLAIN)
     public String get(@PathParam(value="key") String k) {
         Key key = new Key(k);
-                
+
         List<String> ret = new LinkedList<>();
         for (GenericValue v : nodeSessionBean.get(key) ) {
             ret.add(new Gson().toJson(v));
@@ -97,7 +96,7 @@ public class RestAPI {
     }
 
     /**
-     * Retrieves representation of an instance of org.unict.ing.pds.dhtdb.replicamanager.rest.RestAPI
+     * Retrieves successor of given Key
      * @param k
      * @return an instance of java.lang.String
      */
@@ -106,7 +105,7 @@ public class RestAPI {
     @Consumes(MediaType.TEXT_PLAIN)
     public String findSuccessor(@PathParam(value="key") String k) {
         Key key = new Key(k);
-        
+
         return new Gson().toJson(nodeSessionBean.findSuccessor(key));
     }
 
