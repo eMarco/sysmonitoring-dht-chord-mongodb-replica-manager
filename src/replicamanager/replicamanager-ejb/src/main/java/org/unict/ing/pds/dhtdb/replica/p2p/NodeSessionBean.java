@@ -38,9 +38,9 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     private void init() {
         this.nodeRef     = NodeReference.getLocal();
         this.fingerTable = new FingerTable();
-        this.successor   = this.predecessor = new RemoteNodeProxy(this.nodeRef);
+        this.successor  = getReference(this.nodeRef);
 
-        this.fingerTable.addNode(nodeRef);
+        this.fingerTable.addNode(this.nodeRef);
         this.storage = new MongoDBStorage();
         int idToAdd = 1;
         if (this.nodeRef.getHostname().equals("distsystems_replicamanager_1"))
@@ -81,6 +81,14 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
             System.out.println("NODE " + t.getHostname() + " " + t.getNodeId());
         });*/
 
+        System.out.println(this.nodeRef.getHostname() + " JOINING THE RING");
+        if (this.join(new NodeReference("distsystems_replicamanager_2"))) {
+            System.out.println("JOIN SUCCESSFUL");
+        }
+        else {
+            System.out.println("JOIN FAILED");
+        }
+
         Key myKey = new Key(x.toString());
         Key myKey2 = new Key(y.toString());
         write(myKey, x);
@@ -98,9 +106,28 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     private void fixFingers() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    private void join() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+    private Boolean join(NodeReference _entryPoint) {
+        if (isLocal(_entryPoint)) {
+            // Join requires an external node
+            System.out.println("Trying to build a ring with... myself?");
+            return false;
+        }
+
+        BaseNode entryPoint = new RemoteNodeProxy(_entryPoint);
+        this.successor = this.getReference(entryPoint.findSuccessor(this.nodeRef.getNodeId()));
+
+        System.out.println("NEW SUCCESSOR " + this.successor.getNodeReference());
+
+        NodeReference successorsPredecessor = this.successor.notify(this.nodeRef);
+        if (!successorsPredecessor.equals(this.nodeRef)) {
+            // ERROR
+            System.out.println("Error joining the ring. Successor didn't set this node as predecessor.");
+
+            return false;
+        }
+
+        return true;
     }
 
     @Override
@@ -187,5 +214,20 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         }
 
         return this.nodeRef.equals(obj);
+    }
+
+    @Override
+    public NodeReference notify(NodeReference nodeRef) {
+        System.out.println("NODE " + nodeRef + "wants to join the ring");
+        // Check if predecessor is null OR the joining node's ID: predecessor.ID < JN.ID < this.ID
+        if (this.predecessor == null ||
+                (this.predecessor.getNodeReference().compareTo(nodeRef) <= 0 || nodeRef.compareTo(this.nodeRef) <= 0)) {
+            System.out.println("JOIN SUCCESSFULL");
+            this.predecessor = getReference(nodeRef);
+            return nodeRef;
+        }
+
+        System.out.println("JOIN FAILED");
+        return null;
     }
 }

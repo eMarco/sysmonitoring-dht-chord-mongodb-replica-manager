@@ -106,6 +106,27 @@ public class RemoteNodeProxy extends BaseNode {
         return new Gson().fromJson(_key, NodeReference.class);
     }   
 
+
+    @Override
+    public NodeReference notify(NodeReference nodeRef) {
+        String _nodeRef = new Gson().toJson(nodeRef);
+
+        ClientResponse clientResponse = getWebResource("/notify").post(ClientResponse.class, _nodeRef);
+
+        if (clientResponse.getStatus() != 200) {
+            System.out.println("[ERROR] Error in fetching PUT response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
+            return null;
+        }
+
+        _nodeRef = clientResponse.getEntity(String.class);
+
+        System.out.println("VALUE:" + _nodeRef);
+        System.out.println("NODEREF:" + this.nodeRef.toString());
+
+        return new Gson().fromJson(_nodeRef, NodeReference.class);
+    }
+
+
     public WebResource getWebResource(String path) {
         Client client = Client.create();
 

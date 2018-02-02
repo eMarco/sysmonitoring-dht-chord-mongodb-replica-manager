@@ -13,4 +13,6 @@ public interface ChordNode {
     public void bootstrap(NodeReference nodeRef);
     
     public NodeReference findSuccessor(Key key);
+    
+    public NodeReference notify(NodeReference nodeRef);
 }
