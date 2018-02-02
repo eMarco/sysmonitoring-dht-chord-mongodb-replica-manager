@@ -30,14 +30,10 @@ public class RemoteNodeProxy extends BaseNode {
 
     @Override
     public Boolean put(Key key, GenericValue elem) {
-        Client client = Client.create();
-
-        WebResource webResource = client.resource(nodeRef.getEndpoint() + PATH + "/" + key.toString());
-
         String _elem = new Gson().toJson(elem);
-        
-        ClientResponse clientResponse = webResource.post(ClientResponse.class, _elem);
-        
+
+        ClientResponse clientResponse = getWebResource("/" + key.toString()).post(ClientResponse.class, _elem);
+
         if (clientResponse.getStatus() != 200) {
             System.out.println("[ERROR] Error in fetching PUT response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
             return false;
@@ -53,11 +49,8 @@ public class RemoteNodeProxy extends BaseNode {
 
     @Override
     public List<GenericValue> get(Key key) {
-        Client client = Client.create();
+        ClientResponse clientResponse = getWebResource("/" + key.toString()).get(ClientResponse.class);
 
-        WebResource webResourceGET = client.resource(nodeRef.getEndpoint() + PATH + "/" + key.toString());
-
-        ClientResponse clientResponse = webResourceGET.get(ClientResponse.class);
         String res = clientResponse.getEntity(String.class);
         System.out.println("GET RESPONSE: " + res);
 
@@ -101,13 +94,8 @@ public class RemoteNodeProxy extends BaseNode {
 
     @Override
     public NodeReference findSuccessor(Key key) {
-        Client client = Client.create();
-        String requestURI = this.nodeRef.getEndpoint() + PATH + "/successor/" + key.toString();
-        System.out.println("REQUEST URI: " + requestURI);
-        WebResource webResource = client.resource(requestURI);
-        
-        ClientResponse clientResponse = webResource.get(ClientResponse.class);
-        
+        ClientResponse clientResponse = getWebResource("/successor/" + key.toString()).get(ClientResponse.class);
+
         if (clientResponse.getStatus() != 200) {
             System.out.println("[ERROR] Error in fetching findSuccessor response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
             return null;
@@ -117,4 +105,10 @@ public class RemoteNodeProxy extends BaseNode {
         System.out.println("REQUEST RESPONSE: " + _key);
         return new Gson().fromJson(_key, NodeReference.class);
     }   
+
+    public WebResource getWebResource(String path) {
+        Client client = Client.create();
+
+        return client.resource(this.nodeRef.getEndpoint() + PATH + path);
+    }
 }
