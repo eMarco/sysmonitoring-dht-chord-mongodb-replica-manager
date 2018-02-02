@@ -5,6 +5,10 @@
  */
 package org.unict.ing.pds.dhtdb.replica.p2p;
 
+import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
+import org.unict.ing.pds.dhtdb.utils.replicamanager.NodeReference;
+import org.unict.ing.pds.dhtdb.utils.replicamanager.RemoteNodeProxy;
+import org.unict.ing.pds.dhtdb.utils.replicamanager.BaseNode;
 import com.google.gson.Gson;
 import java.util.List;
 import javax.annotation.PostConstruct;

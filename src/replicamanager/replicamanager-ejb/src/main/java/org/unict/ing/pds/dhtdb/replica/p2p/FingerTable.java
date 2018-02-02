@@ -5,6 +5,8 @@
  */
 package org.unict.ing.pds.dhtdb.replica.p2p;
 
+import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
+import org.unict.ing.pds.dhtdb.utils.replicamanager.NodeReference;
 import java.util.TreeSet;
 
 /**
