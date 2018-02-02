@@ -21,7 +21,7 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
  *
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
-public class RemoteNodeProxy extends BaseNode implements DHTNode, ChordNode{
+public class RemoteNodeProxy extends BaseNode {
 
     public RemoteNodeProxy(NodeReference nodeRef) {
         super(nodeRef);

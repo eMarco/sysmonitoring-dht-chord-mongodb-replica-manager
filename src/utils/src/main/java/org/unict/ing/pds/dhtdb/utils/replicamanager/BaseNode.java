@@ -12,7 +12,7 @@ import javax.ejb.Remote;
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 @Remote
-public abstract class BaseNode {  
+public abstract class BaseNode implements DHTNode, ChordNode {  
     protected NodeReference   nodeRef;
     public BaseNode() {
     }
