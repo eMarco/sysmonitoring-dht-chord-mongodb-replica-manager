@@ -5,6 +5,8 @@
  */
 package org.unict.ing.pds.dhtdb.replica.p2p;
 
+import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
+import org.unict.ing.pds.dhtdb.utils.replicamanager.NodeReference;
 import java.util.TreeSet;
 
 /**
@@ -22,6 +24,15 @@ public class FingerTable {
         return table;
     }
 
+    /**
+     * 
+     * @param key
+     * @return 
+     */    
+    public NodeReference getClosestPrecedingNode(Key key) {
+        return getClosestPrecedingNode(new NodeReference(key, ""));
+    }
+    
     /**
      * 
      * @param node

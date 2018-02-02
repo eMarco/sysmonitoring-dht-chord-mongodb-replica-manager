@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.unict.ing.pds.dhtdb.replica.p2p;
+package org.unict.ing.pds.dhtdb.utils.replicamanager;
 
 import java.io.Serializable;
 import java.net.InetAddress;
@@ -14,17 +14,20 @@ import java.util.logging.Logger;
 
 
 public class NodeReference implements Comparable<NodeReference>, Serializable {
-    
+    private static final String HOSTNAME_PREFIX = "distsystems_replicamanager_";
+    private static final String REMOTE_PORT = "8080";
+    private static final String RESOURCES_PATH = "/replicamanager-web/webresources";
+
     private Key nodeId;
     private String hostname;
-    
+
     @SuppressWarnings("empty-statement")
     public static NodeReference getLocal() {
         NodeReference nodeRef = new NodeReference();
         try {
             int i = 0;
-            nodeRef.hostname   = "distsystems_replicamanager_";
-            // Docker compose workaround to use container_name (IP Address is not static, 
+            nodeRef.hostname   = HOSTNAME_PREFIX;
+            // Docker compose workaround to use container_name (IP Address is not static,
             // the hash could be different than an old one for the same replica
             while (!InetAddress.getLocalHost().getHostAddress()
                     .equals(InetAddress.getByName(
@@ -35,7 +38,7 @@ public class NodeReference implements Comparable<NodeReference>, Serializable {
         } catch (UnknownHostException ex) {
             Logger.getLogger(NodeReference.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return nodeRef;
     }
 
@@ -43,7 +46,7 @@ public class NodeReference implements Comparable<NodeReference>, Serializable {
         this.nodeId = nodeId;
         this.hostname = ip;
     }
-    
+
     public NodeReference(String ip) {
         this.nodeId = new Key(ip);
         this.hostname = ip;
@@ -52,7 +55,7 @@ public class NodeReference implements Comparable<NodeReference>, Serializable {
 
     public NodeReference() {
     }
-    
+
     public Key getNodeId() {
         return nodeId;
     }
@@ -65,18 +68,14 @@ public class NodeReference implements Comparable<NodeReference>, Serializable {
     public String toString() {
         return hostname + "\t" + nodeId;
     }
-    
+
     public String getEndpoint() {
-        return "http://" + hostname + ":8080";
+        return "http://" + hostname + ":" + REMOTE_PORT + RESOURCES_PATH;
     }
 
     @Override
     public int compareTo(NodeReference o) {
         return this.nodeId.compareTo(o.nodeId);
-    }
-
-    public NodeReference findSuccessor(NodeReference nodeRef) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -96,5 +95,5 @@ public class NodeReference implements Comparable<NodeReference>, Serializable {
         }
         return true;
     }
-    
+
 }

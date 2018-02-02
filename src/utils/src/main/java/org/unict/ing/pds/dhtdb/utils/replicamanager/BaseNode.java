@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.unict.ing.pds.dhtdb.replica.p2p;
+package org.unict.ing.pds.dhtdb.utils.replicamanager;
 
 import javax.ejb.Remote;
 
@@ -12,7 +12,7 @@ import javax.ejb.Remote;
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 @Remote
-public abstract class BaseNode {  
+public abstract class BaseNode implements DHTNode, ChordNode {  
     protected NodeReference   nodeRef;
     public BaseNode() {
     }

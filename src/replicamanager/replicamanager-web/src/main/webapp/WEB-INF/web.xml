@@ -5,9 +5,9 @@
             30
         </session-timeout>
     </session-config>
-    <ejb-ref>
+    <ejb-local-ref>
         <ejb-ref-name>NodeSessionBean</ejb-ref-name>
         <ejb-ref-type>Session</ejb-ref-type>
-        <remote>org.unict.ing.pds.dhtdb.replica.p2p.NodeSessionBeanRemote</remote>
-    </ejb-ref>
+        <local>org.unict.ing.pds.dhtdb.replica.p2p.NodeSessionBeanLocal</local>
+    </ejb-local-ref>
 </web-app>
