@@ -14,16 +14,19 @@ import java.util.logging.Logger;
 
 
 public class NodeReference implements Comparable<NodeReference>, Serializable {
-    
+    private static final String HOSTNAME_PREFIX = "distsystems_replicamanager_";
+    private static final String REMOTE_PORT = "8080";
+    private static final String RESOURCES_PATH = "/replicamanager-web/webresources";
+
     private Key nodeId;
     private String hostname;
-    
+
     @SuppressWarnings("empty-statement")
     public static NodeReference getLocal() {
         NodeReference nodeRef = new NodeReference();
         try {
             int i = 0;
-            nodeRef.hostname   = "distsystems_replicamanager_";
+            nodeRef.hostname   = HOSTNAME_PREFIX;
             // Docker compose workaround to use container_name (IP Address is not static, 
             // the hash could be different than an old one for the same replica
             while (!InetAddress.getLocalHost().getHostAddress()
@@ -67,7 +70,7 @@ public class NodeReference implements Comparable<NodeReference>, Serializable {
     }
     
     public String getEndpoint() {
-        return "http://" + hostname + ":8080";
+        return "http://" + hostname + ":" + REMOTE_PORT + RESOURCES_PATH;
     }
 
     @Override

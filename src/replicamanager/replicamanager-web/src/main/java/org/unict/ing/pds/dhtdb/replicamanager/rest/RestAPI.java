@@ -25,13 +25,14 @@ import javax.ws.rs.core.MediaType;
 import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 import org.unict.ing.pds.dhtdb.replica.p2p.NodeSessionBeanLocal;
+import org.unict.ing.pds.dhtdb.utils.replicamanager.RemoteNodeProxy;
 
 /**
  * REST Web Service
  *
  * @author aleskandro
  */
-@Path("/replicamanager")
+@Path(RemoteNodeProxy.PATH)
 @RequestScoped
 public class RestAPI {
 

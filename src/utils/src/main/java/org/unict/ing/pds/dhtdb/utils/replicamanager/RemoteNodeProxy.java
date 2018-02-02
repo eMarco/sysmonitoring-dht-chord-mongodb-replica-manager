@@ -22,6 +22,7 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 public class RemoteNodeProxy extends BaseNode {
+    public static final String PATH = "/replicamanager";
 
     public RemoteNodeProxy(NodeReference nodeRef) {
         super(nodeRef);
@@ -30,9 +31,9 @@ public class RemoteNodeProxy extends BaseNode {
     @Override
     public Boolean put(Key key, GenericValue elem) {
         Client client = Client.create();
-        
-        WebResource webResource = client.resource(nodeRef.getEndpoint() + "/replicamanager-web/webresources/replicamanager/" + key.toString());
-        
+
+        WebResource webResource = client.resource(nodeRef.getEndpoint() + PATH + "/" + key.toString());
+
         String _elem = new Gson().toJson(elem);
         
         ClientResponse clientResponse = webResource.post(ClientResponse.class, _elem);
@@ -53,19 +54,19 @@ public class RemoteNodeProxy extends BaseNode {
     @Override
     public List<GenericValue> get(Key key) {
         Client client = Client.create();
-        
-        WebResource webResourceGET = client.resource(nodeRef.getEndpoint()+ "/replicamanager-web/webresources/replicamanager/" + key.toString());
-        
+
+        WebResource webResourceGET = client.resource(nodeRef.getEndpoint() + PATH + "/" + key.toString());
+
         ClientResponse clientResponse = webResourceGET.get(ClientResponse.class);
         String res = clientResponse.getEntity(String.class);
         System.out.println("GET RESPONSE: " + res);
-        
+
         if (clientResponse.getStatus() != 200) {
             System.out.println("[ERROR] Error in fetching GET response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
             return new ArrayList<>();
         }
         
-        System.out.println("TEST1" + " ADDR "+ nodeRef.toString() + "/replicamanager-web/webresources/replicamanager/" + key.toString() + " RET " + res);
+        System.out.println("TEST1" + " ADDR "+ nodeRef.toString() + "/" + key.toString() + " RET " + res);
         
         // TODO : Improve me!
         Type token = new TypeToken<List<String>>() {}.getType();
@@ -101,7 +102,7 @@ public class RemoteNodeProxy extends BaseNode {
     @Override
     public NodeReference findSuccessor(Key key) {
         Client client = Client.create();
-        String requestURI = this.nodeRef.getEndpoint() + "/replicamanager-web/webresources/replicamanager/successor/" + key.toString();
+        String requestURI = this.nodeRef.getEndpoint() + PATH + "/successor/" + key.toString();
         System.out.println("REQUEST URI: " + requestURI);
         WebResource webResource = client.resource(requestURI);
         
