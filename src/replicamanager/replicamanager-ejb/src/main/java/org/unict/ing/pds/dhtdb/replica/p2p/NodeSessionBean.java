@@ -96,6 +96,11 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         return new Gson().toJson(lookup(myKey));
     }
 
+    public String myTest2() {
+        
+        return "";
+    }
+    
     private NodeReference successor(Key k) {
         return findSuccessor(k);
     }

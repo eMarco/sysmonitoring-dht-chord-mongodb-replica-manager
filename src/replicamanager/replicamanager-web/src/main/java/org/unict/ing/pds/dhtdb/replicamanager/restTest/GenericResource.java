@@ -52,6 +52,16 @@ public class GenericResource {
         ret += nodeSessionBean.myTest();
         return ret;
     }
+    
+    @Path("/test2")
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String get2() {
+        //TODO return proper representation object
+        String ret = "Test2\n";
+        ret += nodeSessionBean.myTest2();
+        return ret;
+    }
 
     /**
      * PUT method for updating or creating an instance of GenericResource

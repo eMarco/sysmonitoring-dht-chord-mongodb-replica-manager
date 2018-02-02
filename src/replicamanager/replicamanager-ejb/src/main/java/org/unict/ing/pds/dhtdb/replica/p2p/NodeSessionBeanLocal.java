@@ -26,4 +26,6 @@ public interface NodeSessionBeanLocal extends DHTNode, ChordNode {
 
     public List<GenericValue> lookup(Key k);
     public NodeReference getNodeReference();
+
+    public String myTest2();
 }
