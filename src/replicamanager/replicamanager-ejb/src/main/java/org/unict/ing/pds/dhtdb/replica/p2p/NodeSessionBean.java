@@ -26,6 +26,8 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 @Startup
 public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
+    private static final int PERIOD = 30; //seconds
+
     private BaseNode        successor, predecessor;
     private FingerTable     fingerTable;
     private Storage         storage;
@@ -112,8 +114,30 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     private NodeReference successor(Key k) {
         return findSuccessor(k);
     }
+
+    /***
+     * Stabilize the ring.
+     * Called periodically, asks the successor about its predecessor, verifies if our immediate
+     * successor is consistent, and tells the successor about us.
+     *
+     * Schedule the function every PERIOD
+     */
+    @Schedule(second = "*/" + PERIOD, minute = "*", hour = "*")
     private void stabilize() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("STABILIZE TRIGGERED");
+        NodeReference successorsPredecessor = this.successor.getPredecessor();
+
+        if (successorsPredecessor != null && !isLocal(successorsPredecessor)) {
+            // if (successorsPredecessor ∈ (this, successor))
+            if (this.getNodeReference().compareTo(successorsPredecessor) < 0 && successorsPredecessor.compareTo(this.successor.getNodeReference()) < 0) {
+                // Set the new successor and notify it about its new predecessor
+                this.successor = getReference(successorsPredecessor);
+            }
+            this.successor.notify(this.getNodeReference());
+        }
+
+        if (this.predecessor != null) System.out.println(this.nodeRef.getHostname() + " CURRENT PREDECESSOR: " + this.predecessor.getNodeReference().getHostname());
+        if (this.successor != null) System.out.println(this.nodeRef.getHostname() + " CURRENT SUCCESSOR " + this.successor.getNodeReference().getHostname());
     }
 
     private void fixFingers() {
@@ -261,4 +285,10 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
                 .equals(new RemoteNodeProxy(this.predecessor
                         .getNodeReference()).ping());
     }
+
+    @Override
+    public NodeReference getPredecessor() {
+        return (this.predecessor != null) ? this.predecessor.getNodeReference() : null;
+    }
+
 }

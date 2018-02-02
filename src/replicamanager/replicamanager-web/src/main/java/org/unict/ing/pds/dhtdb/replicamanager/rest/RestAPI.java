@@ -124,6 +124,17 @@ public class RestAPI {
         return new Gson().toJson(nodeSessionBean.notify(nodeRef));
     }
 
+    /**
+     * Retrieves node's predecessor
+     * @return an instance of java.lang.String
+     */
+    @GET
+    @Path(value="/predecessor")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public String getPredecessor() {
+        return new Gson().toJson(nodeSessionBean.getPredecessor());
+    }
+
 
     private NodeSessionBeanLocal lookupNodeSessionBeanLocal() {
         try {

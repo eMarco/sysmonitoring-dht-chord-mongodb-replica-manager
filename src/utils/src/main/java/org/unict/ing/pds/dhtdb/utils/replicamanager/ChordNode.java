@@ -15,4 +15,6 @@ public interface ChordNode {
     public NodeReference findSuccessor(Key key);
     
     public NodeReference notify(NodeReference nodeRef);
+
+    public NodeReference getPredecessor();
 }
