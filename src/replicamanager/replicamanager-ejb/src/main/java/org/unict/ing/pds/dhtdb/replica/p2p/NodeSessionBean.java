@@ -95,6 +95,10 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         return new Gson().toJson(lookup(myKey));
     }
 
+    public String myTest2() {
+        return String.valueOf(this.checkPredecessor());
+    }
+    
     private NodeReference successor(Key k) {
         return findSuccessor(k);
     }
@@ -172,7 +176,6 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     @Override
     public Boolean write(Key k, GenericValue elem) {
         System.out.println("Trying to write");
-
         return this.getReference(this.findSuccessor(k)).put(k, elem);
     }
 
@@ -241,5 +244,11 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
         System.out.println("JOIN FAILED: " + this.predecessor.getNodeReference().compareTo(nodeRef) + " " + nodeRef.compareTo(this.nodeRef));
         return null;
+    }
+    
+    public boolean checkPredecessor() {
+        return this.predecessor.getNodeReference()
+                .equals(new RemoteNodeProxy(this.predecessor
+                        .getNodeReference()).ping());
     }
 }

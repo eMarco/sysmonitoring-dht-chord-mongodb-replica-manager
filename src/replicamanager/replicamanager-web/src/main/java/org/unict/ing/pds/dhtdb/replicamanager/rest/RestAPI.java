@@ -133,4 +133,11 @@ public class RestAPI {
             throw new RuntimeException(ne);
         }
     }
+    
+    @GET
+    @Path(value="/ping")
+    @Consumes(MediaType.TEXT_PLAIN) 
+    public String ping() {
+        return new Gson().toJson(nodeSessionBean.getNodeReference());
+    }
 }

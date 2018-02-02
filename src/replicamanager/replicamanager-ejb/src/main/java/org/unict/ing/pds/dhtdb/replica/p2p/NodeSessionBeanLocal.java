@@ -12,6 +12,8 @@ import java.util.List;
 import javax.ejb.Local;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
+import org.unict.ing.pds.dhtdb.utils.replicamanager.NodeReference;
+
 /**
  *
  * @author Marco Grassia <marco.grassia@studium.unict.it>
@@ -23,4 +25,7 @@ public interface NodeSessionBeanLocal extends DHTNode, ChordNode {
     public Boolean write(Key k, GenericValue elem);
 
     public List<GenericValue> lookup(Key k);
+    public NodeReference getNodeReference();
+
+    public String myTest2();
 }
