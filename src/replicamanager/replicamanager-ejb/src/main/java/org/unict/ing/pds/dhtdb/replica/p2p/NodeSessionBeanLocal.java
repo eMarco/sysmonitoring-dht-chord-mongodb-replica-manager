@@ -6,15 +6,15 @@
 package org.unict.ing.pds.dhtdb.replica.p2p;
 
 import java.util.List;
-import javax.ejb.Remote;
+import javax.ejb.Local;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**
  *
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
-@Remote
-public interface NodeSessionBeanRemote extends DHTNode, ChordNode {
+@Local
+public interface NodeSessionBeanLocal extends DHTNode, ChordNode {
     public String myTest();
 
     public Boolean write(Key k, GenericValue elem);

@@ -19,10 +19,8 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 @Singleton
-//@Remote(BaseNode.class)
-//@ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 @Startup
-public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
+public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     
     private RemoteNodeProxy successor, predecessor;
     private FingerTable     fingerTable;
@@ -53,6 +51,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
     }
     
     // triggered by http://localhost:8081/replicamanager-web/webresources/generic
+    @Override
     public String myTest() {
         //this.init();
         //return this.thisRef.toString();
@@ -80,7 +79,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanRemote {
 
         Key myKey = new Key(x.toString());
         Key myKey2 = new Key(y.toString());
-        //write(myKey, x);
+        write(myKey, x);
         //write(myKey2, y);
         return new Gson().toJson(lookup(myKey));
     }

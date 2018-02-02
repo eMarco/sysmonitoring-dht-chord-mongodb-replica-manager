@@ -23,8 +23,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import org.unict.ing.pds.dhtdb.replica.p2p.Key;
-import org.unict.ing.pds.dhtdb.replica.p2p.NodeSessionBeanRemote;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
+import org.unict.ing.pds.dhtdb.replica.p2p.NodeSessionBeanLocal;
 
 /**
  * REST Web Service
@@ -35,7 +35,7 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 @RequestScoped
 public class RestAPI {
 
-    NodeSessionBeanRemote nodeSessionBean = lookupNodeSessionBeanRemote();
+    NodeSessionBeanLocal nodeSessionBean = lookupNodeSessionBeanLocal();
     
 
     @Context
@@ -108,10 +108,10 @@ public class RestAPI {
         return new Gson().toJson(nodeSessionBean.findSuccessor(key));
     }
     
-    private NodeSessionBeanRemote lookupNodeSessionBeanRemote() {
+    private NodeSessionBeanLocal lookupNodeSessionBeanLocal() {
         try {
             javax.naming.Context c = new InitialContext();
-            return (NodeSessionBeanRemote) c.lookup("java:global/replicamanager-ear-1.0-SNAPSHOT/replicamanager-ejb-1.0-SNAPSHOT/NodeSessionBean!org.unict.ing.pds.dhtdb.replica.p2p.NodeSessionBeanRemote");
+            return (NodeSessionBeanLocal) c.lookup("java:global/replicamanager-ear-1.0-SNAPSHOT/replicamanager-ejb-1.0-SNAPSHOT/NodeSessionBean!org.unict.ing.pds.dhtdb.replica.p2p.NodeSessionBeanLocal");
         } catch (NamingException ne) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
             throw new RuntimeException(ne);
