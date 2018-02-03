@@ -32,7 +32,7 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
  */
 @Singleton
 @Startup
-//@ConcurrencyManagement(ConcurrencyManagementType.BEAN)
+@ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     private static final int PERIOD = 30; //seconds
