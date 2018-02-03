@@ -14,7 +14,5 @@ import javax.ejb.Local;
  */
 @Local
 public interface DBConnectionSingletonSessionBeanLocal {
-    
     public DB getDatabase();
-    
 }

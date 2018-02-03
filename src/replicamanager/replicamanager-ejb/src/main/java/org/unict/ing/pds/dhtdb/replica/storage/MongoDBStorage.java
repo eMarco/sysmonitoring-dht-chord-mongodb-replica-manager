@@ -6,10 +6,8 @@
 package org.unict.ing.pds.dhtdb.replica.storage;
 
 import com.mongodb.DB;
-import com.mongodb.client.model.Filters;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.Context;
@@ -62,23 +60,18 @@ public class MongoDBStorage implements Storage {
     private List<GenericValue> findBy(String query) {
         MongoCursor<GenericValue> iterDoc;
         List<GenericValue> ret = new LinkedList();
+	
         if (query == null) {
-            // Put HERE a default query
+            // Put HERE a default query (TODO)
             iterDoc = collection.find().as(GenericValue.class);
         } else {
             iterDoc = collection.find(query).as(GenericValue.class);
         }
 
-        iterDoc.forEach((GenericValue v) -> {            
-            //try {
-                ret.add(v);
-                //ret.add(Class.forName("org.unict.ing.pds.dhtdb.utils.model." + v.getType()).asSubclass(GenericValue.class).cast(v));
-            /*} catch (ClassNotFoundException ex) {
-                Logger.getLogger(MongoDBStorage.class.getName()).log(Level.SEVERE, null, ex);
-            }*/
-        });
+        iterDoc.forEach(v -> ret.add(v));
         return ret;
     }
+    
     @Override
     public List<GenericValue> find(String key) {
         // TODO Validation
@@ -86,14 +79,11 @@ public class MongoDBStorage implements Storage {
         return findBy(query);
     }
     
-
-    
     @Override
     public List<GenericValue> lessThanAndRemove(String primaryKey) {
         String query = "{ key: { $lte: '"+ primaryKey + "' } }";
         List<GenericValue> ret = findBy(query);
         remove(query);
-        
         return ret;
     }
 
