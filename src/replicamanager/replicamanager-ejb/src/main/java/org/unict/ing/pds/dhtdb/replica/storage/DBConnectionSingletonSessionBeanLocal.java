@@ -5,7 +5,7 @@
  */
 package org.unict.ing.pds.dhtdb.replica.storage;
 
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.DB;
 import javax.ejb.Local;
 
 /**
@@ -15,6 +15,6 @@ import javax.ejb.Local;
 @Local
 public interface DBConnectionSingletonSessionBeanLocal {
     
-    public MongoDatabase getDatabase();
+    public DB getDatabase();
     
 }

@@ -67,7 +67,7 @@ public class RestAPI {
 
             Key key = new Key(k, false);
 
-            nodeSessionBean.write(key, value);
+            nodeSessionBean.put(value);
             return key + " " + value;
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(RestAPI.class.getName()).log(Level.SEVERE, null, ex);

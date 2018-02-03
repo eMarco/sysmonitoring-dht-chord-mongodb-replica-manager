@@ -5,9 +5,9 @@
  */
 package org.unict.ing.pds.dhtdb.replica.storage;
 
+import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
-import com.mongodb.client.MongoDatabase;
 import javax.ejb.Singleton;
 
 /**
@@ -19,10 +19,10 @@ public class DBConnectionSingletonSessionBean implements DBConnectionSingletonSe
 
     private MongoClient     mongo;
     private MongoCredential credential;
-    private MongoDatabase   database;
+    private DB   database;
     
     @Override
-    public MongoDatabase getDatabase () {
+    public DB getDatabase () {
         if (database == null) {
             // Creating a Mongo client 
             mongo = new MongoClient("localhost", 27017); 
@@ -31,7 +31,7 @@ public class DBConnectionSingletonSessionBean implements DBConnectionSingletonSe
             //credential = MongoCredential.createCredential("", "", "".toCharArray()); 
             System.out.println("Connected to the database successfully");  
             // Accessing the database 
-            database = mongo.getDatabase("myDb"); 
+            database = mongo.getDB("myDb"); 
         }
         return database;
     }
