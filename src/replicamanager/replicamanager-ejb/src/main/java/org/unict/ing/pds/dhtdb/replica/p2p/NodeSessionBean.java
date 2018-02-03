@@ -186,7 +186,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         }
 
         BaseNode entryPoint = new RemoteNodeProxy(_entryPoint);
-        this.successor = this.getReference(entryPoint.findPredecessor(this.nodeRef.getNodeId()));
+        this.successor = this.getReference(entryPoint.findSuccessor(this.nodeRef.getNodeId()));
 
         System.out.println("NEW SUCCESSOR " + this.successor.getNodeReference());
 
