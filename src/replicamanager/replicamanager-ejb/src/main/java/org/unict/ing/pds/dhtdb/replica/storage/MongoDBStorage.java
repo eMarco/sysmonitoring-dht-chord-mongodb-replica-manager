@@ -69,7 +69,14 @@ public class MongoDBStorage implements Storage {
             iterDoc = collection.find(query).as(GenericValue.class);
         }
 
-        iterDoc.forEach((Consumer<GenericValue>)(GenericValue v) -> ret.add(v));
+        iterDoc.forEach((GenericValue v) -> {            
+            //try {
+                ret.add(v);
+                //ret.add(Class.forName("org.unict.ing.pds.dhtdb.utils.model." + v.getType()).asSubclass(GenericValue.class).cast(v));
+            /*} catch (ClassNotFoundException ex) {
+                Logger.getLogger(MongoDBStorage.class.getName()).log(Level.SEVERE, null, ex);
+            }*/
+        });
         return ret;
     }
     @Override
@@ -94,17 +101,6 @@ public class MongoDBStorage implements Storage {
     public void update(GenericValue elem, String query) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-/*    @Override
-    public List<GenericValue> find(String primaryKey) {
-        /*if (primaryKey == null) {
-            return find(null);
-        }*/
-        //else {
-//            return find(Filters.eq("key", primaryKey));
-        //}
-//    }
-    
 
     private DBConnectionSingletonSessionBeanLocal lookupDBConnectionSingletonSessionBeanLocal() {
         try {
@@ -115,6 +111,4 @@ public class MongoDBStorage implements Storage {
             throw new RuntimeException(ne);
         }
     }
-
-
 }

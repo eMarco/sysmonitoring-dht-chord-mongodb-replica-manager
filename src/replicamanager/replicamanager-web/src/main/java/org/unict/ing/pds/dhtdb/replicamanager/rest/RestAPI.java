@@ -5,7 +5,11 @@
  */
 package org.unict.ing.pds.dhtdb.replicamanager.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -60,7 +64,8 @@ public class RestAPI {
     public String put(@PathParam(value="key") String k, String u) {
 
         try {
-            GenericValue genericValue = new Gson().fromJson(u, GenericValue.class);
+            System.out.println(u);
+            GenericValue genericValue = new ObjectMapper().readValue(u, GenericValue.class);
 
             Class<? extends GenericValue> t = Class.forName("org.unict.ing.pds.dhtdb.utils.model." + genericValue.getType()).asSubclass(GenericValue.class);
             GenericValue value = new Gson().fromJson(u, t);
@@ -70,6 +75,8 @@ public class RestAPI {
             nodeSessionBean.put(value);
             return key + " " + value;
         } catch (ClassNotFoundException ex) {
+            Logger.getLogger(RestAPI.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
             Logger.getLogger(RestAPI.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -85,14 +92,16 @@ public class RestAPI {
     @Path(value="{key : ([A-Za-z0-9]+)}")
     @Consumes(MediaType.TEXT_PLAIN)
     public String get(@PathParam(value="key") String k) {
-        Key key = new Key(k, false);
-
-        List<String> ret = new LinkedList<>();
-        for (GenericValue v : nodeSessionBean.get(key) ) {
-            ret.add(new Gson().toJson(v));
+        try {
+            Key key = new Key(k, false);
+            List<GenericValue> list =  nodeSessionBean.get(key);
+            String jsonList = new ObjectMapper().writerFor(new TypeReference<List<GenericValue>>() {}).writeValueAsString(list);
+            System.out.println(jsonList);
+            return jsonList;
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(RestAPI.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        return new Gson().toJson(ret);
+        return null;
     }
     
     /**

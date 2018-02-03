@@ -5,6 +5,8 @@
  */
 package org.unict.ing.pds.dhtdb.utils.model;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.io.Serializable;
 import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
 
@@ -12,7 +14,8 @@ import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
  *
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
-public class GenericValue implements Serializable {
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")
+public abstract class GenericValue implements Serializable {
     
     protected String type;
     protected String key;
@@ -36,6 +39,11 @@ public class GenericValue implements Serializable {
     }
 
     public void setKey(String key) {
+        this.key = key;
+    }
+
+    public GenericValue(String key, String type) {
+        this.type = type;
         this.key = key;
     }
     

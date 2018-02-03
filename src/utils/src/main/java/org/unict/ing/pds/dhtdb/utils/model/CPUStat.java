@@ -5,14 +5,21 @@
  */
 package org.unict.ing.pds.dhtdb.utils.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
 
 
 public class CPUStat extends GenericStat {
     private final float usage;
-
-    public CPUStat(float usage, long timestamp, String scannerId, String k) {
-        super(timestamp, scannerId, k);
+    
+    @JsonCreator
+    public CPUStat(@JsonProperty("usage")float usage, 
+            @JsonProperty("timestamp")long timestamp, 
+            @JsonProperty("scannerId")String scannerId, 
+            @JsonProperty("key") String key, 
+            @JsonProperty("type") String type) {
+        super(timestamp, scannerId, key, "CPUStat");
         this.usage = usage;
     }
 
