@@ -14,6 +14,13 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
  */
 public interface DHTNode {
 
+     /**
+     *
+     * @param k
+     * @return 
+     */
+    public List<GenericValue> get(Key k);
+
     /**
      *
      * @param k
@@ -22,10 +29,5 @@ public interface DHTNode {
      */
     public Boolean put(GenericValue elem);
 
-    /**
-     *
-     * @param k
-     * @return 
-     */
-    public List<GenericValue> get(Key k);
+
 }

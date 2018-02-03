@@ -48,12 +48,6 @@ public final class Key implements Comparable<Key>, Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 3;
-        return hash;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -77,7 +71,6 @@ public final class Key implements Comparable<Key>, Serializable {
     public String toString() {
         return key;
     }
-
 
     private static final int HEX = 16;
     private static final int DEC = 10;

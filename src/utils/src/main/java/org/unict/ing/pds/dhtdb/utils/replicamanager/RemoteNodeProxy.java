@@ -15,7 +15,6 @@ import com.sun.jersey.api.client.WebResource;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,7 +35,6 @@ public class RemoteNodeProxy extends BaseNode {
     public Boolean put(GenericValue elem) {
         try {
             String _elem = new ObjectMapper().writeValueAsString(elem);
-            //String _elem = new Gson().toJson(elem);
             String k = elem.getKey().toString();
             System.out.println(k);
             ClientResponse clientResponse = getWebResource("/" + k).post(ClientResponse.class, _elem);

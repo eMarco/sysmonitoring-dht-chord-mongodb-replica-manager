@@ -21,6 +21,20 @@ public class NodeReference implements Comparable<NodeReference>, Serializable {
     private Key nodeId;
     private String hostname;
 
+    public NodeReference(Key nodeId, String ip) {
+        this.nodeId = nodeId;
+        this.hostname = ip;
+    }
+
+    public NodeReference(String ip) {
+        this.nodeId = new Key(ip, true);
+        this.hostname = ip;
+    }
+
+
+    public NodeReference() {
+    }
+    
     @SuppressWarnings("empty-statement")
     public static NodeReference getLocal() {
         NodeReference nodeRef = new NodeReference();
@@ -42,20 +56,6 @@ public class NodeReference implements Comparable<NodeReference>, Serializable {
         return nodeRef;
     }
 
-    public NodeReference(Key nodeId, String ip) {
-        this.nodeId = nodeId;
-        this.hostname = ip;
-    }
-
-    public NodeReference(String ip) {
-        this.nodeId = new Key(ip, true);
-        this.hostname = ip;
-    }
-
-
-    public NodeReference() {
-    }
-
     public Key getNodeId() {
         return nodeId;
     }
@@ -64,13 +64,13 @@ public class NodeReference implements Comparable<NodeReference>, Serializable {
         return hostname;
     }
 
+    public String getEndpoint() {
+        return "http://" + hostname + ":" + REMOTE_PORT + RESOURCES_PATH;
+    }
+
     @Override
     public String toString() {
         return hostname + "\t" + nodeId;
-    }
-
-    public String getEndpoint() {
-        return "http://" + hostname + ":" + REMOTE_PORT + RESOURCES_PATH;
     }
 
     @Override
@@ -95,5 +95,4 @@ public class NodeReference implements Comparable<NodeReference>, Serializable {
         }
         return true;
     }
-
 }

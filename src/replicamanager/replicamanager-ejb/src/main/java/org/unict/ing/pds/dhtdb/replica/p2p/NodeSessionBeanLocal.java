@@ -20,12 +20,12 @@ import org.unict.ing.pds.dhtdb.utils.replicamanager.NodeReference;
  */
 @Local
 public interface NodeSessionBeanLocal extends DHTNode, ChordNode {
-    public String myTest();
 
     public Boolean write(Key k, GenericValue elem);
-
     public List<GenericValue> lookup(Key k);
+    
     public NodeReference getNodeReference();
 
     public String myTest2();
+    public String myTest();
 }

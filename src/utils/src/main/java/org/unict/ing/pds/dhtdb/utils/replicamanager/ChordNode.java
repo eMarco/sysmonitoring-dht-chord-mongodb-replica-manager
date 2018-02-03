@@ -14,15 +14,12 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
  */
 public interface ChordNode {
     public void bootstrap(NodeReference nodeRef);
-    
-    public NodeReference findSuccessor(Key key);
-    
     public NodeReference notify(NodeReference nodeRef);
-
-    public NodeReference getPredecessor();
-
+    
     public Boolean put(List<GenericValue> elem); 
     public List<GenericValue> getLessThanAndRemove(Key key);
 
+    public NodeReference findSuccessor(Key key);
     public NodeReference findPredecessor(Key key);
+    public NodeReference getPredecessor();
 }
