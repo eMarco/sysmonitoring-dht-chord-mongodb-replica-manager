@@ -4,11 +4,15 @@
  * and open the template in the editor.
  */
 package org.unict.ing.pds.dhtdb.utils.replicamanager;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -30,20 +34,27 @@ public class RemoteNodeProxy extends BaseNode {
 
     @Override
     public Boolean put(GenericValue elem) {
-        String _elem = new Gson().toJson(elem);
-        String k = elem.getKey().toString();
-        System.out.println(k);
-        ClientResponse clientResponse = getWebResource("/" + k).post(ClientResponse.class, _elem);
-
-        if (clientResponse.getStatus() != 200) {
-            System.out.println("[ERROR] Error in fetching PUT response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
-            return false;
-        }
-
-        // TODO : return what?
+        try {
+            String _elem = new ObjectMapper().writeValueAsString(elem);
+            //String _elem = new Gson().toJson(elem);
+            String k = elem.getKey().toString();
+            System.out.println(k);
+            ClientResponse clientResponse = getWebResource("/" + k).post(ClientResponse.class, _elem);
+            
+            if (clientResponse.getStatus() != 200) {
+                System.out.println("[ERROR] Error in fetching PUT response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
+                return false;
+            }
+            
+            // TODO : return what?
 //        _elem = clientResponse.getEntity(String.class);
 
-        return true;
+            return true;
+        } catch (JsonProcessingException ex) {
+            System.out.println(ex.getOriginalMessage());
+            Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
     @Override
@@ -156,29 +167,37 @@ public class RemoteNodeProxy extends BaseNode {
     }
     
     public List<GenericValue> unmarshallList(String res) {
-                // TODO : Improve me!
-        Type token = new TypeToken<List<String>>() {}.getType();
-        List<GenericValue> ret = new LinkedList<>();
-
-        GenericValue genericValue;
-        Class<? extends GenericValue> t;
-
-        // Unmarshall received JSON to List<String>
-        for (String u : (List<String>) new Gson().fromJson(res, token)) {
+        try {
+            // TODO : Improve me!
+            Type token = new TypeToken<List<GenericValue>>() {}.getType();
+            ObjectMapper mapper = new ObjectMapper().enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+            List<GenericValue> ret = mapper.readValue(res,
+                    mapper.getTypeFactory().constructCollectionType(List.class, GenericValue.class));
+            
+            GenericValue genericValue;
+            Class<? extends GenericValue> t;
+            
+            
+            // Unmarshall received JSON to List<String>
+            /*for (String u : (List<String>) new Gson().fromJson(res, token)) {
             try {
-                // Unmarshall JSON object to GenericValue
-                genericValue = new Gson().fromJson(u, GenericValue.class);
-
-                // Use Reflections to obtain the correct SubClass of GenericValue
-                t = Class.forName("org.unict.ing.pds.dhtdb.utils.model." + genericValue.getType()).asSubclass(GenericValue.class);
-
-                // Unmarshall JSON object to the SubClass and add it to the return list
-                ret.add(new Gson().fromJson(u, t));
+            // Unmarshall JSON object to GenericValue
+            genericValue = new Gson().fromJson(u, GenericValue.class);
+            
+            // Use Reflections to obtain the correct SubClass of GenericValue
+            t = Class.forName("org.unict.ing.pds.dhtdb.utils.model." + genericValue.getType()).asSubclass(GenericValue.class);
+            
+            // Unmarshall JSON object to the SubClass and add it to the return list
+            ret.add(new Gson().fromJson(u, t));
             } catch (ClassNotFoundException ex) {
-                Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
             }
+            }*/
+            
+            return ret;
+        } catch (IOException ex) {
+            Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        return ret;
+        return null;
     }
 }

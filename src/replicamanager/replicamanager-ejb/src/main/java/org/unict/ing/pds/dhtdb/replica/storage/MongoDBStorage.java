@@ -5,23 +5,19 @@
  */
 package org.unict.ing.pds.dhtdb.replica.storage;
 
-import com.google.gson.Gson;
-import com.mongodb.Block;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.DB;
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Updates;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import org.bson.Document;
-import org.bson.conversions.Bson;
+import org.jongo.Jongo;
+import org.jongo.MongoCollection;
+import org.jongo.MongoCursor;
 import org.unict.ing.pds.dhtdb.replica.p2p.Storage;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
@@ -33,86 +29,77 @@ public class MongoDBStorage implements Storage {
 
     DBConnectionSingletonSessionBeanLocal dbSessionBean = lookupDBConnectionSingletonSessionBeanLocal();
     
-    private final MongoDatabase db;
-    private final MongoCollection<Document> collection;
+    private final DB db;
+    private final MongoCollection collection;
     
     public MongoDBStorage() {
         // Using a single connection to provide better (query-oriented) scalability
         this.db = dbSessionBean.getDatabase();
-        this.collection = db.getCollection("myMonitor");
+        Jongo jongo = new Jongo(db);
+        this.collection = jongo.getCollection("myMonitor");
     }
     
     @Override
     public void insert(GenericValue elem) {
-        
-        Document document = new Document("stat", new Gson().toJson(elem))
-                .append("topic", elem.getClass().getSimpleName())
-                .append("key", elem.getKey());
-        collection.insertOne(document);
+        collection.insert(elem);
     }
     
     @Override
     public void insertMany(List<GenericValue> elems) {
-        for (GenericValue elem : elems) {
-            Document document = new Document("stat", new Gson().toJson(elem))
-                    .append("topic", elem.getClass().getSimpleName())
-                    .append("key", elem.getKey());
-            collection.insertOne(document);
+        collection.insert(elems.toArray());
+    }
+    
+    @Override
+    public void remove(String key) {
+        String query = "{ key: '"+ key + "' } }";
+        removeBy(query);
+    }
+    
+    private void removeBy(String query) {
+        collection.remove(query);
+    }
+    
+    private List<GenericValue> findBy(String query) {
+        MongoCursor<GenericValue> iterDoc;
+        List<GenericValue> ret = new LinkedList();
+        if (query == null) {
+            // Put HERE a default query
+            iterDoc = collection.find().as(GenericValue.class);
+        } else {
+            iterDoc = collection.find(query).as(GenericValue.class);
         }
-    }
 
-    @Override
-    public void update(GenericValue elem, String primaryKey) {
-        collection.updateOne(Filters.eq("key", primaryKey), Updates.set("stat", elem));
-    }
-
-    @Override
-    public void remove(String primaryKey) {
-        remove(Filters.eq("key", primaryKey));
-    }
-    
-    private void remove(Bson filter) {
-        collection.deleteMany(filter);
-    }
-    
-    private List<GenericValue> find(Bson filter) {
-            FindIterable<Document> iterDoc;
-            if (filter == null) {
-                iterDoc = collection.find();
-            } else {
-                iterDoc = collection.find(filter);
-            }
-            List<GenericValue> ret = new LinkedList();
-            
-            
-            iterDoc.forEach((Block<Document>)(Document t) -> {
-                try {
-                    Class<? extends GenericValue> topicClass = Class.forName("org.unict.ing.pds.dhtdb.utils.model." + t.get("topic", String.class)).asSubclass(GenericValue.class);
-                    ret.add(new Gson().fromJson(t.get("stat", String.class), topicClass));
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(MongoDBStorage.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            });
-            return ret;
-    }
-    
-    @Override
-    public List<GenericValue> find(String primaryKey) {
-        /*if (primaryKey == null) {
-            return find(null);
-        }*/
-        //else {
-            return find(Filters.eq("key", primaryKey));
-        //}
-    }
-    
-    @Override
-    public List<String> getTopics() {
-        List<String> ret = new ArrayList();
-        db.listCollectionNames().forEach((Block<String>)(String t) -> {
-            ret.add(t);
+        iterDoc.forEach((GenericValue v) -> {            
+            //try {
+                ret.add(v);
+                //ret.add(Class.forName("org.unict.ing.pds.dhtdb.utils.model." + v.getType()).asSubclass(GenericValue.class).cast(v));
+            /*} catch (ClassNotFoundException ex) {
+                Logger.getLogger(MongoDBStorage.class.getName()).log(Level.SEVERE, null, ex);
+            }*/
         });
         return ret;
+    }
+    @Override
+    public List<GenericValue> find(String key) {
+        // TODO Validation
+        String query = "{ key: '"+ key + "' } }";
+        return findBy(query);
+    }
+    
+
+    
+    @Override
+    public List<GenericValue> lessThanAndRemove(String primaryKey) {
+        String query = "{ key: { $lte: '"+ primaryKey + "' } }";
+        List<GenericValue> ret = findBy(query);
+        remove(query);
+        
+        return ret;
+    }
+
+    @Override
+    public void update(GenericValue elem, String query) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private DBConnectionSingletonSessionBeanLocal lookupDBConnectionSingletonSessionBeanLocal() {
@@ -123,14 +110,5 @@ public class MongoDBStorage implements Storage {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
             throw new RuntimeException(ne);
         }
-    }
-
-    @Override
-    public List<GenericValue> lessThanAndRemove(String primaryKey) {
-        Bson filter = Filters.lte("key", primaryKey);
-        List<GenericValue> ret = find(filter);
-        remove(filter);
-        
-        return ret;
     }
 }

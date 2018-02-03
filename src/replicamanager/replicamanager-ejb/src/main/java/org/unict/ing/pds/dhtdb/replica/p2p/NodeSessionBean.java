@@ -19,6 +19,7 @@ import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
+import static javax.ejb.LockType.READ;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -32,7 +33,7 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
  */
 @Singleton
 @Startup
-//@ConcurrencyManagement(ConcurrencyManagementType.BEAN)
+@ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     private static final int PERIOD = 30; //seconds
@@ -62,7 +63,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
             idToAdd = 2;
 
         String node2 = "distsystems_replicamanager_" + idToAdd;
-
+        //this.fingerTable.addNode(new NodeReference(node2));
         System.out.println(this.nodeRef.getHostname() + " JOINING THE RING");
         if (!this.nodeRef.getHostname().equals("distsystems_replicamanager_1")) {
 
@@ -119,9 +120,9 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
             id = 2;
         Key myKey = new Key(String.valueOf(new Random().nextInt()));
         Key myKey2= new Key(String.valueOf(new Random().nextInt()));
-        CPUStat x = new CPUStat((float)0.5, 4, "asd", myKey.toString());
-        CPUStat y = new CPUStat((float)0.8, 4, "asd", myKey2.toString());
-        //write(myKey, x);
+        CPUStat x = new CPUStat((float)0.5, 4, "asd", myKey.toString(), "CPUStat");
+        CPUStat y = new CPUStat((float)0.8, 4, "asd", myKey2.toString(), "CPUStat");
+        write(myKey, x);
         //write(myKey2, y);
         ret += new Gson().toJson(lookup(myKey));
 
@@ -434,7 +435,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
         return this.predecessor.getNodeReference().equals(obj);
     }
-
+    
     @Override
     public NodeReference notify(NodeReference nodeRef) {
         System.out.println(this.nodeRef.getHostname() + " NODE " + nodeRef.getHostname() + " wants to become our predecessor");

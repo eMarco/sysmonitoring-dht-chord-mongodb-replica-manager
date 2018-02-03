@@ -1,5 +1,7 @@
 package org.unict.ing.pds.dhtdb.utils.model;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
 
 /*
@@ -12,7 +14,10 @@ import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
  * 
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
-public class GenericStat extends GenericValue {
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = CPUStat.class),
+    @JsonSubTypes.Type(value = IOStat.class)})
+public abstract class GenericStat extends GenericValue {
     private final long timestamp;
     private String scannerId;
 
@@ -23,6 +28,12 @@ public class GenericStat extends GenericValue {
 
     public GenericStat(long timestamp, String scannerId, String key) {
         super(key);
+        this.timestamp = timestamp;
+        this.scannerId = scannerId;
+    }
+    
+    public GenericStat(long timestamp, String scannerId, String key, String type) {
+        super(key, type);
         this.timestamp = timestamp;
         this.scannerId = scannerId;
     }
