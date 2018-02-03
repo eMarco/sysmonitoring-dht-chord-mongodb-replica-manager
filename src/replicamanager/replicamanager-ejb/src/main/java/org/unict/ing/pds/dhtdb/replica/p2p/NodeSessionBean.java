@@ -55,6 +55,15 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         String node2 = "distsystems_replicamanager_" + idToAdd;
         NodeReference theOtherNode = new NodeReference(node2);
         this.fingerTable.addNode(theOtherNode);
+        System.out.println(this.nodeRef.getHostname() + " JOINING THE RING");
+        if (this.nodeRef.getHostname().equals("distsystems_replicamanager_2")) {
+            if (this.join(new NodeReference("distsystems_replicamanager_1"))) {
+                System.out.println("JOIN SUCCESSFUL");
+            }
+            else {
+                System.out.println("JOIN FAILED");
+            }
+        }
         //this.predecessor = new RemoteNodeProxy(new NodeReference("distsystems_replicamanager_" + idToAdd));
     }
 
@@ -84,13 +93,6 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
             System.out.println("NODE " + t.getHostname() + " " + t.getNodeId());
         });*/
 
-        System.out.println(this.nodeRef.getHostname() + " JOINING THE RING");
-        if (this.join(new NodeReference("distsystems_replicamanager_2"))) {
-            System.out.println("JOIN SUCCESSFUL");
-        }
-        else {
-            System.out.println("JOIN FAILED");
-        }
 
         /*Key myKey = new Key(String.valueOf(new Random().nextInt()));
         Key myKey2= new Key(String.valueOf(new Random().nextInt()));
@@ -102,7 +104,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     }
 
     @Override
-    public String myTest2() {        
+    public String myTest2() {
         String ret = "";//String.valueOf(this.checkPredecessor());
         int id = 1;
         if (this.nodeRef.getHostname().contains("1"))
@@ -114,10 +116,10 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         //write(myKey, x);
         //write(myKey2, y);
         ret += new Gson().toJson(lookup(myKey));
-        
-        return ret;  
+
+        return ret;
     }
-    
+
     private NodeReference successor(Key k) {
         return findSuccessor(k);
     }
@@ -191,19 +193,19 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         List<GenericValue> myKeys = this.successor.getLessThanAndRemove(this.nodeRef.getNodeId());
         put(myKeys);
     }
-    
+
     @Override
     public Boolean put(GenericValue elem) {
         this.storage.insert(elem);
         return true;
     }
-    
+
     @Override
     public Boolean put(List<GenericValue> elem) {
         this.storage.insertMany(elem);
         return true;
     }
-    
+
     @Override
     public List<GenericValue> get(Key k) {
         System.out.println("SEARCHING DB FOR KEY: " + k.toString());
@@ -218,7 +220,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     @Override
     public List<GenericValue> lookup(Key k) {
         System.out.println("LOOKUP FOR " + k + "!!!!");
-        
+
         return this.getReference(this.findSuccessor(k)).get(k);
     }
 
@@ -263,7 +265,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
             System.out.println("The closestPrecedingNode is my predecessor; I'm the owner for the key " + key);
             return this.nodeRef;
         }
-        
+
         if (isLocal(nodeRef)) {
             // return (successor)
             System.out.println("I am the the closestPrecedingNode; My successor the owner for the key " + key);
@@ -275,7 +277,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
         return new RemoteNodeProxy(nodeRef).findSuccessor(key); // As NodeReference returned
     }
-    
+
     @Override
     public NodeReference findPredecessor(Key key) {
         // Actually for join (TODO improve)
@@ -314,7 +316,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
         return this.nodeRef.equals(obj);
     }
-    
+
     public boolean isPredecessor(NodeReference obj) {
         if (obj == null || this.predecessor == null) {
             return false;
@@ -325,7 +327,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     @Override
     public NodeReference notify(NodeReference nodeRef) {
-        System.out.println("NODE " + nodeRef + "wants to join the ring");
+        System.out.println("NODE " + nodeRef + "wants to become our predecessor");
         // Check if predecessor is null OR the joining node's ID: predecessor.ID < JN.ID < this.ID
         if (this.predecessor == null ||
                 (this.predecessor.getNodeReference().compareTo(nodeRef) < 0 && nodeRef.compareTo(this.nodeRef) < 0)) {
@@ -337,7 +339,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         System.out.println("NOTIFY FAILED: " + this.predecessor.getNodeReference().compareTo(nodeRef) + " " + nodeRef.compareTo(this.nodeRef));
         return null;
     }
-    
+
     public boolean checkPredecessor() {
         return this.predecessor.getNodeReference()
                 .equals(new RemoteNodeProxy(this.predecessor

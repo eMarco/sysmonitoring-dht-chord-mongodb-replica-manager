@@ -71,6 +71,7 @@ public class RemoteNodeProxy extends BaseNode {
 
         if (clientResponse.getStatus() != 200) {
             System.out.println("[ERROR] Error in fetching findSuccessor response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
+            // TODO : handle null value
             return null;
         }
 
