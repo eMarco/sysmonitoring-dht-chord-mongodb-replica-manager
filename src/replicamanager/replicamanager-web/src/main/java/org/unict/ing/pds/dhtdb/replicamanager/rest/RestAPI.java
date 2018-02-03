@@ -51,6 +51,27 @@ public class RestAPI {
      */
     public RestAPI() {
     }
+    
+    /**
+     * Get Data
+     * @param k
+     * @return an instance of java.lang.String
+     */
+    @GET
+    @Path(value="{key : ([A-Za-z0-9]+)}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public String get(@PathParam(value="key") String k) {
+        try {
+            Key key = new Key(k);
+            List<GenericValue> list =  nodeSessionBean.get(key);
+            String jsonList = new ObjectMapper().writerFor(new TypeReference<List<GenericValue>>() {}).writeValueAsString(list);
+            System.out.println(jsonList);
+            return jsonList;
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(RestAPI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 
     /**
      * Put data
@@ -76,26 +97,6 @@ public class RestAPI {
         return "ERROR";
     }
 
-    /**
-     * Get Data
-     * @param k
-     * @return an instance of java.lang.String
-     */
-    @GET
-    @Path(value="{key : ([A-Za-z0-9]+)}")
-    @Consumes(MediaType.TEXT_PLAIN)
-    public String get(@PathParam(value="key") String k) {
-        try {
-            Key key = new Key(k);
-            List<GenericValue> list =  nodeSessionBean.get(key);
-            String jsonList = new ObjectMapper().writerFor(new TypeReference<List<GenericValue>>() {}).writeValueAsString(list);
-            System.out.println(jsonList);
-            return jsonList;
-        } catch (JsonProcessingException ex) {
-            Logger.getLogger(RestAPI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
 
     /**
      * Get Data
@@ -144,19 +145,6 @@ public class RestAPI {
 
         return new Gson().toJson(nodeSessionBean.findPredecessor(key));
     }
-    /**
-     *
-     * @param u
-     * @return an instance of java.lang.String
-     */
-    @POST
-    @Path(value="/notify")
-    @Consumes(MediaType.TEXT_PLAIN)
-    public String notify(String u) {
-        NodeReference nodeRef = new Gson().fromJson(u, NodeReference.class);
-
-        return new Gson().toJson(nodeSessionBean.notify(nodeRef));
-    }
 
     /**
      * Retrieves node's predecessor
@@ -186,4 +174,19 @@ public class RestAPI {
     public String ping() {
         return new Gson().toJson(nodeSessionBean.getNodeReference());
     }
+
+    /**
+     *
+     * @param u
+     * @return an instance of java.lang.String
+     */
+    @POST
+    @Path(value="/notify")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public String notify(String u) {
+        NodeReference nodeRef = new Gson().fromJson(u, NodeReference.class);
+
+        return new Gson().toJson(nodeSessionBean.notify(nodeRef));
+    }
+
 }

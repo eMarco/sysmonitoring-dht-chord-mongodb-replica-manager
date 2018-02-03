@@ -34,19 +34,15 @@ public class RemoteNodeProxy extends BaseNode {
     @Override
     public Boolean put(GenericValue elem) {
         try {
-            String _elem = new ObjectMapper().writeValueAsString(elem);
+            String jsonElem = new ObjectMapper().writeValueAsString(elem);
             String k = elem.getKey().toString();
-            System.out.println(k);
-            ClientResponse clientResponse = getWebResource("/" + k).post(ClientResponse.class, _elem);
+            ClientResponse clientResponse = getWebResource("/" + k).post(ClientResponse.class, jsonElem);
             
             if (clientResponse.getStatus() != 200) {
                 System.out.println("[ERROR] Error in fetching PUT response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
                 return false;
             }
             
-            // TODO : return what?
-//        _elem = clientResponse.getEntity(String.class);
-
             return true;
         } catch (JsonProcessingException ex) {
             System.out.println(ex.getOriginalMessage());
@@ -58,7 +54,6 @@ public class RemoteNodeProxy extends BaseNode {
     @Override
     public List<GenericValue> get(Key key) {
         ClientResponse clientResponse = getWebResource("/" + key.toString()).get(ClientResponse.class);
-
         String res = clientResponse.getEntity(String.class);
 
         if (clientResponse.getStatus() != 200) {
@@ -163,32 +158,10 @@ public class RemoteNodeProxy extends BaseNode {
 
     public List<GenericValue> unmarshallList(String res) {
         try {
-            // TODO : Improve me!
             Type token = new TypeToken<List<GenericValue>>() {}.getType();
             ObjectMapper mapper = new ObjectMapper().enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
             List<GenericValue> ret = mapper.readValue(res,
                     mapper.getTypeFactory().constructCollectionType(List.class, GenericValue.class));
-            
-            GenericValue genericValue;
-            Class<? extends GenericValue> t;
-            
-            
-            // Unmarshall received JSON to List<String>
-            /*for (String u : (List<String>) new Gson().fromJson(res, token)) {
-            try {
-            // Unmarshall JSON object to GenericValue
-            genericValue = new Gson().fromJson(u, GenericValue.class);
-            
-            // Use Reflections to obtain the correct SubClass of GenericValue
-            t = Class.forName("org.unict.ing.pds.dhtdb.utils.model." + genericValue.getType()).asSubclass(GenericValue.class);
-            
-            // Unmarshall JSON object to the SubClass and add it to the return list
-            ret.add(new Gson().fromJson(u, t));
-            } catch (ClassNotFoundException ex) {
-            Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            }*/
-            
             return ret;
         } catch (IOException ex) {
             Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
