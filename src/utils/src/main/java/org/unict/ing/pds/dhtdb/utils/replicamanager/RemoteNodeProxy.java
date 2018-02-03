@@ -120,6 +120,19 @@ public class RemoteNodeProxy extends BaseNode {
         return new Gson().fromJson(_nodeRef, NodeReference.class);
     }
 
+    @Override
+    public NodeReference getPredecessor() {
+        ClientResponse clientResponse = getWebResource("/predecessor/").get(ClientResponse.class);
+
+        if (clientResponse.getStatus() != 200) {
+            System.out.println("[ERROR] Error in fetching getPredecessor response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
+            return null;
+        }
+
+        String _key = clientResponse.getEntity(String.class);
+        return new Gson().fromJson(_key, NodeReference.class);
+    }
+
 
     public WebResource getWebResource(String path) {
         Client client = Client.create();
