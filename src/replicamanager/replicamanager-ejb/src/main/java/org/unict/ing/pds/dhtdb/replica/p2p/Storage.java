@@ -7,6 +7,7 @@ package org.unict.ing.pds.dhtdb.replica.p2p;
 
 import java.util.List;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
+import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
 
 /**
  *
@@ -14,13 +15,12 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
  */
 public interface Storage {
     
-    public List<GenericValue> find(String key);
-    public void remove(String key);
-    public void update(GenericValue elem, String query);
+    public List<GenericValue> find(Key key);
+    public void remove(Key key);
+    public void update(GenericValue elem, Key key);
     
     public void insert(GenericValue elem);
     
-    
     public void insertMany(List<GenericValue> elem);
-    public List<GenericValue> lessThanAndRemove(String primaryKey);
+    public List<GenericValue> lessThanAndRemove(Key key);
 }

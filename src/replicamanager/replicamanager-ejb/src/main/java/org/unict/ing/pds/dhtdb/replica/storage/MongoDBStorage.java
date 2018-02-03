@@ -18,6 +18,7 @@ import org.jongo.MongoCollection;
 import org.jongo.MongoCursor;
 import org.unict.ing.pds.dhtdb.replica.p2p.Storage;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
+import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
 
 /**
  *
@@ -48,11 +49,31 @@ public class MongoDBStorage implements Storage {
     }
     
     @Override
-    public void remove(String key) {
+    public void remove(Key key) {
         String query = "{ key: '"+ key + "' } }";
         removeBy(query);
     }
     
+    @Override
+    public List<GenericValue> find(Key key) {
+        // TODO Validation
+        String query = "{ key: '"+ key + "' } }";
+        return findBy(query);
+    }
+    
+    @Override
+    public List<GenericValue> lessThanAndRemove(Key key) {
+        String query = "{ key: { $lte: '" + key + "' } }";
+        List<GenericValue> ret = findBy(query);
+        removeBy(query);
+        return ret;
+    }
+
+    @Override
+    public void update(GenericValue elem, Key key) {
+        throw new UnsupportedOperationException("Not supported yet."); 
+    }
+
     private void removeBy(String query) {
         collection.remove(query);
     }
@@ -70,26 +91,6 @@ public class MongoDBStorage implements Storage {
 
         iterDoc.forEach(v -> ret.add(v));
         return ret;
-    }
-    
-    @Override
-    public List<GenericValue> find(String key) {
-        // TODO Validation
-        String query = "{ key: '"+ key + "' } }";
-        return findBy(query);
-    }
-    
-    @Override
-    public List<GenericValue> lessThanAndRemove(String primaryKey) {
-        String query = "{ key: { $lte: '"+ primaryKey + "' } }";
-        List<GenericValue> ret = findBy(query);
-        remove(query);
-        return ret;
-    }
-
-    @Override
-    public void update(GenericValue elem, String query) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private DBConnectionSingletonSessionBeanLocal lookupDBConnectionSingletonSessionBeanLocal() {
