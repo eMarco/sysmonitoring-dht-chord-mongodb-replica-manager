@@ -5,7 +5,9 @@
  */
 package org.unict.ing.pds.dhtdb.utils.replicamanager;
 
+import java.util.List;
 import javax.ejb.Remote;
+import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**
  *
@@ -24,5 +26,6 @@ public abstract class BaseNode implements DHTNode, ChordNode {
     public NodeReference getNodeReference() {
         return nodeRef;
     }
-      
+    
+     
 }

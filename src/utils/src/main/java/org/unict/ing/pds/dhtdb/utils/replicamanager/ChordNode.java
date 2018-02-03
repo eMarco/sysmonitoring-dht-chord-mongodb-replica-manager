@@ -5,6 +5,9 @@
  */
 package org.unict.ing.pds.dhtdb.utils.replicamanager;
 
+import java.util.List;
+import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
+
 /**
  *
  * @author Marco Grassia <marco.grassia@studium.unict.it>
@@ -17,4 +20,9 @@ public interface ChordNode {
     public NodeReference notify(NodeReference nodeRef);
 
     public NodeReference getPredecessor();
+
+    public Boolean put(List<GenericValue> elem); 
+    public List<GenericValue> getLessThanAndRemove(Key key);
+
+    public NodeReference findPredecessor(Key key);
 }

@@ -6,6 +6,7 @@
 package org.unict.ing.pds.dhtdb.utils.model;
 
 import java.io.Serializable;
+import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
 
 /**
  *
@@ -14,14 +15,28 @@ import java.io.Serializable;
 public class GenericValue implements Serializable {
     
     protected String type;
+    protected String key;
     
     public GenericValue() {
         this.type = this.getClass().getSimpleName();
         System.out.println("TYPE " + this.type);
     }
+
+    public GenericValue(String key) {
+        this();
+        this.key = key;
+    }
     
     public String getType() {
         return type;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
     
 }

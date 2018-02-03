@@ -21,6 +21,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.unict.ing.pds.dhtdb.replica.p2p.Storage;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
@@ -42,12 +43,22 @@ public class MongoDBStorage implements Storage {
     }
     
     @Override
-    public void insert(GenericValue elem, String k) {
+    public void insert(GenericValue elem) {
         
         Document document = new Document("stat", new Gson().toJson(elem))
                 .append("topic", elem.getClass().getSimpleName())
-                .append("key", k);
+                .append("key", elem.getKey());
         collection.insertOne(document);
+    }
+    
+    @Override
+    public void insertMany(List<GenericValue> elems) {
+        for (GenericValue elem : elems) {
+            Document document = new Document("stat", new Gson().toJson(elem))
+                    .append("topic", elem.getClass().getSimpleName())
+                    .append("key", elem.getKey());
+            collection.insertOne(document);
+        }
     }
 
     @Override
@@ -57,18 +68,22 @@ public class MongoDBStorage implements Storage {
 
     @Override
     public void remove(String primaryKey) {
-        collection.deleteOne(Filters.eq("key", primaryKey));
+        remove(Filters.eq("key", primaryKey));
     }
-
-    @Override
-    public List<GenericValue> find(String primaryKey) {
+    
+    private void remove(Bson filter) {
+        collection.deleteMany(filter);
+    }
+    
+    private List<GenericValue> find(Bson filter) {
             FindIterable<Document> iterDoc;
-            if (primaryKey == null) {
+            if (filter == null) {
                 iterDoc = collection.find();
             } else {
-                iterDoc = collection.find(Filters.eq("key", primaryKey));
+                iterDoc = collection.find(filter);
             }
             List<GenericValue> ret = new LinkedList();
+            
             
             iterDoc.forEach((Block<Document>)(Document t) -> {
                 try {
@@ -80,7 +95,17 @@ public class MongoDBStorage implements Storage {
             });
             return ret;
     }
- 
+    
+    @Override
+    public List<GenericValue> find(String primaryKey) {
+        /*if (primaryKey == null) {
+            return find(null);
+        }*/
+        //else {
+            return find(Filters.eq("key", primaryKey));
+        //}
+    }
+    
     @Override
     public List<String> getTopics() {
         List<String> ret = new ArrayList();
@@ -98,5 +123,14 @@ public class MongoDBStorage implements Storage {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
             throw new RuntimeException(ne);
         }
+    }
+
+    @Override
+    public List<GenericValue> lessThanAndRemove(String primaryKey) {
+        Bson filter = Filters.lte("key", primaryKey);
+        List<GenericValue> ret = find(filter);
+        remove(filter);
+        
+        return ret;
     }
 }

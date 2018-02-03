@@ -1,5 +1,7 @@
 package org.unict.ing.pds.dhtdb.utils.model;
 
+import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -15,6 +17,12 @@ public class GenericStat extends GenericValue {
     private String scannerId;
 
     public GenericStat(long timestamp, String scannerId) {
+        this.timestamp = timestamp;
+        this.scannerId = scannerId;
+    }
+
+    public GenericStat(long timestamp, String scannerId, String key) {
+        super(key);
         this.timestamp = timestamp;
         this.scannerId = scannerId;
     }

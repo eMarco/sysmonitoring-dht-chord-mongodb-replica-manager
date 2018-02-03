@@ -67,7 +67,7 @@ public class RestAPI {
 
             Key key = new Key(k, false);
 
-            nodeSessionBean.put(key, value);
+            nodeSessionBean.write(key, value);
             return key + " " + value;
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(RestAPI.class.getName()).log(Level.SEVERE, null, ex);
@@ -94,6 +94,25 @@ public class RestAPI {
 
         return new Gson().toJson(ret);
     }
+    
+    /**
+     * Get Data
+     * @param k
+     * @return an instance of java.lang.String
+     */
+    @GET
+    @Path(value="/moving/{key : ([A-Za-z0-9]+)}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public String moving(@PathParam(value="key") String k) {
+        Key key = new Key(k, false);
+
+        List<String> ret = new LinkedList<>();
+        for (GenericValue v : nodeSessionBean.getLessThanAndRemove(key) ) {
+            ret.add(new Gson().toJson(v));
+        }
+
+        return new Gson().toJson(ret);
+    }
 
     /**
      * Retrieves successor of given Key
@@ -109,7 +128,20 @@ public class RestAPI {
 
         return new Gson().toJson(nodeSessionBean.findSuccessor(key));
     }
+    /**
+     * Retrieves successor of given Key
+     * @param k
+     * @return an instance of java.lang.String
+     */
+    @GET
+    @Path(value="/findPredecessor/{key : ([A-Za-z0-9]+)}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public String findPredecessor(@PathParam(value="key") String k) {
+        
+        Key key = new Key(k, false);
 
+        return new Gson().toJson(nodeSessionBean.findPredecessor(key));
+    }
     /**
      * 
      * @param u

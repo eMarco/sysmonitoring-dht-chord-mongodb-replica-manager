@@ -20,7 +20,7 @@ public interface DHTNode {
      * @param elem
      * @return 
      */
-    public Boolean put(Key k, GenericValue elem);
+    public Boolean put(GenericValue elem);
 
     /**
      *

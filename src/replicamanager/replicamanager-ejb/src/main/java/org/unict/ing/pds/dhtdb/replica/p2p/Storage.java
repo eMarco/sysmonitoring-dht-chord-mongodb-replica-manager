@@ -14,8 +14,12 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
  */
 public interface Storage {
     public List<GenericValue> find(String primaryKey);
-    public void insert(GenericValue elem, String k);
+    public void insert(GenericValue elem);
+
     public void update(GenericValue elem, String primaryKey);
     public void remove(String primaryKey);
     public List<String> getTopics();
+    
+    public void insertMany(List<GenericValue> elem);
+    public List<GenericValue> lessThanAndRemove(String primaryKey);
 }
