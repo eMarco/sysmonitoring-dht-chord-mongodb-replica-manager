@@ -10,6 +10,8 @@ import org.unict.ing.pds.dhtdb.utils.replicamanager.NodeReference;
 import org.unict.ing.pds.dhtdb.utils.replicamanager.RemoteNodeProxy;
 import org.unict.ing.pds.dhtdb.utils.replicamanager.BaseNode;
 import com.google.gson.Gson;
+import java.math.BigInteger;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import javax.annotation.PostConstruct;
@@ -159,9 +161,6 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         System.out.println("STABILIZE ENDED");
     }
 
-    private void fixFingers() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     /***
      * Create new Chord Ring
@@ -195,8 +194,43 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
             return false;
         }
+
+        this.fillFingertable();
+
         //this.moveKeys();
+
         return true;
+    }
+
+    /***
+     *
+     */
+    private void fillFingertable() {
+        this.fixFingers();
+    }
+
+    /***
+     * Fix fingers.
+     *
+     * Schedule this method every PERIOD
+     */
+    @Schedule(second = "*/" + 2*PERIOD, minute = "*", hour = "*")
+    private void fixFingers() {
+        List<NodeReference> tableEntries = new LinkedList<>();
+
+        // Add this node
+        tableEntries.add(this.nodeRef);
+
+        for (int i = 0; i < Key.LENGHT; i++) {
+            System.out.println("FIXING FINGER " + i);
+            tableEntries.add(
+                    this.findSuccessor(
+                            this.nodeRef.getNodeId().sumPow(i)
+                    )
+            );
+        }
+
+        this.fingerTable.replace(tableEntries);
     }
 
     public void moveKeys() {

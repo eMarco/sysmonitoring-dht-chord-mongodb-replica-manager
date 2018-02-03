@@ -6,6 +6,7 @@
 package org.unict.ing.pds.dhtdb.utils.replicamanager;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Objects;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -14,6 +15,8 @@ import org.apache.commons.codec.digest.DigestUtils;
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 public final class Key implements Comparable<Key>, Serializable {
+    public static final int LENGHT = 160;
+
     private final String key;
     
     /**
@@ -70,6 +73,35 @@ public final class Key implements Comparable<Key>, Serializable {
     @Override
     public String toString() {
         return key;
+    }
+
+
+    private static final int HEX = 16;
+    private static final int DEC = 10;
+    private static final int BIN = 2;
+
+    public Key sumPow(int pow) {
+        return this.sum(new BigInteger("2", DEC).pow(pow));
+    }
+
+    public Key sum(BigInteger integer) {
+        return sum(this, integer);
+    }
+
+    public Key sum(Key b) {
+        return sum(this, b);
+    }
+
+    public static Key sum(Key a, Key b) {
+        return Key.sum(a, new BigInteger(b.key, HEX));
+    }
+
+    public static Key sum(Key a, BigInteger integer) {
+        return new Key(
+                new BigInteger(a.key, HEX)  .add(integer)
+                                            .mod(new BigInteger("2", DEC).pow(LENGHT))
+                                            .toString(HEX)
+                , false);
     }
 
 }
