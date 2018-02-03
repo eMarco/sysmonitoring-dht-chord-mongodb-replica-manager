@@ -14,7 +14,7 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 @Remote
-public abstract class BaseNode implements DHTNode, ChordNode {  
+public abstract class BaseNode implements DHTNode, ChordNode {
     protected NodeReference   nodeRef;
     public BaseNode() {
     }
@@ -26,6 +26,6 @@ public abstract class BaseNode implements DHTNode, ChordNode {
     public NodeReference getNodeReference() {
         return nodeRef;
     }
-    
-     
+
+
 }

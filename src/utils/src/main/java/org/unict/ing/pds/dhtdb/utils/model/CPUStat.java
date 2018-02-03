@@ -11,13 +11,13 @@ import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
 
 
 public class CPUStat extends GenericStat {
-    @JsonProperty("usage")  
+    @JsonProperty("usage")
     private final float usage;
-    
+
     @JsonCreator
-    public CPUStat(@JsonProperty("usage") float usage, 
-            @JsonProperty("timestamp")    long timestamp, 
-            @JsonProperty("scannerId")    String scannerId, 
+    public CPUStat(@JsonProperty("usage") float usage,
+            @JsonProperty("timestamp")    long timestamp,
+            @JsonProperty("scannerId")    String scannerId,
             @JsonProperty("key")          Key key) {
         super(timestamp, scannerId, key);
         this.usage = usage;

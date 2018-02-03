@@ -15,10 +15,10 @@ public class IOStat extends GenericStat {
     private final float readKBps, writeKBps;
 
     @JsonCreator
-    public IOStat(@JsonProperty("disk")String disk, 
+    public IOStat(@JsonProperty("disk")String disk,
             @JsonProperty("readKBps")  float readKBps,
-            @JsonProperty("writeKBps") float writeKBps, 
-            @JsonProperty("timestamp") long timestamp, 
+            @JsonProperty("writeKBps") float writeKBps,
+            @JsonProperty("timestamp") long timestamp,
             @JsonProperty("scannerId") String scannerId,
             @JsonProperty("key")       Key key) {
         super(timestamp, scannerId, key);

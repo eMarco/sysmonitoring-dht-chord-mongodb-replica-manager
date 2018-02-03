@@ -17,5 +17,5 @@ public interface DataManagerSessionBeanRemote {
     void put(String scanner, String topic, String content);
 
     String get(String scanner, String topic, String tsStart, String tsEnd);
-    
+
 }

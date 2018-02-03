@@ -35,7 +35,7 @@ public class NodeReference implements Comparable<NodeReference>, Serializable {
 
     public NodeReference() {
     }
-    
+
     @SuppressWarnings("empty-statement")
     public static NodeReference getLocal() {
         NodeReference nodeRef = new NodeReference();

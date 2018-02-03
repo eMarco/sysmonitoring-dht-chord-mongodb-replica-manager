@@ -51,7 +51,7 @@ public class RestAPI {
      */
     public RestAPI() {
     }
-    
+
     /**
      * Get Data
      * @param k
@@ -109,7 +109,7 @@ public class RestAPI {
     public String moving(@PathParam(value="key") String k) throws JsonProcessingException {
         Key key = new Key(k);
         List<GenericValue> list =  nodeSessionBean.getLessThanAndRemove(key);
-        
+
         String jsonList = new ObjectMapper().writerFor(new TypeReference<List<GenericValue>>() {}).writeValueAsString(list);
         return jsonList;
     }
@@ -141,7 +141,7 @@ public class RestAPI {
     public String findPredecessor(@PathParam(value="key") String k) throws JsonProcessingException {
 
         Key key = new Key(k);
-        
+
         return new ObjectMapper().writeValueAsString(nodeSessionBean.findPredecessor(key));
     }
 

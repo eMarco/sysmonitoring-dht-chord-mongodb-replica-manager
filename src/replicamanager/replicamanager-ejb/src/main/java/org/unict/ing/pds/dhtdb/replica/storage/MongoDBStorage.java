@@ -28,40 +28,40 @@ import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
 public class MongoDBStorage implements Storage {
 
     DBConnectionSingletonSessionBeanLocal dbSessionBean = lookupDBConnectionSingletonSessionBeanLocal();
-    
+
     private final DB db;
     private final MongoCollection collection;
-    
+
     public MongoDBStorage() {
         // Using a single connection to provide better (query-oriented) scalability
         this.db = dbSessionBean.getDatabase();
         Jongo jongo = new Jongo(db);
         this.collection = jongo.getCollection("myMonitor");
     }
-    
+
     @Override
     public void insert(GenericValue elem) {
         collection.insert(elem);
     }
-    
+
     @Override
     public void insertMany(List<GenericValue> elems) {
         collection.insert(elems.toArray());
     }
-    
+
     @Override
     public void remove(Key key) {
         String query = "{ key: '"+ key + "' } }";
         removeBy(query);
     }
-    
+
     @Override
     public List<GenericValue> find(Key key) {
         // TODO Validation
         String query = "{ key: { key: '"+ key + "' } } }";
         return findBy(query);
     }
-    
+
     @Override
     public List<GenericValue> lessThanAndRemove(Key key) {
         String query = "{ key: { key: { $lte: '" + key + "' } } }";
@@ -72,17 +72,17 @@ public class MongoDBStorage implements Storage {
 
     @Override
     public void update(GenericValue elem, Key key) {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     private void removeBy(String query) {
         collection.remove(query);
     }
-    
+
     private List<GenericValue> findBy(String query) {
         MongoCursor<GenericValue> iterDoc;
         List<GenericValue> ret = new LinkedList();
-	
+        
         if (query == null) {
             // Put HERE a default query (TODO)
             iterDoc = collection.find().as(GenericValue.class);

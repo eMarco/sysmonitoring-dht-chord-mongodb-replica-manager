@@ -40,7 +40,7 @@ public class TopicsResource {
      */
     public TopicsResource() {
     }
-    
+
     /**
      * Retrieves representation of an instance of org.unict.ing.pds.dhtdb.datamanager.TopicsResource
      * @param tsStart
@@ -50,18 +50,18 @@ public class TopicsResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path(value="{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
-    public String getAll(            
+    public String getAll(
             @PathParam(value="tsStart") String tsStart,
             @PathParam(value="tsEnd") String tsEnd) {
-        
+
         return dataManagerSessionBean.get(null, null, tsStart, tsEnd);
     }
     /**
-     * 
+     *
      * @param topic
      * @param tsStart
      * @param tsEnd
-     * @return 
+     * @return
      */
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
@@ -70,11 +70,11 @@ public class TopicsResource {
             @PathParam(value="topic") String topic,
             @PathParam(value="tsStart") String tsStart,
             @PathParam(value="tsEnd") String tsEnd) {
-        
+
         return dataManagerSessionBean.get(null, topic, tsStart, tsEnd);
     }
 
-    
+
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Path(value="/{topic:[a-zA-Z]+}/scanners/{scanner:[0-9]+}{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
@@ -83,7 +83,7 @@ public class TopicsResource {
             @PathParam(value="tsStart") String tsStart,
             @PathParam(value="tsEnd")   String tsEnd,
             @PathParam(value="scanner") String scanner) {
-        
+
         return dataManagerSessionBean.get(scanner, topic, tsStart, tsEnd);
     }
 
@@ -96,6 +96,6 @@ public class TopicsResource {
             throw new RuntimeException(ne);
         }
     }
-    
+
 
 }

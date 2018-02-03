@@ -52,19 +52,19 @@ public class ScannersResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path(value="{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
-    public String getAll(            
+    public String getAll(
             @PathParam(value="tsStart") String tsStart,
             @PathParam(value="tsEnd") String tsEnd) {
         return dataManagerSessionBean.get(null, null, tsStart.substring(1), tsEnd.substring(1));
     }
 
-    
+
         /**
-     * 
+     *
      * @param scanner
      * @param tsStart
      * @param tsEnd
-     * @return 
+     * @return
      */
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
@@ -73,11 +73,11 @@ public class ScannersResource {
             @PathParam(value="scanner") String scanner,
             @PathParam(value="tsStart") String tsStart,
             @PathParam(value="tsEnd") String tsEnd) {
-        
+
         return dataManagerSessionBean.get(scanner, null, tsStart.substring(1), tsEnd.substring(1));
     }
 
-    
+
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Path(value="/{scanner:[0-9]+}/topics/{topic:[a-zA-Z]+}{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
@@ -86,7 +86,7 @@ public class ScannersResource {
             @PathParam(value="tsStart") String tsStart,
             @PathParam(value="tsEnd")   String tsEnd,
             @PathParam(value="scanner") String scanner) {
-        
+
         return dataManagerSessionBean.get(scanner, topic, tsStart.substring(1), tsEnd.substring(1));
     }
 

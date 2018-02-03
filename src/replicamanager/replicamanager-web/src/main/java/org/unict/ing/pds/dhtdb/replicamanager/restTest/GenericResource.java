@@ -52,7 +52,7 @@ public class GenericResource {
         ret += nodeSessionBean.myTest();
         return ret;
     }
-    
+
     @Path("/test2")
     @GET
     @Produces(MediaType.TEXT_PLAIN)

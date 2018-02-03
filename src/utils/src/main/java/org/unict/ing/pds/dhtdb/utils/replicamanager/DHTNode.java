@@ -17,7 +17,7 @@ public interface DHTNode {
      /**
      *
      * @param k
-     * @return 
+     * @return
      */
     public List<GenericValue> get(Key k);
 
@@ -25,7 +25,7 @@ public interface DHTNode {
      *
      * @param k
      * @param elem
-     * @return 
+     * @return
      */
     public Boolean put(GenericValue elem);
 

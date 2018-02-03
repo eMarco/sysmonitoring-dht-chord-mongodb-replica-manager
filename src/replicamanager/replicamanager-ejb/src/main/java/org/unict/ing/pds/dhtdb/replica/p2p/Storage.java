@@ -14,13 +14,13 @@ import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 public interface Storage {
-    
+
     public List<GenericValue> find(Key key);
     public void remove(Key key);
     public void update(GenericValue elem, Key key);
-    
+
     public void insert(GenericValue elem);
-    
+
     public void insertMany(List<GenericValue> elem);
     public List<GenericValue> lessThanAndRemove(Key key);
 }

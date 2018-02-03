@@ -35,12 +35,12 @@ public class RemoteNodeProxy extends BaseNode {
             String jsonElem = new ObjectMapper().writeValueAsString(elem);
             String k = elem.getKey().toString();
             ClientResponse clientResponse = getWebResource("/" + k).post(ClientResponse.class, jsonElem);
-            
+
             if (clientResponse.getStatus() != 200) {
                 System.out.println("[ERROR] Error in fetching PUT response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
                 return false;
             }
-            
+
             return true;
         } catch (JsonProcessingException ex) {
             System.out.println(ex.getOriginalMessage());

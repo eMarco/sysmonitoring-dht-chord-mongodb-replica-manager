@@ -48,7 +48,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     private void init() {
         this.storage = new MongoDBStorage();
 
-	// Starting chord
+        // Starting chord
         this.nodeRef     = NodeReference.getLocal();
         this.fingerTable = new FingerTable();
         this.fingerTable.addNode(this.nodeRef);
@@ -67,7 +67,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     }
 
     /************** RING INIT/CONSISTENCY METHODS *****************/
- 
+
     /***
      * Create new Chord Ring
      */
@@ -231,7 +231,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     @Override
     public void bootstrap(NodeReference nodeRef) {
-	//nodeRef.bootstrap(node);
+        //nodeRef.bootstrap(node);
     }
 
     private void moveKeys() {
@@ -262,7 +262,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     private void fixFingers() {
         if (!hasJoined) return;
 
-	// System.out.println("FIXING FINGERS");
+        // System.out.println("FIXING FINGERS");
 
         List<NodeReference> tableEntries = new LinkedList<>();
 
@@ -280,12 +280,12 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         this.fingerTable.replace(tableEntries);
     }
 
-    /******** DHT/FUNCTIONAL/STORAGE METHODS ********/ 
+    /******** DHT/FUNCTIONAL/STORAGE METHODS ********/
 
     @Override
     public List<GenericValue> get(Key k) {
         System.out.println("SEARCHING DB FOR KEY: " + k);
-	List<GenericValue> foundValues = this.storage.find(k);
+        List<GenericValue> foundValues = this.storage.find(k);
         System.out.println("FOUND " + foundValues.toString());
         // The returned list has length 0 or more
         return foundValues;
@@ -323,7 +323,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         return this.getReference(this.findSuccessor(k)).put(elem);
     }
 
-    /******** CHORD METHODS ********/	
+    /******** CHORD METHODS ********/        
     /***
      *
      * @param key
@@ -354,7 +354,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         }
 
         // get the closest preceding node and trigger the findSuccessor (remote)
-	// System.out.println("Looking for a candidate remote node as successor for the given key (" + key +") : " + nodeRef);
+        // System.out.println("Looking for a candidate remote node as successor for the given key (" + key +") : " + nodeRef);
 
         return getReference(nodeRef).findSuccessor(key); // As NodeReference returned
     }
@@ -430,7 +430,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     }
 
     /*** TESTING/DEVELOPMENT METHODS ****/
-    
+
     // triggered by http://localhost:8081/replicamanager-web/webresources/generic
     @Override
     public String myTest() {
@@ -449,7 +449,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         //System.out.println("GOT " + ret.toString());
 
         //return new Gson().toJson(ret);
-	//return findSuccessor(new NodeReference(thisRef.getNodeId(), "")).toString();
+        //return findSuccessor(new NodeReference(thisRef.getNodeId(), "")).toString();
 
         //System.out.println("PUT DONE");
         /*System.out.println("PRINTING FINGERTABLE: ");

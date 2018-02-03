@@ -12,7 +12,7 @@ import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
  */
 
 /***
- * 
+ *
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 @JsonSubTypes({
@@ -32,12 +32,12 @@ public abstract class GenericStat extends GenericValue {
         this.timestamp = timestamp;
         this.scannerId = scannerId;
     }
-    
+
     public String getScannerId() {
         return scannerId;
     }
-    
+
     public long getTimestamp() {
         return timestamp;
-    }    
+    }
 }

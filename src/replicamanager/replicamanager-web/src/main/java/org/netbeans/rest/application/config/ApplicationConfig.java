@@ -32,5 +32,5 @@ public class ApplicationConfig extends Application {
         resources.add(org.unict.ing.pds.dhtdb.replicamanager.rest.RestAPI.class);
         resources.add(org.unict.ing.pds.dhtdb.replicamanager.restTest.GenericResource.class);
     }
-    
+
 }

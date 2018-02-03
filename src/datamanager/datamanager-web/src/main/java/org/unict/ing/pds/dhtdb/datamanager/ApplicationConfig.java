@@ -32,5 +32,5 @@ public class ApplicationConfig extends Application {
         resources.add(org.unict.ing.pds.dhtdb.datamanager.ScannersResource.class);
         resources.add(org.unict.ing.pds.dhtdb.datamanager.TopicsResource.class);
     }
-    
+
 }

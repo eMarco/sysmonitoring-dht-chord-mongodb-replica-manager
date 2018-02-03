@@ -15,8 +15,8 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 public interface ChordNode {
     public void bootstrap(NodeReference nodeRef);
     public NodeReference notify(NodeReference nodeRef);
-    
-    public Boolean put(List<GenericValue> elem); 
+
+    public Boolean put(List<GenericValue> elem);
     public List<GenericValue> getLessThanAndRemove(Key key);
 
     public NodeReference findSuccessor(Key key);

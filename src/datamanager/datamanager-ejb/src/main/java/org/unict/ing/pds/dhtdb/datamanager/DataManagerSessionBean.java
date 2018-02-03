@@ -25,10 +25,10 @@ public class DataManagerSessionBean implements DataManagerSessionBeanRemote {
             // Convert the request in the proper model object
             Class<? extends GenericValue> t = Class.forName("org.unict.ing.pds.dhtdb.utils.model." + topic).asSubclass(GenericValue.class);
             GenericValue fromJson = new Gson().fromJson(content, t); // is it going to work?
-            
+
             // TODO create the query
             // TODO calculate the dht node to send the query
-            // TODO send the query to the proper dht node  
+            // TODO send the query to the proper dht node
         } catch (ClassNotFoundException ex) {
             // Wrong topic in request
             Logger.getLogger(DataManagerSessionBean.class.getName()).log(Level.SEVERE, null, ex);
