@@ -61,5 +61,9 @@ public class FingerTable {
     public void addNode(NodeReference node) {
         table.add(node);
     }
-    
+
+    public NodeReference getFirst() {
+        return table.first();
+    }
+
 }
