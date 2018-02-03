@@ -5,13 +5,17 @@
  */
 package org.unict.ing.pds.dhtdb.utils.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
 
 
 public class UptimeStat extends GenericStat {
     private final long seconds;
 
-    public UptimeStat(long seconds, long timestamp, String scannerId, Key key) {
+    public UptimeStat(@JsonProperty("seconds") long seconds, 
+            @JsonProperty("timestamp") long timestamp, 
+            @JsonProperty("scannerId") String scannerId, 
+            @JsonProperty("key") Key key) {
         super(timestamp, scannerId, key);
         this.seconds = seconds;
     }

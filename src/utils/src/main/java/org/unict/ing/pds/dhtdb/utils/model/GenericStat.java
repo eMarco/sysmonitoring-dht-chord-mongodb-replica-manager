@@ -1,5 +1,6 @@
 package org.unict.ing.pds.dhtdb.utils.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
@@ -19,10 +20,11 @@ import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
     @JsonSubTypes.Type(value = IOStat.class),
     @JsonSubTypes.Type(value = NetworkStat.class),
     @JsonSubTypes.Type(value = RAMStat.class),
-    @JsonSubTypes.Type(value = UptimeStat.class)
+    @JsonSubTypes.Type(value = UptimeStat.class),
 })
 public abstract class GenericStat extends GenericValue {
     private final long timestamp;
+
     private final String scannerId;
 
     public GenericStat(long timestamp, String scannerId, Key key) {

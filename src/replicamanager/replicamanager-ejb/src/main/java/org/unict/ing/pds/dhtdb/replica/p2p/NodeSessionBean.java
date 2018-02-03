@@ -474,8 +474,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         int id = 1;
         if (this.nodeRef.getHostname().contains("1"))
             id = 2;
-        Key myKey = new Key(String.valueOf(new Random().nextInt()));
-        Key myKey2= new Key(String.valueOf(new Random().nextInt()));
+        Key myKey = new Key(String.valueOf(new Random().nextInt()), true);
+        Key myKey2= new Key(String.valueOf(new Random().nextInt()), true);
         CPUStat x = new CPUStat((float)0.5, 4, "asd", myKey);
         CPUStat y = new CPUStat((float)0.8, 4, "asd", myKey);
         write(myKey, x);

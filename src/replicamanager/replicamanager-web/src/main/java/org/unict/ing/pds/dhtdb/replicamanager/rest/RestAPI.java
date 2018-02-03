@@ -65,7 +65,7 @@ public class RestAPI {
         try {
             System.out.println(u);
             GenericValue genericValue = new ObjectMapper().readValue(u, GenericValue.class);
-            Key key = new Key(k, false);
+            Key key = new Key(k);
 
             nodeSessionBean.put(genericValue);
             return key + " " + genericValue;
@@ -86,7 +86,7 @@ public class RestAPI {
     @Consumes(MediaType.TEXT_PLAIN)
     public String get(@PathParam(value="key") String k) {
         try {
-            Key key = new Key(k, false);
+            Key key = new Key(k);
             List<GenericValue> list =  nodeSessionBean.get(key);
             String jsonList = new ObjectMapper().writerFor(new TypeReference<List<GenericValue>>() {}).writeValueAsString(list);
             System.out.println(jsonList);
@@ -106,7 +106,7 @@ public class RestAPI {
     @Path(value="/moving/{key : ([A-Za-z0-9]+)}")
     @Consumes(MediaType.TEXT_PLAIN)
     public String moving(@PathParam(value="key") String k) {
-        Key key = new Key(k, false);
+        Key key = new Key(k);
 
         List<String> ret = new LinkedList<>();
         for (GenericValue v : nodeSessionBean.getLessThanAndRemove(key) ) {
@@ -126,7 +126,7 @@ public class RestAPI {
     @Consumes(MediaType.TEXT_PLAIN)
     public String findSuccessor(@PathParam(value="key") String k) {
 
-        Key key = new Key(k, false);
+        Key key = new Key(k);
 
         return new Gson().toJson(nodeSessionBean.findSuccessor(key));
     }
@@ -140,7 +140,7 @@ public class RestAPI {
     @Consumes(MediaType.TEXT_PLAIN)
     public String findPredecessor(@PathParam(value="key") String k) {
 
-        Key key = new Key(k, false);
+        Key key = new Key(k);
 
         return new Gson().toJson(nodeSessionBean.findPredecessor(key));
     }

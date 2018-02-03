@@ -6,6 +6,7 @@
 package org.unict.ing.pds.dhtdb.replica.storage;
 
 import com.mongodb.DB;
+import com.mongodb.WriteResult;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -57,13 +58,13 @@ public class MongoDBStorage implements Storage {
     @Override
     public List<GenericValue> find(Key key) {
         // TODO Validation
-        String query = "{ key: '"+ key + "' } }";
+        String query = "{ key: { key: '"+ key + "' } } }";
         return findBy(query);
     }
     
     @Override
     public List<GenericValue> lessThanAndRemove(Key key) {
-        String query = "{ key: { $lte: '" + key + "' } }";
+        String query = "{ key: { key: { $lte: '" + key + "' } } }";
         List<GenericValue> ret = findBy(query);
         removeBy(query);
         return ret;

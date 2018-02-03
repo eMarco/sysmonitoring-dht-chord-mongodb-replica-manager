@@ -33,7 +33,7 @@ public class NodeReference implements Comparable<NodeReference>, Serializable {
                     .equals(InetAddress.getByName(
                             nodeRef.hostname + ++i).getHostAddress()));
             nodeRef.hostname += i;
-            nodeRef.nodeId = new Key(nodeRef.hostname);
+            nodeRef.nodeId = new Key(nodeRef.hostname, true);
             System.out.println("[INFO] My Container name is: " + nodeRef.hostname);
         } catch (UnknownHostException ex) {
             Logger.getLogger(NodeReference.class.getName()).log(Level.SEVERE, null, ex);
@@ -48,7 +48,7 @@ public class NodeReference implements Comparable<NodeReference>, Serializable {
     }
 
     public NodeReference(String ip) {
-        this.nodeId = new Key(ip);
+        this.nodeId = new Key(ip, true);
         this.hostname = ip;
     }
 

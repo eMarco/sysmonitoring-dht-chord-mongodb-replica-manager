@@ -5,13 +5,20 @@
  */
 package org.unict.ing.pds.dhtdb.utils.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
 
 
 public class RAMStat extends GenericStat {
     private final int free, total, available;
 
-    public RAMStat(int free, int total, int available, long timestamp, String scannerId, Key key) {
+    public RAMStat(
+            @JsonProperty("free")      int free, 
+            @JsonProperty("total")     int total, 
+            @JsonProperty("available") int available, 
+            @JsonProperty("timestamp") long timestamp, 
+            @JsonProperty("scannerId") String scannerId, 
+            @JsonProperty("key")       Key key) {
         super(timestamp, scannerId, key);
         this.free = free;
         this.total = total;

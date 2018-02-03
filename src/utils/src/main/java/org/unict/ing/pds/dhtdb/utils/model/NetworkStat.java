@@ -5,6 +5,7 @@
  */
 package org.unict.ing.pds.dhtdb.utils.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
 
 
@@ -14,7 +15,13 @@ public class NetworkStat extends GenericStat {
     // TODO : Float?
     private final String sent, received;
 
-    public NetworkStat(String interf, String sent, String received, long timestamp, String scannerId, Key key) {
+    public NetworkStat(
+            @JsonProperty("interf")    String interf, 
+            @JsonProperty("sent")      String sent, 
+            @JsonProperty("received")  String received, 
+            @JsonProperty("timestamp") long timestamp, 
+            @JsonProperty("scannerId") String scannerId, 
+            @JsonProperty("key")       Key key) {
         super(timestamp, scannerId, key);
         this.interf = interf;
         this.sent = sent;

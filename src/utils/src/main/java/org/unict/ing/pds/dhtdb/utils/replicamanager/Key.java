@@ -5,6 +5,8 @@
  */
 package org.unict.ing.pds.dhtdb.utils.replicamanager;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Objects;
@@ -24,8 +26,9 @@ public final class Key implements Comparable<Key>, Serializable {
      * the key will be hashed
      * @param key
      */
-    public Key(String key) {
-        this(key, true);
+    @JsonCreator
+    public Key(@JsonProperty("key") String key) {
+        this(key, false);
     }
 
     /**
@@ -40,7 +43,7 @@ public final class Key implements Comparable<Key>, Serializable {
             this.key = key;
     }
 
-    public String getId() {
+    public String getKey() {
         return key;
     }
 
@@ -101,7 +104,7 @@ public final class Key implements Comparable<Key>, Serializable {
                 new BigInteger(a.key, HEX)  .add(integer)
                                             .mod(new BigInteger("2", DEC).pow(LENGHT))
                                             .toString(HEX)
-                , false);
+                );
     }
 
 }

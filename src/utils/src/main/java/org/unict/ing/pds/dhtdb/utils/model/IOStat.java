@@ -5,6 +5,8 @@
  */
 package org.unict.ing.pds.dhtdb.utils.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
 
 
@@ -12,7 +14,13 @@ public class IOStat extends GenericStat {
     private final String disk;
     private final float readKBps, writeKBps;
 
-    public IOStat(String disk, float readKBps, float writeKBps, long timestamp, String scannerId, Key key) {
+    @JsonCreator
+    public IOStat(@JsonProperty("disk")String disk, 
+            @JsonProperty("readKBps")  float readKBps,
+            @JsonProperty("writeKBps") float writeKBps, 
+            @JsonProperty("timestamp") long timestamp, 
+            @JsonProperty("scannerId") String scannerId,
+            @JsonProperty("key")       Key key) {
         super(timestamp, scannerId, key);
         this.disk = disk;
         this.readKBps = readKBps;
