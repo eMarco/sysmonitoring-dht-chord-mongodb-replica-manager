@@ -16,28 +16,21 @@ import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
  */
 @JsonSubTypes({
     @JsonSubTypes.Type(value = CPUStat.class),
-    @JsonSubTypes.Type(value = IOStat.class)})
+    @JsonSubTypes.Type(value = IOStat.class),
+    @JsonSubTypes.Type(value = NetworkStat.class),
+    @JsonSubTypes.Type(value = RAMStat.class),
+    @JsonSubTypes.Type(value = UptimeStat.class)
+})
 public abstract class GenericStat extends GenericValue {
     private final long timestamp;
-    private String scannerId;
+    private final String scannerId;
 
-    public GenericStat(long timestamp, String scannerId) {
-        this.timestamp = timestamp;
-        this.scannerId = scannerId;
-    }
-
-    public GenericStat(long timestamp, String scannerId, String key) {
+    public GenericStat(long timestamp, String scannerId, Key key) {
         super(key);
         this.timestamp = timestamp;
         this.scannerId = scannerId;
     }
     
-    public GenericStat(long timestamp, String scannerId, String key, String type) {
-        super(key, type);
-        this.timestamp = timestamp;
-        this.scannerId = scannerId;
-    }
-
     public String getScannerId() {
         return scannerId;
     }

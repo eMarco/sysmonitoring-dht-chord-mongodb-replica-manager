@@ -5,15 +5,17 @@
  */
 package org.unict.ing.pds.dhtdb.utils.model;
 
+import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
+
 
 public class NetworkStat extends GenericStat {
     private final String interf;
     
     // TODO : Float?
-    private String sent, received;
+    private final String sent, received;
 
-    public NetworkStat(String interf, String sent, String received, long timestamp, String scannerId) {
-        super(timestamp, scannerId);
+    public NetworkStat(String interf, String sent, String received, long timestamp, String scannerId, Key key) {
+        super(timestamp, scannerId, key);
         this.interf = interf;
         this.sent = sent;
         this.received = received;

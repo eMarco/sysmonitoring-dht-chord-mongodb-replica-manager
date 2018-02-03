@@ -62,24 +62,17 @@ public class RestAPI {
     @Path(value="{key : ([A-Za-z0-9]+)}")
     @Consumes(MediaType.TEXT_PLAIN)
     public String put(@PathParam(value="key") String k, String u) {
-
         try {
             System.out.println(u);
             GenericValue genericValue = new ObjectMapper().readValue(u, GenericValue.class);
-
-            Class<? extends GenericValue> t = Class.forName("org.unict.ing.pds.dhtdb.utils.model." + genericValue.getType()).asSubclass(GenericValue.class);
-            GenericValue value = new Gson().fromJson(u, t);
-
             Key key = new Key(k, false);
 
-            nodeSessionBean.put(value);
-            return key + " " + value;
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(RestAPI.class.getName()).log(Level.SEVERE, null, ex);
+            nodeSessionBean.put(genericValue);
+            return key + " " + genericValue;
         } catch (IOException ex) {
             Logger.getLogger(RestAPI.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        // TODO using responseCodes ?
         return "ERROR";
     }
 

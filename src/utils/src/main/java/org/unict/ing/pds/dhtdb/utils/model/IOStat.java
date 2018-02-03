@@ -5,13 +5,15 @@
  */
 package org.unict.ing.pds.dhtdb.utils.model;
 
+import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
+
 
 public class IOStat extends GenericStat {
     private final String disk;
     private final float readKBps, writeKBps;
 
-    public IOStat(String disk, float readKBps, float writeKBps, long timestamp, String scannerId) {
-        super(timestamp, scannerId);
+    public IOStat(String disk, float readKBps, float writeKBps, long timestamp, String scannerId, Key key) {
+        super(timestamp, scannerId, key);
         this.disk = disk;
         this.readKBps = readKBps;
         this.writeKBps = writeKBps;

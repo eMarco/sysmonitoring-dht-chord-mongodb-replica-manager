@@ -5,12 +5,14 @@
  */
 package org.unict.ing.pds.dhtdb.utils.model;
 
+import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
+
 
 public class RAMStat extends GenericStat {
     private final int free, total, available;
 
-    public RAMStat(int free, int total, int available, long timestamp, String scannerId) {
-        super(timestamp, scannerId);
+    public RAMStat(int free, int total, int available, long timestamp, String scannerId, Key key) {
+        super(timestamp, scannerId, key);
         this.free = free;
         this.total = total;
         this.available = available;

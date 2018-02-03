@@ -5,12 +5,14 @@
  */
 package org.unict.ing.pds.dhtdb.utils.model;
 
+import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
+
 
 public class UptimeStat extends GenericStat {
     private final long seconds;
 
-    public UptimeStat(long seconds, long timestamp, String scannerId) {
-        super(timestamp, scannerId);
+    public UptimeStat(long seconds, long timestamp, String scannerId, Key key) {
+        super(timestamp, scannerId, key);
         this.seconds = seconds;
     }
 

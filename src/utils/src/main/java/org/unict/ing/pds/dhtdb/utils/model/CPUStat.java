@@ -17,9 +17,8 @@ public class CPUStat extends GenericStat {
     public CPUStat(@JsonProperty("usage")float usage, 
             @JsonProperty("timestamp")long timestamp, 
             @JsonProperty("scannerId")String scannerId, 
-            @JsonProperty("key") String key, 
-            @JsonProperty("type") String type) {
-        super(timestamp, scannerId, key, "CPUStat");
+            @JsonProperty("key") Key key) {
+        super(timestamp, scannerId, key);
         this.usage = usage;
     }
 

@@ -318,7 +318,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     // proper node is found to return the result
     @Override
     public Boolean write(Key k, GenericValue elem) {
-        elem.setKey(k.toString());
+        elem.setKey(k);
         System.out.println("Trying to write");
         return this.getReference(this.findSuccessor(k)).put(elem);
     }
@@ -476,8 +476,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
             id = 2;
         Key myKey = new Key(String.valueOf(new Random().nextInt()));
         Key myKey2= new Key(String.valueOf(new Random().nextInt()));
-        CPUStat x = new CPUStat((float)0.5, 4, "asd", myKey.toString(), "CPUStat");
-        CPUStat y = new CPUStat((float)0.8, 4, "asd", myKey2.toString(), "CPUStat");
+        CPUStat x = new CPUStat((float)0.5, 4, "asd", myKey);
+        CPUStat y = new CPUStat((float)0.8, 4, "asd", myKey);
         write(myKey, x);
         //write(myKey2, y);
         ret += new Gson().toJson(lookup(myKey));
