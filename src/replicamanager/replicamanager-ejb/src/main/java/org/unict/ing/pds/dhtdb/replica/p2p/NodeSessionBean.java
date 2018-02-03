@@ -58,12 +58,6 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         // Init the ring
         this.create();
 
-        int idToAdd = 1;
-        if (this.nodeRef.getHostname().equals("distsystems_replicamanager_1"))
-            idToAdd = 2;
-
-        String node2 = "distsystems_replicamanager_" + idToAdd;
-        //this.fingerTable.addNode(new NodeReference(node2));
         System.out.println(this.nodeRef.getHostname() + " JOINING THE RING");
         if (!this.nodeRef.getHostname().equals("distsystems_replicamanager_1")) {
 
@@ -129,9 +123,6 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         return ret;
     }
 
-    private NodeReference successor(Key k) {
-        return findSuccessor(k);
-    }
 
     /***
      * Stabilize the ring.
@@ -207,7 +198,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
         if (this.predecessor != null) System.out.println(this.nodeRef.getHostname() + " CURRENT PREDECESSOR: " + this.predecessor.getNodeReference().getHostname());
         if (this.successor != null) System.out.println(this.nodeRef.getHostname() + " CURRENT SUCCESSOR " + this.successor.getNodeReference().getHostname());
-        
+
         System.out.println("STABILIZE ENDED");
     }
 
@@ -360,7 +351,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         NodeReference nodeRef = fingerTable.getClosestPrecedingNode(key);
 
         if (isPredecessor(nodeRef)) {
-            System.out.println("The closestPrecedingNode is my predecessor; I'm the owner for the key " + key);
+//            System.out.println("The closestPrecedingNode is my predecessor; I'm the owner for the key " + key);
             return this.nodeRef;
         }
 
@@ -376,7 +367,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         }
 
         // get the closest preceding node and trigger the findSuccessor (remote)
-        System.out.println("Looking for a candidate remote node as successor for the given key (" + key +") : " + nodeRef);
+//        System.out.println("Looking for a candidate remote node as successor for the given key (" + key +") : " + nodeRef);
 
         return getReference(nodeRef).findSuccessor(key); // As NodeReference returned
     }
@@ -435,7 +426,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
         return this.predecessor.getNodeReference().equals(obj);
     }
-    
+
     @Override
     public NodeReference notify(NodeReference nodeRef) {
         System.out.println(this.nodeRef.getHostname() + " NODE " + nodeRef.getHostname() + " wants to become our predecessor");

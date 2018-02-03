@@ -103,7 +103,7 @@ public class RestAPI {
         }
         return null;
     }
-    
+
     /**
      * Get Data
      * @param k
@@ -132,7 +132,7 @@ public class RestAPI {
     @Path(value="/successor/{key : ([A-Za-z0-9]+)}")
     @Consumes(MediaType.TEXT_PLAIN)
     public String findSuccessor(@PathParam(value="key") String k) {
-        
+
         Key key = new Key(k, false);
 
         return new Gson().toJson(nodeSessionBean.findSuccessor(key));
@@ -146,13 +146,13 @@ public class RestAPI {
     @Path(value="/findPredecessor/{key : ([A-Za-z0-9]+)}")
     @Consumes(MediaType.TEXT_PLAIN)
     public String findPredecessor(@PathParam(value="key") String k) {
-        
+
         Key key = new Key(k, false);
 
         return new Gson().toJson(nodeSessionBean.findPredecessor(key));
     }
     /**
-     * 
+     *
      * @param u
      * @return an instance of java.lang.String
      */
@@ -186,10 +186,10 @@ public class RestAPI {
             throw new RuntimeException(ne);
         }
     }
-    
+
     @GET
     @Path(value="/ping")
-    @Consumes(MediaType.TEXT_PLAIN) 
+    @Consumes(MediaType.TEXT_PLAIN)
     public String ping() {
         return new Gson().toJson(nodeSessionBean.getNodeReference());
     }

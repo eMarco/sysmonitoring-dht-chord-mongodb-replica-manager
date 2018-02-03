@@ -89,7 +89,7 @@ public class RemoteNodeProxy extends BaseNode {
         String _key = clientResponse.getEntity(String.class);
         return new Gson().fromJson(_key, NodeReference.class);
     }
-    
+
     @Override
     public NodeReference findPredecessor(Key key) {
         ClientResponse clientResponse = getWebResource("/findPredecessor/" + key.toString()).get(ClientResponse.class);
@@ -116,9 +116,6 @@ public class RemoteNodeProxy extends BaseNode {
 
         _nodeRef = clientResponse.getEntity(String.class);
 
-        System.out.println("VALUE:" + _nodeRef);
-        System.out.println("NODEREF:" + this.nodeRef.toString());
-
         return new Gson().fromJson(_nodeRef, NodeReference.class);
     }
 
@@ -141,7 +138,7 @@ public class RemoteNodeProxy extends BaseNode {
 
         return client.resource(this.nodeRef.getEndpoint() + PATH + path);
     }
-    
+
     public NodeReference ping() {
         String clientResponse = getWebResource("/ping").get(String.class);
         return new Gson().fromJson(clientResponse, NodeReference.class);
@@ -151,7 +148,7 @@ public class RemoteNodeProxy extends BaseNode {
     public Boolean put(List<GenericValue> elem) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
     public List<GenericValue> getLessThanAndRemove(Key key) {
         ClientResponse clientResponse = getWebResource("/moving/" + key.toString()).get(ClientResponse.class);
@@ -165,7 +162,7 @@ public class RemoteNodeProxy extends BaseNode {
 
         return unmarshallList(res);
     }
-    
+
     public List<GenericValue> unmarshallList(String res) {
         try {
             // TODO : Improve me!

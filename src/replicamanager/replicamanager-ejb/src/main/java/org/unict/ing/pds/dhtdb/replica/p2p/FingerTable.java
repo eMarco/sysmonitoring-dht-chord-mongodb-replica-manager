@@ -36,28 +36,28 @@ public class FingerTable {
     }
 
     /**
-     * 
+     *
      * @param key
-     * @return 
-     */    
+     * @return
+     */
     public NodeReference getClosestPrecedingNode(Key key) {
         return getClosestPrecedingNode(new NodeReference(key, ""));
     }
-    
+
     /**
-     * 
+     *
      * @param node
-     * @return 
-     */    
+     * @return
+     */
     public NodeReference getClosestPrecedingNode(NodeReference node) {
         NodeReference lower = table.lower(node);
-        System.out.println("TABLE " + this.table.toString());
-        System.out.println("LOWER: " + lower);
+//        System.out.println("TABLE " + this.table.toString());
+//        System.out.println("LOWER: " + lower);
         if (lower == null)
             return table.last();
         return lower;
     }
-    
+
     public void addNode(NodeReference node) {
         table.add(node);
     }

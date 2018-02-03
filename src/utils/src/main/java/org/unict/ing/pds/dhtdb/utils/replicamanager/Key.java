@@ -18,16 +18,16 @@ public final class Key implements Comparable<Key>, Serializable {
     public static final int LENGHT = 160;
 
     private final String key;
-    
+
     /**
      * Overloaded constructor for Key (toHash default to True)
      * the key will be hashed
-     * @param key 
+     * @param key
      */
     public Key(String key) {
         this(key, true);
     }
-    
+
     /**
      * Constructor for Key
      * @param key
