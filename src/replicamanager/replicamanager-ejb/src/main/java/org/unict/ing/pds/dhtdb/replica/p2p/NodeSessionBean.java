@@ -53,6 +53,16 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         String node2 = "distsystems_replicamanager_" + idToAdd;
         NodeReference theOtherNode = new NodeReference(node2);
         this.fingerTable.addNode(theOtherNode);
+
+        System.out.println(this.nodeRef.getHostname() + " JOINING THE RING");
+        if (this.nodeRef.getHostname().equals("distsystems_replicamanager_2")) {
+            if (this.join(new NodeReference("distsystems_replicamanager_1"))) {
+                System.out.println("JOIN SUCCESSFUL");
+            }
+            else {
+                System.out.println("JOIN FAILED");
+            }
+        }
     }
 
     // triggered by http://localhost:8081/replicamanager-web/webresources/generic
@@ -82,13 +92,6 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
             System.out.println("NODE " + t.getHostname() + " " + t.getNodeId());
         });*/
 
-        System.out.println(this.nodeRef.getHostname() + " JOINING THE RING");
-        if (this.join(new NodeReference("distsystems_replicamanager_2"))) {
-            System.out.println("JOIN SUCCESSFUL");
-        }
-        else {
-            System.out.println("JOIN FAILED");
-        }
 
         Key myKey = new Key(x.toString());
         Key myKey2 = new Key(y.toString());
@@ -267,16 +270,16 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     @Override
     public NodeReference notify(NodeReference nodeRef) {
-        System.out.println("NODE " + nodeRef + "wants to join the ring");
+        System.out.println("NODE " + nodeRef + "wants to become our predecessor");
         // Check if predecessor is null OR the joining node's ID: predecessor.ID < JN.ID < this.ID
         if (this.predecessor == null ||
                 (this.predecessor.getNodeReference().compareTo(nodeRef) < 0 && nodeRef.compareTo(this.nodeRef) < 0)) {
-            System.out.println("JOIN SUCCESSFULL");
+            System.out.println("NOTIFY SUCCESSFULL");
             this.predecessor = getReference(nodeRef);
             return nodeRef;
         }
 
-        System.out.println("JOIN FAILED: " + this.predecessor.getNodeReference().compareTo(nodeRef) + " " + nodeRef.compareTo(this.nodeRef));
+        System.out.println("NOTIFY FAILED: " + this.predecessor.getNodeReference().compareTo(nodeRef) + " " + nodeRef.compareTo(this.nodeRef));
         return null;
     }
     
