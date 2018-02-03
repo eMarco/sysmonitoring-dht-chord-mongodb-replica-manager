@@ -308,6 +308,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         } catch (NullPointerException e) {
             System.out.println(e);
         }
+        
         if (isPredecessor(nodeRef)) {
             System.out.println("The closestPrecedingNode is my predecessor; I'm the owner for the key " + key);
             return this.nodeRef;
@@ -316,13 +317,13 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         if (isLocal(nodeRef)) {
             // return (successor)
             System.out.println("I am the the closestPrecedingNode; My successor the owner for the key " + key);
-            nodeRef = this.successor.getNodeReference();
+            return this.successor.getNodeReference();
         }
 
         // get the closest preceding node and trigger the findSuccessor (remote)
         System.out.println("Looking for a candidate remote node as successor for the given key (" + key +") : " + nodeRef);
 
-        return new RemoteNodeProxy(nodeRef).findSuccessor(key); // As NodeReference returned
+        return getReference(nodeRef).findSuccessor(key); // As NodeReference returned
     }
 
     @Override
