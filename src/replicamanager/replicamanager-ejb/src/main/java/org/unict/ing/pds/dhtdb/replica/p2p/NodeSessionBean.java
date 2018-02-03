@@ -148,6 +148,9 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
             if (isLocal(this.successor) || (this.getNodeReference().compareTo(successorsPredecessor) < 0 && successorsPredecessor.compareTo(this.successor.getNodeReference()) < 0)) {
                 // Set the new successor and notify it about its new predecessor
                 this.successor = getReference(successorsPredecessor);
+
+                // Add successor to FingerTable
+                fingerTable.addNode(successorsPredecessor);
             }
 
             if (!isLocal(this.successor))
@@ -385,6 +388,9 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
                 (this.predecessor.getNodeReference().compareTo(nodeRef) < 0 && nodeRef.compareTo(this.nodeRef) < 0)) {
             System.out.println("NOTIFY SUCCESSFULL");
             this.predecessor = getReference(nodeRef);
+
+            // Add predecessor to FingerTable
+            fingerTable.addNode(nodeRef);
             return nodeRef;
         }
 
