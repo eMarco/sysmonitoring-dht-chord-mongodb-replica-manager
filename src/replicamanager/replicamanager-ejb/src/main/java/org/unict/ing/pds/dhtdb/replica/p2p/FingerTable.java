@@ -5,6 +5,7 @@
  */
 package org.unict.ing.pds.dhtdb.replica.p2p;
 
+import java.util.Collection;
 import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
 import org.unict.ing.pds.dhtdb.utils.replicamanager.NodeReference;
 import java.util.TreeSet;
@@ -22,6 +23,16 @@ public class FingerTable {
      */
     public TreeSet<NodeReference> getTable() {
         return table;
+    }
+
+
+    /**
+     *
+     * @param tableElements
+     */
+    public void replace(Collection<NodeReference> tableElements) {
+        table.clear();
+        table.addAll(tableElements);
     }
 
     /**

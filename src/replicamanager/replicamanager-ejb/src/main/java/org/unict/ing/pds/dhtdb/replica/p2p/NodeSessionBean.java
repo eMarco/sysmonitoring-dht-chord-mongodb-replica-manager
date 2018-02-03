@@ -10,6 +10,8 @@ import org.unict.ing.pds.dhtdb.utils.replicamanager.NodeReference;
 import org.unict.ing.pds.dhtdb.utils.replicamanager.RemoteNodeProxy;
 import org.unict.ing.pds.dhtdb.utils.replicamanager.BaseNode;
 import com.google.gson.Gson;
+import java.math.BigInteger;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import javax.annotation.PostConstruct;
@@ -137,8 +139,19 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
      */
     @Schedule(second = "*/" + PERIOD, minute = "*", hour = "*")
     private void stabilize() {
-        System.out.println("STABILIZE TRIGGERED " + this.successor.getNodeReference());
-        NodeReference successorsPredecessor = (isLocal(this.successor)) ? this.predecessor.getNodeReference() : this.successor.getPredecessor();
+        System.out.println(this.nodeRef.getHostname() + " STABILIZE TRIGGERED ON NODE" + this.successor.getNodeReference());
+        // TODO : Fix NPE
+
+        NodeReference successorsPredecessor;
+        if (isLocal(this.successor)) {
+            if (this.predecessor != null)
+                successorsPredecessor = this.predecessor.getNodeReference();
+            else return;
+        }
+        else {
+            successorsPredecessor = this.successor.getPredecessor();
+        }
+
 
         if (successorsPredecessor != null && !isLocal(successorsPredecessor)) {
             System.out.println("SUCCESSORS PREDECESSOR : " + successorsPredecessor.getHostname());
@@ -146,6 +159,9 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
             if (isLocal(this.successor) || (this.getNodeReference().compareTo(successorsPredecessor) < 0 && successorsPredecessor.compareTo(this.successor.getNodeReference()) < 0)) {
                 // Set the new successor and notify it about its new predecessor
                 this.successor = getReference(successorsPredecessor);
+
+                // Add successor to FingerTable
+                fingerTable.addNode(successorsPredecessor);
             }
 
             if (!isLocal(this.successor))
@@ -159,9 +175,6 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         System.out.println("STABILIZE ENDED");
     }
 
-    private void fixFingers() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     /***
      * Create new Chord Ring
@@ -184,7 +197,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         }
 
         BaseNode entryPoint = new RemoteNodeProxy(_entryPoint);
-        this.successor = this.getReference(entryPoint.findPredecessor(this.nodeRef.getNodeId()));
+        this.successor = this.getReference(entryPoint.findSuccessor(this.nodeRef.getNodeId()));
 
         System.out.println("NEW SUCCESSOR " + this.successor.getNodeReference());
 
@@ -195,8 +208,43 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
             return false;
         }
+
+        this.fillFingertable();
+
         //this.moveKeys();
+
         return true;
+    }
+
+    /***
+     *
+     */
+    private void fillFingertable() {
+        this.fixFingers();
+    }
+
+    /***
+     * Fix fingers.
+     *
+     * Schedule this method every PERIOD
+     */
+    @Schedule(second = "*/" + 2*PERIOD, minute = "*", hour = "*")
+    private void fixFingers() {
+        List<NodeReference> tableEntries = new LinkedList<>();
+
+        // Add this node
+        tableEntries.add(this.nodeRef);
+
+        for (int i = 0; i < Key.LENGHT; i++) {
+            System.out.println("FIXING FINGER " + i);
+            tableEntries.add(
+                    this.findSuccessor(
+                            this.nodeRef.getNodeId().sumPow(i)
+                    )
+            );
+        }
+
+        this.fingerTable.replace(tableEntries);
     }
 
     public void moveKeys() {
@@ -271,6 +319,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         } catch (NullPointerException e) {
             System.out.println(e);
         }
+        
         if (isPredecessor(nodeRef)) {
             System.out.println("The closestPrecedingNode is my predecessor; I'm the owner for the key " + key);
             return this.nodeRef;
@@ -279,13 +328,13 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         if (isLocal(nodeRef)) {
             // return (successor)
             System.out.println("I am the the closestPrecedingNode; My successor the owner for the key " + key);
-            nodeRef = this.successor.getNodeReference();
+            return this.successor.getNodeReference();
         }
 
         // get the closest preceding node and trigger the findSuccessor (remote)
         System.out.println("Looking for a candidate remote node as successor for the given key (" + key +") : " + nodeRef);
 
-        return new RemoteNodeProxy(nodeRef).findSuccessor(key); // As NodeReference returned
+        return getReference(nodeRef).findSuccessor(key); // As NodeReference returned
     }
 
     @Override
@@ -351,6 +400,9 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
                 (this.predecessor.getNodeReference().compareTo(nodeRef) < 0 && nodeRef.compareTo(this.nodeRef) < 0)) {
             System.out.println("NOTIFY SUCCESSFULL");
             this.predecessor = getReference(nodeRef);
+
+            // Add predecessor to FingerTable
+            fingerTable.addNode(nodeRef);
             return nodeRef;
         }
 
