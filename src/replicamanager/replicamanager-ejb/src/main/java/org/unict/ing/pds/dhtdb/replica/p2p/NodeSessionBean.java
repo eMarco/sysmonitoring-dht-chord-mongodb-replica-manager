@@ -97,13 +97,22 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     @Override
     public String myTest2() {
-        String ret = String.valueOf(this.checkPredecessor());
+        int idToInt = 1;
+        if (this.nodeRef.getHostname().contains("1"))
+            idToInt = 2;
+        if (this.join(new NodeReference("distsystems_replicamanager_" + idToInt))) {
+            System.out.println("JOIN SUCCESSFUL");
+        }
+        else {
+            System.out.println("JOIN FAILED");
+        }
+        String ret = "";//String.valueOf(this.checkPredecessor());
         CPUStat x = new CPUStat((float)0.5, 4, "asd");
         CPUStat y = new CPUStat((float)0.8, 4, "asd");
         Key myKey = new Key(x.toString());
         Key myKey2 = new Key(y.toString());
-        //write(myKey, x);
-        //write(myKey2, y);
+        write(myKey, x);
+        write(myKey2, y);
         ret += new Gson().toJson(lookup(myKey));
         
         return ret;  
