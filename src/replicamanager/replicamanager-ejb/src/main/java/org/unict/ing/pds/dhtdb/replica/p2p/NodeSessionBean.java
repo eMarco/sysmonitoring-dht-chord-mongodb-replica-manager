@@ -13,6 +13,10 @@ import com.google.gson.Gson;
 import java.util.List;
 import java.util.Random;
 import javax.annotation.PostConstruct;
+import javax.ejb.ConcurrencyManagement;
+import javax.ejb.ConcurrencyManagementType;
+import javax.ejb.Lock;
+import javax.ejb.LockType;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -26,6 +30,7 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
  */
 @Singleton
 @Startup
+//@ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     private static final int PERIOD = 30; //seconds
@@ -53,11 +58,10 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
             idToAdd = 2;
 
         String node2 = "distsystems_replicamanager_" + idToAdd;
-        NodeReference theOtherNode = new NodeReference(node2);
-        this.fingerTable.addNode(theOtherNode);
+
         System.out.println(this.nodeRef.getHostname() + " JOINING THE RING");
-        if (this.nodeRef.getHostname().equals("distsystems_replicamanager_2")) {
-            if (this.join(new NodeReference("distsystems_replicamanager_1"))) {
+        if (this.nodeRef.getHostname().equals("distsystems_replicamanager_1")) {
+            if (this.join(new NodeReference("distsystems_replicamanager_2"))) {
                 System.out.println("JOIN SUCCESSFUL");
             }
             else {
@@ -129,24 +133,30 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
      * Called periodically, asks the successor about its predecessor, verifies if our immediate
      * successor is consistent, and tells the successor about us.
      *
-     * Schedule the function every PERIOD
+     * Schedule this method every PERIOD
      */
     @Schedule(second = "*/" + PERIOD, minute = "*", hour = "*")
     private void stabilize() {
-        System.out.println("STABILIZE TRIGGERED");
-        NodeReference successorsPredecessor = this.successor.getPredecessor();
+        System.out.println("STABILIZE TRIGGERED " + this.successor.getNodeReference());
+        NodeReference successorsPredecessor = (isLocal(this.successor)) ? this.predecessor.getNodeReference() : this.successor.getPredecessor();
 
         if (successorsPredecessor != null && !isLocal(successorsPredecessor)) {
-            // if (successorsPredecessor ∈ (this, successor))
-            if (this.getNodeReference().compareTo(successorsPredecessor) < 0 && successorsPredecessor.compareTo(this.successor.getNodeReference()) < 0) {
+            System.out.println("SUCCESSORS PREDECESSOR : " + successorsPredecessor.getHostname());
+            // if (this.successor == this || successorsPredecessor ∈ (this, successor))
+            if (isLocal(this.successor) || (this.getNodeReference().compareTo(successorsPredecessor) < 0 && successorsPredecessor.compareTo(this.successor.getNodeReference()) < 0)) {
                 // Set the new successor and notify it about its new predecessor
                 this.successor = getReference(successorsPredecessor);
             }
-            this.successor.notify(this.getNodeReference());
+
+            if (!isLocal(this.successor))
+                this.successor.notify(this.getNodeReference());
         }
+        else System.out.println("SUCCESSORS PREDECESSOR LOCAL OR NULL");
 
         if (this.predecessor != null) System.out.println(this.nodeRef.getHostname() + " CURRENT PREDECESSOR: " + this.predecessor.getNodeReference().getHostname());
         if (this.successor != null) System.out.println(this.nodeRef.getHostname() + " CURRENT SUCCESSOR " + this.successor.getNodeReference().getHostname());
+        
+        System.out.println("STABILIZE ENDED");
     }
 
     private void fixFingers() {
@@ -307,6 +317,14 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         else {
             return new RemoteNodeProxy(nodeRef);
         }
+    }
+
+    public boolean isLocal(BaseNode obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        return this.nodeRef.equals(obj.getNodeReference());
     }
 
     public boolean isLocal(NodeReference obj) {
