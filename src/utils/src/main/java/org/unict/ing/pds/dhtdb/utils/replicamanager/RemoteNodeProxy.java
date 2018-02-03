@@ -7,8 +7,6 @@ package org.unict.ing.pds.dhtdb.utils.replicamanager;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -71,58 +69,79 @@ public class RemoteNodeProxy extends BaseNode {
 
     @Override
     public NodeReference findSuccessor(Key key) {
-        ClientResponse clientResponse = getWebResource("/successor/" + key.toString()).get(ClientResponse.class);
+        try {
+                ClientResponse clientResponse = getWebResource("/successor/" + key.toString()).get(ClientResponse.class);
 
-        if (clientResponse.getStatus() != 200) {
-            System.out.println("[ERROR] Error in fetching findSuccessor response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
-            // TODO : handle null value
-            return null;
+                if (clientResponse.getStatus() != 200) {
+                        System.out.println("[ERROR] Error in fetching findSuccessor response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
+                        // TODO : handle null value
+                        return null;
+                }
+
+                String _key = clientResponse.getEntity(String.class);
+                return new ObjectMapper().readValue(_key, NodeReference.class);
+        } catch (IOException ex) {
+                Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        String _key = clientResponse.getEntity(String.class);
-        return new Gson().fromJson(_key, NodeReference.class);
+        return null;
     }
 
     @Override
     public NodeReference findPredecessor(Key key) {
-        ClientResponse clientResponse = getWebResource("/findPredecessor/" + key.toString()).get(ClientResponse.class);
+        try {
+                ClientResponse clientResponse = getWebResource("/findPredecessor/" + key.toString()).get(ClientResponse.class);
 
-        if (clientResponse.getStatus() != 200) {
-            System.out.println("[ERROR] Error in fetching findSuccessor response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
-            return null;
+                if (clientResponse.getStatus() != 200) {
+                        System.out.println("[ERROR] Error in fetching findSuccessor response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
+                        return null;
+                }
+
+                String _key = clientResponse.getEntity(String.class);
+                return new ObjectMapper().readValue(_key, NodeReference.class);
+        } catch (IOException ex) {
+                Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        String _key = clientResponse.getEntity(String.class);
-        return new Gson().fromJson(_key, NodeReference.class);
+        return null;
     }
 
     @Override
     public NodeReference notify(NodeReference nodeRef) {
-        String _nodeRef = new Gson().toJson(nodeRef);
+        try {
+                ObjectMapper mapper = new ObjectMapper();
+                String _nodeRef = mapper.writeValueAsString(nodeRef);
 
-        ClientResponse clientResponse = getWebResource("/notify").post(ClientResponse.class, _nodeRef);
+                ClientResponse clientResponse = getWebResource("/notify").post(ClientResponse.class, _nodeRef);
 
-        if (clientResponse.getStatus() != 200) {
-            System.out.println("[ERROR] Error in fetching PUT response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
-            return null;
+                if (clientResponse.getStatus() != 200) {
+                        System.out.println("[ERROR] Error in fetching PUT response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
+                        return null;
+                }
+
+                _nodeRef = clientResponse.getEntity(String.class);
+
+                return mapper.readValue(_nodeRef, NodeReference.class);
+        } catch (IOException ex) {
+                Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        _nodeRef = clientResponse.getEntity(String.class);
-
-        return new Gson().fromJson(_nodeRef, NodeReference.class);
+        return null;
     }
 
     @Override
     public NodeReference getPredecessor() {
-        ClientResponse clientResponse = getWebResource("/predecessor/").get(ClientResponse.class);
+        try {
+                ClientResponse clientResponse = getWebResource("/predecessor/").get(ClientResponse.class);
 
-        if (clientResponse.getStatus() != 200) {
-            System.out.println("[ERROR] Error in fetching getPredecessor response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
-            return null;
+                if (clientResponse.getStatus() != 200) {
+                        System.out.println("[ERROR] Error in fetching getPredecessor response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
+                        return null;
+                }
+
+                String _key = clientResponse.getEntity(String.class);
+                return new ObjectMapper().readValue(_key, NodeReference.class);
+        } catch (IOException ex) {
+                Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        String _key = clientResponse.getEntity(String.class);
-        return new Gson().fromJson(_key, NodeReference.class);
+        return null;
     }
 
 
@@ -133,8 +152,13 @@ public class RemoteNodeProxy extends BaseNode {
     }
 
     public NodeReference ping() {
-        String clientResponse = getWebResource("/ping").get(String.class);
-        return new Gson().fromJson(clientResponse, NodeReference.class);
+        try {
+                String clientResponse = getWebResource("/ping").get(String.class);
+                return new ObjectMapper().readValue(clientResponse, NodeReference.class);
+        } catch (IOException ex) {
+                Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     @Override
@@ -158,7 +182,6 @@ public class RemoteNodeProxy extends BaseNode {
 
     public List<GenericValue> unmarshallList(String res) {
         try {
-            Type token = new TypeToken<List<GenericValue>>() {}.getType();
             ObjectMapper mapper = new ObjectMapper().enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
             List<GenericValue> ret = mapper.readValue(res,
                     mapper.getTypeFactory().constructCollectionType(List.class, GenericValue.class));

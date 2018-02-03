@@ -5,6 +5,7 @@
  */
 package org.unict.ing.pds.dhtdb.utils.replicamanager;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -12,7 +13,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class NodeReference implements Comparable<NodeReference>, Serializable {
     private static final String HOSTNAME_PREFIX = "distsystems_replicamanager_";
     private static final String REMOTE_PORT = "8080";

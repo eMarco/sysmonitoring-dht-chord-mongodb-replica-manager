@@ -65,7 +65,6 @@ public class RestAPI {
             Key key = new Key(k);
             List<GenericValue> list =  nodeSessionBean.get(key);
             String jsonList = new ObjectMapper().writerFor(new TypeReference<List<GenericValue>>() {}).writeValueAsString(list);
-            System.out.println(jsonList);
             return jsonList;
         } catch (JsonProcessingException ex) {
             Logger.getLogger(RestAPI.class.getName()).log(Level.SEVERE, null, ex);
@@ -89,6 +88,7 @@ public class RestAPI {
             Key key = new Key(k);
 
             nodeSessionBean.put(genericValue);
+            // TODO Return JSON
             return key + " " + genericValue;
         } catch (IOException ex) {
             Logger.getLogger(RestAPI.class.getName()).log(Level.SEVERE, null, ex);
@@ -106,44 +106,43 @@ public class RestAPI {
     @GET
     @Path(value="/moving/{key : ([A-Za-z0-9]+)}")
     @Consumes(MediaType.TEXT_PLAIN)
-    public String moving(@PathParam(value="key") String k) {
+    public String moving(@PathParam(value="key") String k) throws JsonProcessingException {
         Key key = new Key(k);
-
-        List<String> ret = new LinkedList<>();
-        for (GenericValue v : nodeSessionBean.getLessThanAndRemove(key) ) {
-            ret.add(new Gson().toJson(v));
-        }
-
-        return new Gson().toJson(ret);
+        List<GenericValue> list =  nodeSessionBean.getLessThanAndRemove(key);
+        
+        String jsonList = new ObjectMapper().writerFor(new TypeReference<List<GenericValue>>() {}).writeValueAsString(list);
+        return jsonList;
     }
 
     /**
      * Retrieves successor of given Key
      * @param k
      * @return an instance of java.lang.String
+         * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Path(value="/successor/{key : ([A-Za-z0-9]+)}")
     @Consumes(MediaType.TEXT_PLAIN)
-    public String findSuccessor(@PathParam(value="key") String k) {
+    public String findSuccessor(@PathParam(value="key") String k) throws JsonProcessingException {
 
         Key key = new Key(k);
 
-        return new Gson().toJson(nodeSessionBean.findSuccessor(key));
+        return new ObjectMapper().writeValueAsString(nodeSessionBean.findSuccessor(key));// new Gson().toJson(ret);
     }
     /**
      * Retrieves successor of given Key
      * @param k
      * @return an instance of java.lang.String
+         * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Path(value="/findPredecessor/{key : ([A-Za-z0-9]+)}")
     @Consumes(MediaType.TEXT_PLAIN)
-    public String findPredecessor(@PathParam(value="key") String k) {
+    public String findPredecessor(@PathParam(value="key") String k) throws JsonProcessingException {
 
         Key key = new Key(k);
-
-        return new Gson().toJson(nodeSessionBean.findPredecessor(key));
+        
+        return new ObjectMapper().writeValueAsString(nodeSessionBean.findPredecessor(key));
     }
 
     /**
@@ -153,10 +152,29 @@ public class RestAPI {
     @GET
     @Path(value="/predecessor")
     @Consumes(MediaType.TEXT_PLAIN)
-    public String getPredecessor() {
-        return new Gson().toJson(nodeSessionBean.getPredecessor());
+    public String getPredecessor() throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(nodeSessionBean.getPredecessor());
     }
 
+    /**
+     *
+     * @param u
+     * @return an instance of java.lang.String
+     */
+    @POST
+    @Path(value="/notify")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public String notify(String u) throws JsonProcessingException, IOException {
+        NodeReference nodeRef = new ObjectMapper().readValue(u, NodeReference.class);
+        return new ObjectMapper().writeValueAsString(nodeSessionBean.notify(nodeRef));
+    }
+
+    @GET
+    @Path(value="/ping")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public String ping() throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(nodeSessionBean.getNodeReference());
+    }
 
     private NodeSessionBeanLocal lookupNodeSessionBeanLocal() {
         try {
@@ -168,25 +186,5 @@ public class RestAPI {
         }
     }
 
-    @GET
-    @Path(value="/ping")
-    @Consumes(MediaType.TEXT_PLAIN)
-    public String ping() {
-        return new Gson().toJson(nodeSessionBean.getNodeReference());
-    }
-
-    /**
-     *
-     * @param u
-     * @return an instance of java.lang.String
-     */
-    @POST
-    @Path(value="/notify")
-    @Consumes(MediaType.TEXT_PLAIN)
-    public String notify(String u) {
-        NodeReference nodeRef = new Gson().fromJson(u, NodeReference.class);
-
-        return new Gson().toJson(nodeSessionBean.notify(nodeRef));
-    }
 
 }
