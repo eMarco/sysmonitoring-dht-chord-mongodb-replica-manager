@@ -139,8 +139,19 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
      */
     @Schedule(second = "*/" + PERIOD, minute = "*", hour = "*")
     private void stabilize() {
-        System.out.println("STABILIZE TRIGGERED " + this.successor.getNodeReference());
-        NodeReference successorsPredecessor = (isLocal(this.successor)) ? this.predecessor.getNodeReference() : this.successor.getPredecessor();
+        System.out.println(this.nodeRef.getHostname() + " STABILIZE TRIGGERED ON NODE" + this.successor.getNodeReference());
+        // TODO : Fix NPE
+
+        NodeReference successorsPredecessor;
+        if (isLocal(this.successor)) {
+            if (this.predecessor != null)
+                successorsPredecessor = this.predecessor.getNodeReference();
+            else return;
+        }
+        else {
+            successorsPredecessor = this.successor.getPredecessor();
+        }
+
 
         if (successorsPredecessor != null && !isLocal(successorsPredecessor)) {
             System.out.println("SUCCESSORS PREDECESSOR : " + successorsPredecessor.getHostname());
