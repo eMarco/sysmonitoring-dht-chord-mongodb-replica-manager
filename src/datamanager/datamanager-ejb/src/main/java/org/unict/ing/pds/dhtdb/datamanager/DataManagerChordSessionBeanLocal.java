@@ -6,6 +6,8 @@
 package org.unict.ing.pds.dhtdb.datamanager;
 
 import javax.ejb.Local;
+import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
+import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
 
 /**
  *
@@ -13,5 +15,7 @@ import javax.ejb.Local;
  */
 @Local
 public interface DataManagerChordSessionBeanLocal {
+
+    public Boolean write(Key key, GenericValue elem);
     
 }

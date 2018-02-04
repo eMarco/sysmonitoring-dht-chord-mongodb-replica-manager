@@ -13,9 +13,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import org.unict.ing.pds.dhtdb.utils.datamanager.DataManagerSessionBeanRemote;
 import org.unict.ing.pds.dhtdb.utils.model.*;
+import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
 
 /**
  *
@@ -24,20 +26,25 @@ import org.unict.ing.pds.dhtdb.utils.model.*;
 @Stateless
 public class DataManagerSessionBean implements DataManagerSessionBeanRemote {
 
+    @EJB
+    private DataManagerChordSessionBeanLocal dataManagerChordSessionBean;
+
     @Override
     public void put(String scanner, String topic, String content) {
         try {
             // Convert the request in the proper model object
-            Class<? extends GenericValue> t = Class.forName("org.unict.ing.pds.dhtdb.utils.model." + topic).asSubclass(GenericValue.class);
-            GenericValue fromJson = new Gson().fromJson(content, t); // is it going to work?
-
-            // TODO create the query
-            // TODO calculate the dht node to send the query
-            // TODO send the query to the proper dht node
-        } catch (ClassNotFoundException ex) {
-            // Wrong topic in request
+            ObjectMapper mapper = new ObjectMapper().enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+            List<GenericStat> fromJson = mapper.readValue(content,
+                    mapper.getTypeFactory().constructCollectionType(List.class, GenericValue.class));
+            fromJson.forEach(elem -> {
+                elem.setScannerId(scanner);
+                dataManagerChordSessionBean.write(new Key("the key to be done" + fromJson.toString()), elem);
+            });
+        }catch (IOException ex) {
             Logger.getLogger(DataManagerSessionBean.class.getName()).log(Level.SEVERE, null, ex);
         }
+        // Wrong topic in request
+        
     }
 
     @Override

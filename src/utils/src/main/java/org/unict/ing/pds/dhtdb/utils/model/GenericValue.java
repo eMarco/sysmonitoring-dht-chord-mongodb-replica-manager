@@ -5,7 +5,6 @@
  */
 package org.unict.ing.pds.dhtdb.utils.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.io.Serializable;
 import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
