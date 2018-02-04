@@ -25,12 +25,11 @@ public class FingerTable {
         return table;
     }
 
-
     /**
      *
      * @param tableElements
      */
-    public void replace(Collection<NodeReference> tableElements) {
+    public void setTable(Collection<NodeReference> tableElements) {
         table.clear();
         table.addAll(tableElements);
     }
@@ -58,14 +57,26 @@ public class FingerTable {
         return lower;
     }
 
+    /**
+     *
+     * @param node
+     */
     public void addNode(NodeReference node) {
         table.add(node);
     }
 
+    /**
+     *
+     * @return
+     */
     public NodeReference getFirst() {
         return table.first();
     }
 
+    /**
+     *
+     * @return
+     */
     public NodeReference getLast() {
         return table.last();
     }

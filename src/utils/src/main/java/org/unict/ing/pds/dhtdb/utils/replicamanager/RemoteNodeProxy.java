@@ -127,7 +127,7 @@ public class RemoteNodeProxy extends BaseNode {
     }
 
     @Override
-    public NodeReference getPredecessor() {
+    public NodeReference getPredecessorNodeRef() {
         try {
                 ClientResponse clientResponse = getWebResource("/predecessor/").get(ClientResponse.class);
 

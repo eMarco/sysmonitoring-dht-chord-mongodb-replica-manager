@@ -152,7 +152,7 @@ public class RestAPI {
     @Path(value="/predecessor")
     @Consumes(MediaType.TEXT_PLAIN)
     public String getPredecessor() throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(nodeSessionBean.getPredecessor());
+        return new ObjectMapper().writeValueAsString(nodeSessionBean.getPredecessorNodeRef());
     }
 
     /**
