@@ -18,7 +18,6 @@ import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
 @JsonSubTypes({
     @JsonSubTypes.Type(value = CPUStat.class),
     @JsonSubTypes.Type(value = IOStat.class),
-    @JsonSubTypes.Type(value = NetworkStat.class),
     @JsonSubTypes.Type(value = RAMStat.class),
     @JsonSubTypes.Type(value = UptimeStat.class),
 })
