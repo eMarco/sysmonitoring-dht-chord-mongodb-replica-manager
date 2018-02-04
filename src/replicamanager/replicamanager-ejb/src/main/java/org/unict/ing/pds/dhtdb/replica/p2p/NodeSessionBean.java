@@ -25,6 +25,7 @@ import org.unict.ing.pds.dhtdb.replica.storage.MongoDBStorage;
 import org.unict.ing.pds.dhtdb.utils.model.CPUStat;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 import org.unict.ing.pds.dhtdb.utils.replicamanager.BaseNode;
+import org.unict.ing.pds.dhtdb.utils.replicamanager.FingerTable;
 import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
 import org.unict.ing.pds.dhtdb.utils.replicamanager.NodeReference;
 import org.unict.ing.pds.dhtdb.utils.replicamanager.RemoteNodeProxy;
