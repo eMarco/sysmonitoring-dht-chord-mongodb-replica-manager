@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import pika
-import sys
+import requests
 
 
 def parse_parameters():
@@ -12,6 +12,14 @@ def parse_parameters():
     parser.add_argument("-b", "--broker", dest="broker",
                         default="distsystems_rabbitmq_1", type=str,
                         help="Broker address. Default: distsystems_rabbitmq_1", metavar="ADDRESS")
+
+    parser.add_argument("-a", "--address", dest="address",
+                        default="distsystems_datamanager_1:8080", type=str,
+                        help="IP\Hostname of the Datamanager. Default: distsystems_datamanager_1:8080", metavar="ADDRESS")
+
+    parser.add_argument("-U", "--url", dest="url",
+                        default="/datamanager-web/datamanager/scanners/", type=str,
+                        help="Url path to the resource. Default: /datamanager-web/datamanager/scanners/", metavar="URL")
 
     parser.add_argument("-e", "--exchange", dest="exchange",
                         default="amq.topic", type=str,
@@ -66,11 +74,21 @@ def run(options):
                            queue=queue_name,
                            routing_key=binding_key)
 
+    resource_url = "http://" + options.address + options.url
     print(" [*] Waiting for logs. To exit press CTRL+C")
 
     def callback(ch, method, properties, body):
-        print(method)
-        print(" [x] %r:%r:%r:%r" % (method.routing_key, body, ch, properties))
+        #print(" [x] %r:%r:%r:%r" % (method.routing_key, body, ch, properties))
+
+        splitted_routing_key = method.routing_key.split('.')
+        print(" [x] ScannerID: {:s}, Topic: {:s}, Body: {:s}".format(splitted_routing_key[0], splitted_routing_key[-1], body.decode("utf-8")))
+        print(resource_url + splitted_routing_key[0] + "/" + splitted_routing_key[-1])
+        try:
+            r = requests.post(resource_url + splitted_routing_key[0] + "/" + splitted_routing_key[-1], data=body.decode("utf-8"))
+            #print(" POST status: " + r.status_code + " " + r.reason)
+        except requests.exceptions.ConnectionError:
+            print("Cannot reach Datamanager!")
+
 
     channel.basic_consume(callback,
                           queue=queue_name,
@@ -83,7 +101,7 @@ def main():
 
     # Parse args
     args = parse_parameters()
-    
+
     # Run the algorithm
     run(options=args)
 
