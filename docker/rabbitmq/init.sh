@@ -16,7 +16,7 @@ echo "Looking for number of replicas" >> /var/log/init.log
 REPLICAS=0
 
 # Loop until DNS resolution of common_name_$REPLICA_ID fails
-while [ $(host -4 -t a distsystems_scanner_$((REPLICAS+1)) > /dev/null; echo $?) -eq 0 ]
+while [ $(host -4 -t a distsystems_scanner_$((REPLICAS+1)) | grep "has no" > /dev/null; echo $?) -ne 0 ]
 do
     ((REPLICAS++))
 done
