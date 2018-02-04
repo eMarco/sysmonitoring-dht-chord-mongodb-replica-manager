@@ -5,19 +5,15 @@
  */
 package org.unict.ing.pds.dhtdb.replica.p2p;
 
-import org.unict.ing.pds.dhtdb.utils.replicamanager.FingerTable;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.NodeReference;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.RemoteNodeProxy;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.BaseNode;
 import com.google.gson.Gson;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
+import javax.ejb.Lock;
+import javax.ejb.LockType;
 import javax.ejb.SessionContext;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -28,6 +24,11 @@ import javax.ejb.TimerService;
 import org.unict.ing.pds.dhtdb.replica.storage.MongoDBStorage;
 import org.unict.ing.pds.dhtdb.utils.model.CPUStat;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
+import org.unict.ing.pds.dhtdb.utils.replicamanager.BaseNode;
+import org.unict.ing.pds.dhtdb.utils.replicamanager.FingerTable;
+import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
+import org.unict.ing.pds.dhtdb.utils.replicamanager.NodeReference;
+import org.unict.ing.pds.dhtdb.utils.replicamanager.RemoteNodeProxy;
 
 /**
  *
@@ -35,7 +36,8 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
  */
 @Singleton
 @Startup
-@ConcurrencyManagement(ConcurrencyManagementType.BEAN)
+@ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
+@Lock(LockType.READ)
 public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     /***
@@ -113,8 +115,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
      * Create new Chord Ring
      */
     private void create() {
-        this.predecessor    = null;
-        this.successor      = getReference(this.nodeRef);
+        this.setPredecessor(null);
+        this.setSuccessor(getReference(this.nodeRef));
     }
 
     /***
@@ -136,10 +138,10 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
             return false;
         }
 
-        this.successor = this.getReference(newSuccessor);
-        System.out.println("NEW SUCCESSOR " + this.successor.getNodeReference());
+        this.setSuccessor(this.getReference(newSuccessor));
+        System.out.println("NEW SUCCESSOR " + this.getSuccessor().getNodeReference());
 
-        NodeReference successorsPredecessor = this.successor.notify(this.nodeRef);
+        NodeReference successorsPredecessor = this.getSuccessor().notify(this.nodeRef);
 
         if (successorsPredecessor == null) return false;
         else if(!isLocal(successorsPredecessor)) {
@@ -172,19 +174,17 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     public NodeReference notify(NodeReference nodeRef) {
         System.out.println(this.nodeRef.getHostname() + " NODE " + nodeRef.getHostname() + " wants to become our predecessor");
         // Check if predecessor is null
-        if (this.predecessor == null
+        if (this.getPredecessor() == null
                 ||
                 // OR if the notifying node's ID: predecessor.ID < NN.ID < this.ID
-                (this.predecessor.getNodeReference().compareTo(nodeRef) < 0 && nodeRef.compareTo(this.nodeRef) < 0)
+                (this.getPredecessor().getNodeReference().compareTo(nodeRef) < 0 && nodeRef.compareTo(this.nodeRef) < 0)
                 ||
                 // OR if:
                 (
-                    // our predecessor has a greater key than ours (we're the first in the ring)
-                    this.predecessor.getNodeReference().compareTo(this.nodeRef) > 0
+                this.getPredecessor().getNodeReference().compareTo(this.nodeRef) > 0
                     // AND
                     && (
-                        // the notifying node's ID is greater than our predecessor's. In this case, we're "enlarging" the ring
-                        this.predecessor.getNodeReference().compareTo(nodeRef) <= 0
+                this.getPredecessor().getNodeReference().compareTo(nodeRef) <= 0
                         || // OR
                         // the notifying node's ID is lower than ours. In this case, we're "enlarging" the ring
                         this.nodeRef.compareTo(nodeRef) >= 0
@@ -192,17 +192,17 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
                 )
             ) {
             System.out.println(this.nodeRef.getHostname() + " NOTIFY SUCCESSFULL");
-            this.predecessor = getReference(nodeRef);
+            this.setPredecessor(getReference(nodeRef));
 
             // Add predecessor to FingerTable
             fingerTable.addNode(nodeRef);
             return nodeRef;
         }
 
-        System.out.println(this.nodeRef.getHostname() + " NOTIFY FAILED: " + this.predecessor.getNodeReference().compareTo(nodeRef) + " " + nodeRef.compareTo(this.nodeRef) + " " + this.predecessor.getNodeReference().compareTo(this.nodeRef) + " " + this.predecessor.getNodeReference().compareTo(nodeRef));
+        System.out.println(this.nodeRef.getHostname() + " NOTIFY FAILED: " + this.getPredecessor().getNodeReference().compareTo(nodeRef) + " " + nodeRef.compareTo(this.nodeRef) + " " + this.getPredecessor().getNodeReference().compareTo(this.nodeRef) + " " + this.getPredecessor().getNodeReference().compareTo(nodeRef));
 
         // Return our predecessor
-        return this.predecessor.getNodeReference();
+        return this.getPredecessor().getNodeReference();
     }
 
     /***
@@ -213,38 +213,36 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     private void stabilize() {
         if (!hasJoined) return;
 
-        System.out.println(this.nodeRef.getHostname() + " STABILIZE TRIGGERED. SUCCESSOR NODE " + this.successor.getNodeReference());
+        System.out.println(this.nodeRef.getHostname() + " STABILIZE TRIGGERED. SUCCESSOR NODE " + this.getSuccessor().getNodeReference());
         // TODO : Fix NPE
 
         NodeReference successorsPredecessor;
-        if (isLocal(this.successor)) {
-            if (this.predecessor != null)
-                successorsPredecessor = this.predecessor.getNodeReference();
+        if (isLocal(this.getSuccessor())) {
+            if (this.getPredecessor() != null)
+                successorsPredecessor = this.getPredecessor().getNodeReference();
             else {
                 System.out.println("SUCCESSORS PREDECESSOR IS NULL");
                 return;
             }
         }
         else {
-            successorsPredecessor = this.successor.getPredecessor();
+            successorsPredecessor = this.getSuccessor().getPredecessorNodeRef();
         }
 
 
         if (successorsPredecessor != null && !isLocal(successorsPredecessor)) {
-            System.out.println(this.nodeRef.getHostname() + " SUCCESSORS PREDECESSOR : " + successorsPredecessor.getHostname() + " " + this.getNodeReference().compareTo(successorsPredecessor) + " " + successorsPredecessor.compareTo(this.successor.getNodeReference()));
+            System.out.println(this.nodeRef.getHostname() + " SUCCESSORS PREDECESSOR : " + successorsPredecessor.getHostname() + " " + this.getNodeReference().compareTo(successorsPredecessor) + " " + successorsPredecessor.compareTo(this.getSuccessor().getNodeReference()));
             // if (this.successor == this
-            if (isLocal(this.successor)
+            if (isLocal(this.getSuccessor())
                     // OR if successorsPredecessor ∈ (this, successor))
-                    || (this.getNodeReference().compareTo(successorsPredecessor) < 0 && successorsPredecessor.compareTo(this.successor.getNodeReference()) < 0)
+                    || (this.getNodeReference().compareTo(successorsPredecessor) < 0 && successorsPredecessor.compareTo(this.getSuccessor().getNodeReference()) < 0)
 
                     || // OR if:
                         (
-                            // our successor has a lower key than ours (we're the last in the ring)
-                            this.successor.getNodeReference().compareTo(this.nodeRef) < 0
+                    this.getSuccessor().getNodeReference().compareTo(this.nodeRef) < 0
                             // AND
                             && (
-                                // the node ID of the successor's predecessor is lower than our successor's. In this case, we're "enlarging" the ring
-                                this.successor.getNodeReference().compareTo(successorsPredecessor) >= 0
+                    this.getSuccessor().getNodeReference().compareTo(successorsPredecessor) >= 0
                                 || // OR
                                 this.nodeRef.compareTo(successorsPredecessor) <= 0
                             )
@@ -252,24 +250,24 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
                     ) {
                 System.out.println(this.nodeRef.getHostname() + " UPDATED SUCCESSOR TO " + successorsPredecessor.getHostname());
                 // Set the new successor and notify it about its new predecessor
-                this.successor = getReference(successorsPredecessor);
+                this.setSuccessor(getReference(successorsPredecessor));
 
                 // Add successor to FingerTable
                 fingerTable.addNode(successorsPredecessor);
             }
             else {
-                System.out.println(this.nodeRef.getHostname() + " SUCCESSOR STILL " + this.successor.getNodeReference().getHostname());
+                System.out.println(this.nodeRef.getHostname() + " SUCCESSOR STILL " + this.getSuccessor().getNodeReference().getHostname());
             }
 
             if (!isLocal(this.successor)) {
-                successorsPredecessor = this.successor.notify(this.nodeRef);
+                successorsPredecessor = this.getSuccessor().notify(this.nodeRef);
 
                 if (successorsPredecessor != null && !isLocal(successorsPredecessor)) {
                     // This is not right. Set our new successor
 
                     // TODO check if legit?
                     // TODO: notify?
-                    this.successor = getReference(successorsPredecessor);
+                    this.setSuccessor(getReference(successorsPredecessor));
 
                     fingerTable.addNode(successorsPredecessor);
                 }
@@ -277,8 +275,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         }
         else System.out.println("SUCCESSORS PREDECESSOR LOCAL OR NULL");
 
-        if (this.predecessor != null) System.out.println(this.nodeRef.getHostname() + " CURRENT PREDECESSOR: " + this.predecessor.getNodeReference().getHostname());
-        if (this.successor != null) System.out.println(this.nodeRef.getHostname() + " CURRENT SUCCESSOR " + this.successor.getNodeReference().getHostname());
+        if (this.getPredecessor() != null) System.out.println(this.nodeRef.getHostname() + " CURRENT PREDECESSOR: " + this.getPredecessor().getNodeReference().getHostname());
+        if (this.getSuccessor() != null) System.out.println(this.nodeRef.getHostname() + " CURRENT SUCCESSOR " + this.getSuccessor().getNodeReference().getHostname());
 
         System.out.println("STABILIZE ENDED");
     }
@@ -296,7 +294,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
      *
      */
     private void moveKeys() {
-        List<GenericValue> myKeys = this.successor.getLessThanAndRemove(this.nodeRef.getNodeId());
+        List<GenericValue> myKeys = this.getSuccessor().getLessThanAndRemove(this.nodeRef.getNodeId());
         put(myKeys);
     }
 
@@ -327,24 +325,29 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
         // System.out.println("FIXING FINGERS");
 
-        List<NodeReference> tableEntries = new LinkedList<>();
+        FingerTable newFingerTable = new FingerTable();
 
         // Add this node...
-        tableEntries.add(this.nodeRef);
+        newFingerTable.addNode(this.nodeRef);
 
         // ... and both its successor and predecesor node
-        if (this.successor != null) tableEntries.add(this.successor.getNodeReference());
-        if (this.predecessor != null) tableEntries.add(this.predecessor.getNodeReference());
+        if (this.getSuccessor() != null) newFingerTable.addNode(this.getSuccessor().getNodeReference());
+        if (this.getPredecessor() != null) newFingerTable.addNode(this.getPredecessor().getNodeReference());
 
         for (int i = 0; i < Key.LENGHT; i++) {
-            tableEntries.add(
+            newFingerTable.addNode(
                     this.findSuccessor(
                             this.nodeRef.getNodeId().sumPow(i)
                     )
             );
         }
 
-        this.fingerTable.replace(tableEntries);
+        this.replaceFingers(newFingerTable);
+    }
+
+    @Lock(LockType.WRITE)
+    private void replaceFingers(FingerTable newFingerTable) {
+        this.fingerTable = newFingerTable;
     }
 
     /******** DHT/FUNCTIONAL/STORAGE METHODS ********/
@@ -438,12 +441,12 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         if (isLocal(closestPrecedingNode)) {
             // return (successor)
 //            System.out.println("I am the the closestPrecedingNode; My successor the owner for the key " + key);
-            if (this.successor == null || isLocal(this.successor)) {
+            if (this.getSuccessor() == null || isLocal(this.getSuccessor())) {
 //                System.out.println("GETTING THE FIRST FROM THE FINGERTABLE");
                 return fingerTable.getFirst();
             }
 
-            return this.successor.getNodeReference();
+            return this.getSuccessor().getNodeReference();
         }
 
         // get the closest preceding node and trigger the findSuccessor (remote)
@@ -513,11 +516,11 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     }
 
     public boolean isPredecessor(NodeReference obj) {
-        if (obj == null || this.predecessor == null) {
+        if (obj == null || this.getPredecessor() == null) {
             return false;
         }
 
-        return this.predecessor.getNodeReference().equals(obj);
+        return this.getPredecessor().getNodeReference().equals(obj);
     }
 
     /***
@@ -525,8 +528,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
      * @return
      */
     public boolean checkPredecessor() {
-        return this.predecessor.getNodeReference()
-                .equals(new RemoteNodeProxy(this.predecessor
+        return this.getPredecessor().getNodeReference()
+                .equals(new RemoteNodeProxy(this.getPredecessor()
                         .getNodeReference()).ping());
     }
 
@@ -535,8 +538,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
      * @return
      */
     @Override
-    public NodeReference getPredecessor() {
-        return (this.predecessor != null) ? this.predecessor.getNodeReference() : null;
+    public NodeReference getPredecessorNodeRef() {
+        return (this.getPredecessor() != null) ? this.getPredecessor().getNodeReference() : null;
     }
 
     /*** TESTING/DEVELOPMENT METHODS ****/
@@ -563,5 +566,39 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         ret += new Gson().toJson(lookup(myKey));
 
         return ret;
+    }
+
+
+    /*** GETTERS AND SETTERS ****/
+
+
+    /**
+     * @return the successor
+     */
+    public BaseNode getSuccessor() {
+        return successor;
+    }
+
+    /**
+     * @param successor the successor to set
+     */
+    @Lock(LockType.WRITE)
+    public void setSuccessor(BaseNode successor) {
+        this.successor = successor;
+    }
+
+    /**
+     * @return the predecessor
+     */
+    public BaseNode getPredecessor() {
+        return predecessor;
+    }
+
+    /**
+     * @param predecessor the predecessor to set
+     */
+    @Lock(LockType.WRITE)
+    public void setPredecessor(BaseNode predecessor) {
+        this.predecessor = predecessor;
     }
 }
