@@ -46,6 +46,9 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     private static final int PERIOD = 10; //seconds
 
+    private static final int JOIN_MULT      = 2;
+    private static final int STABILIZE_MULT = 1;
+    private static final int FIXFINGER_MULT = 6;
     private BaseNode        successor, predecessor;
     private FingerTable     fingerTable;
     private Storage         storage;
@@ -74,10 +77,10 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
         TimerService timerService = context.getTimerService();
         timerService.getTimers().forEach((Timer t) -> t.cancel());
-        timerService.createIntervalTimer(15000, PERIOD*1000,   new TimerConfig("STABILIZE", true));
-        timerService.createIntervalTimer(16000, 2*PERIOD*1000, new TimerConfig("FIXFINGERS", true));
+        timerService.createIntervalTimer(2020, STABILIZE_MULT * PERIOD * 1000, new TimerConfig("STABILIZE", true));
+        timerService.createIntervalTimer(4000, FIXFINGER_MULT * PERIOD * 1000, new TimerConfig("FIXFINGERS", true));
         if (!isLocal(joinEntryPoint)) {
-            timerService.createIntervalTimer(1000, 1000, new TimerConfig("JOIN", true));
+            timerService.createIntervalTimer(1050,  JOIN_MULT * PERIOD * 1000, new TimerConfig("JOIN", true));
         } else {
             this.hasJoined = true;
         }
