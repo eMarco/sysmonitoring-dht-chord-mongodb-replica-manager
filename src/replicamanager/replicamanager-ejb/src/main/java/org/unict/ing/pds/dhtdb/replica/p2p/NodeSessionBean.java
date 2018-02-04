@@ -364,7 +364,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
      */
     @Override
     public List<GenericValue> get(Key key) {
-        System.out.println("SEARCHING DB FOR KEY: " + key);
+        System.out.println("SEARCHING DB FOR KEY: " + key + " ON NODE " + this.nodeRef);
         List<GenericValue> foundValues = this.storage.find(key);
         System.out.println("FOUND " + foundValues.toString());
         // The returned list has length 0 or more
@@ -378,6 +378,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
      */
     @Override
     public Boolean put(GenericValue elem) {
+        System.out.println("PUT FOR KEY " + elem.getKey() + "TRIGGERED ON NODE " + this.nodeRef);
         this.storage.insert(elem);
         return true;
     }
