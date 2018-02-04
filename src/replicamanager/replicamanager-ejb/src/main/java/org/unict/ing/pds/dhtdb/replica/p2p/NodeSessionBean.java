@@ -44,7 +44,7 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
-    private static final int PERIOD = 30; //seconds
+    private static final int PERIOD = 10; //seconds
 
     private BaseNode        successor, predecessor;
     private FingerTable     fingerTable;
@@ -153,17 +153,18 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
             System.out.println("Error joining the ring. Successor didn't set this node as predecessor.");
 
             fingerTable.addNode(successorsPredecessor);
-            // Retry joining using the new successorsPredecessor
 
+            // Retry joining using the new successorsPredecessor
             if (!entryPoint.equals(successorsPredecessor)) {
                 this.joinEntryPoint = successorsPredecessor;
-
-                 //this.join(successorsPredecessor);
             }
             else {
                 this.joinEntryPoint = fingerTable.getLast();
             }
             return false;
+        }
+        else {
+            this.joinEntryPoint = fingerTable.getFirst();
         }
 
         this.fillFingertable();
