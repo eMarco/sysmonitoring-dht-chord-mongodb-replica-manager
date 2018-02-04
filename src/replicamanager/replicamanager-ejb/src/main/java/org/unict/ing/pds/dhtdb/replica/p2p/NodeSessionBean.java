@@ -276,8 +276,12 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
         List<NodeReference> tableEntries = new LinkedList<>();
 
-        // Add this node
+        // Add this node...
         tableEntries.add(this.nodeRef);
+
+        // ... and both its successor and predecesor node
+        if (this.successor != null) tableEntries.add(this.successor.getNodeReference());
+        if (this.predecessor != null) tableEntries.add(this.predecessor.getNodeReference());
 
         for (int i = 0; i < Key.LENGHT; i++) {
             tableEntries.add(
