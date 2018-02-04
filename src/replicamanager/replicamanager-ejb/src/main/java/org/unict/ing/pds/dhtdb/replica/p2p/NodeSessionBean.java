@@ -53,9 +53,6 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     private Boolean         hasJoined = false;
     private NodeReference   joinEntryPoint = new NodeReference("distsystems_replicamanager_1");
 
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
-
     @Resource
     private SessionContext context;
 
@@ -75,29 +72,15 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         // Init the ring
         this.create();
 
-        scheduler.schedule(() -> {
-            System.out.println(this.nodeRef.getHostname() + " JOINING THE RING");
-            if (!isLocal(joinEntryPoint)) {
-                while (!this.join(joinEntryPoint)) {
-
-                    System.out.println("JOIN FAILED");
-                    try {
-                        System.out.println("SLEEPING FAILED");
-                        Thread.sleep(10 * 1000);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(NodeSessionBean.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-                System.out.println("JOIN SUCCESSFUL");
-            } else {
-                this.hasJoined = true;
-            }
-        }, 10, TimeUnit.SECONDS);
-
         TimerService timerService = context.getTimerService();
         timerService.getTimers().forEach((Timer t) -> t.cancel());
-        Timer t  =  timerService.createIntervalTimer(15000, PERIOD*1000,  new TimerConfig(new String("STABILIZE"), true));
-        Timer t2 =  timerService.createIntervalTimer(16000, 2*PERIOD*1000,  new TimerConfig(new String("FIXFINGERS"), true));
+        timerService.createIntervalTimer(15000, PERIOD*1000,   new TimerConfig("STABILIZE", true));
+        timerService.createIntervalTimer(16000, 2*PERIOD*1000, new TimerConfig("FIXFINGERS", true));
+        if (!isLocal(joinEntryPoint)) {
+            timerService.createIntervalTimer(1000, 1000, new TimerConfig("JOIN", true));
+        } else {
+            this.hasJoined = true;
+        }
     }
 
     @Timeout
@@ -110,6 +93,16 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         if (timer.getInfo().equals("FIXFINGERS")) {
             System.err.println("FIXFINGERS CALLING"); 
             fixFingers();
+        }
+
+        if (timer.getInfo().equals("JOIN")) {
+            System.out.println(this.nodeRef.getHostname() + " JOINING THE RING");
+            if (!this.join(joinEntryPoint)) {
+                System.out.println("JOIN FAILED");
+            } else {
+                System.out.println("JOIN SUCCESSFUL");
+                timer.cancel();
+            }
         }
     }
 
