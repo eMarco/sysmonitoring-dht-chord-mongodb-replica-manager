@@ -156,15 +156,14 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
             // Retry joining using the new successorsPredecessor
             if (!entryPoint.equals(successorsPredecessor)) {
-                this.joinEntryPoint = successorsPredecessor;
+                this.joinEntryPoint = !isLocal(successorsPredecessor) ? successorsPredecessor : fingerTable.getLast();
+//                this.joinEntryPoint = successorsPredecessor;
             }
             else {
-                this.joinEntryPoint = fingerTable.getLast();
+                this.joinEntryPoint = !isLocal(fingerTable.getLast()) ? fingerTable.getLast() : fingerTable.getFirst();
             }
+
             return false;
-        }
-        else {
-            this.joinEntryPoint = fingerTable.getFirst();
         }
 
         this.fillFingertable();
