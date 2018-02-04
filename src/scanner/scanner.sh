@@ -46,10 +46,6 @@ function get_io_stats {
     echo \[$(iostat | tail -n +7 | sed 's/[ ]\+/ /g' | cut -d " " -f 1,3,4 | sed "s/^\(.*\) \(.*\) \(.*\)/{\"disk\":\"\1\", \"WritekBps\":\"\2\", \"ReadkBps\":\"\3\", $(get_timestamp), \"className\": \"org.unict.ing.pds.dhtdb.utils.model.IOStat\" },/")#\] | sed 's/,#//'
 }
 
-function get_if_stats {
-    echo $(ip -s -h link show | grep -E "RX|TX|^[0-9]*:" -A 1 | sed -e '/link/d' -e '/[RT]X/d' -e 's/: <.*//' -e 's/[0-9]*: //' -e 's/[ ]\+/ /g') $(date --rfc-3339=ns)
-}
-
 function send {
     TOPIC=$1
     BODY=$2
@@ -61,7 +57,7 @@ function send {
 send "$TOPIC_PREFIX.monitor.uptime" "$(get_uptime)" &
 send "$TOPIC_PREFIX.monitor.memory" "$(get_mem_usage)" &
 send "$TOPIC_PREFIX.monitor.cpu" "$(get_cpu_usage)" &
-send "$TOPIC_PREFIX.monitor.ifs" "$(get_if_stats)" &
-send "$TOPIC_PREFIX.monitor.ios" "$(get_io_stats | sed 's/,\]/]/')" &
+send "$TOPIC_PREFIX.monitor.ios" "$(get_io_stats)" &
 
-sleep 5 # TODO DELETE when send will be implemented with rabbitmqadmin tool (just for tests)
+sleep 5 # TODO DELETE when send will be implemented with rabbitmqadmin tool (just for tests
+
