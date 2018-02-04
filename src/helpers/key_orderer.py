@@ -26,7 +26,7 @@ def run(options):
 
     hashes = {}
 
-    for n in range(options.num):
+    for n in range(1, options.num+1):
         key = options.prefix + str(n)
 
         hashes[key] = hashlib.sha1(key.encode('utf-8')).hexdigest()
@@ -35,7 +35,7 @@ def run(options):
 
     i = 1
     for h in ordered_hashes:
-        print(str(i) + " - " + h[0])
+        print(h[0])
         i += 1
 
 
