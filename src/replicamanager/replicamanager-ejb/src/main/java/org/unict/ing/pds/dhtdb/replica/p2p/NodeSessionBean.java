@@ -44,11 +44,11 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
-    private static final int PERIOD = 10; //seconds
+    private static final int PERIOD = 5; //seconds
 
     private static final int JOIN_MULT      = 2;
     private static final int STABILIZE_MULT = 1;
-    private static final int FIXFINGER_MULT = 6;
+    private static final int FIXFINGER_MULT = 10;
     private BaseNode        successor, predecessor;
     private FingerTable     fingerTable;
     private Storage         storage;
