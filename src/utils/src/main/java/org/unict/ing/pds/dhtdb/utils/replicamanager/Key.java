@@ -77,9 +77,13 @@ public final class Key implements Comparable<Key>, Serializable {
     private static final int BIN = 2;
 
     public Key sumPow(int pow) {
-        return this.sum(new BigInteger("2", DEC).pow(pow));
+        return this.sumPow(pow, 1);
     }
 
+    public Key sumPow(int pow, int divisor) {
+        return this.sum(new BigInteger("2", DEC).pow(pow).divide(new BigInteger(String.valueOf(divisor), DEC)));
+    }
+    
     public Key sum(BigInteger integer) {
         return sum(this, integer);
     }
