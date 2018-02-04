@@ -91,8 +91,8 @@ public class ScannersResource {
     }
 
     @POST
-    @Consumes(MediaType.TEXT_PLAIN)
-    @Path(value="/{scanner:[0-9]+}/{topic:[a-zA-Z]+}")
+    @Consumes(MediaType.WILDCARD)
+    @Path(value="/{scanner:[a-zA-Z0-9_]+}/{topic:[a-zA-Z]+}")
     public void postStat(String content,
             @PathParam(value="topic")   String topic,
             @PathParam(value="scanner") String scanner) {

@@ -38,7 +38,7 @@ public class DataManagerSessionBean implements DataManagerSessionBeanRemote {
                     mapper.getTypeFactory().constructCollectionType(List.class, GenericValue.class));
             fromJson.forEach(elem -> {
                 elem.setScannerId(scanner);
-                dataManagerChordSessionBean.write(new Key("the key to be done" + fromJson.toString()), elem);
+                dataManagerChordSessionBean.write(new Key("the key to be done" + fromJson.toString(), true), elem);
             });
         }catch (IOException ex) {
             Logger.getLogger(DataManagerSessionBean.class.getName()).log(Level.SEVERE, null, ex);

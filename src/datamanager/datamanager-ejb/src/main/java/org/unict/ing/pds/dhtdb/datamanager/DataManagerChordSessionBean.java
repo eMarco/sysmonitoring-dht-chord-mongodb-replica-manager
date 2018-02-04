@@ -99,7 +99,11 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
      * @return
      */
     public NodeReference findSuccessor(Key key) {
-        NodeReference closestPrecedingNode = fingerTable.getClosestPrecedingNode(key);
+        return findSuccessor(key, this.fingerTable);
+    }
+
+    public NodeReference findSuccessor(Key key, FingerTable fingers) {
+        NodeReference closestPrecedingNode = fingers.getClosestPrecedingNode(key);
         return getReference(closestPrecedingNode).findSuccessor(key); // As NodeReference returned
     }
 
@@ -113,12 +117,11 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
     private void fixFingers() {
         FingerTable newFingerTable = new FingerTable();
         newFingerTable.addNode(MASTER_NODE);
-        
         for (int i = 0; i < Key.LENGHT; i++) {
-            newFingerTable.addNode(this.findSuccessor(
-                    newFingerTable.getLast().getNodeId()));
+            Key sumPow = newFingerTable.getLast().getNodeId().sumPow(Key.LENGHT, Key.LENGHT);
+            NodeReference succ = findSuccessor(sumPow, newFingerTable);
+            newFingerTable.addNode(succ);
         }
-
         this.swapFingerTable(newFingerTable);
     }
 
