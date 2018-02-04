@@ -35,7 +35,7 @@ def run(options):
 
     i = 1
     for h in ordered_hashes:
-        print(h[0])
+        print(h[0] + " : " + h[1])
         i += 1
 
 
