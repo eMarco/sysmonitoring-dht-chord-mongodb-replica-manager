@@ -6,9 +6,9 @@ RABBIT_USER=$TOPIC_PREFIX
 RABBIT_PASS="somepass"
 EXCHANGE="amq.topic"
 
-# Pretty print the date using rfc3339
+# Pretty print the date using in seconds since the epoch
 function get_timestamp {
-    echo "\"timestamp\": \"$(date --rfc-3339=ns)\""
+    echo "\"timestamp\": $(date +%s)"
 }
 
 function get_uptime {
@@ -19,7 +19,7 @@ function get_uptime {
     hours=$((uptime/60/60%24))
     days=$((uptime/60/60/24))
 
-    echo "{\"seconds\": \"$seconds\", \"minutes\":\"$minutes\", \"hours\":\"$hours\", \"days\": \"$days\", $(get_timestamp)}"
+    echo "{\"seconds\": \"$seconds\", \"minutes\":\"$minutes\", \"hours\":\"$hours\", \"days\": \"$days\", $(get_timestamp), \"className\": \"org.unict.ing.pds.dhtdb.utils.model.UptimeStat\"}"
 }
 
 function get_load {
@@ -34,16 +34,16 @@ function get_cpu_usage {
     do
         ret=$(echo $ret $i | awk '{print $1 + $2}')
     done
-    echo "{\"cpu:\" \"$ret\", $(get_timestamp)}"
+    echo "{\"usage\": $ret, $(get_timestamp), \"className\": \"org.unict.ing.pds.dhtdb.utils.model.CPUStat\"}"
 }
 
 function get_mem_usage {
-    echo "{" $(cat /proc/meminfo | head -n 3 | sed -e 's/\(.*\):[ ]*\([0-9]\+\) kB/"\1":"\2"/' -e 's/$/,/') $(get_timestamp)}
+    echo "{" $(cat /proc/meminfo | head -n 3 | sed -e 's/\(.*\):[ ]*\([0-9]\+\) kB/"\1":"\2"/' -e 's/$/,/') $(get_timestamp), \"className\": \"org.unict.ing.pds.dhtdb.utils.model.RAMStat\" }
 }
 
 #TODO better way to not depend on sysstat
 function get_io_stats {
-    echo \[$(iostat | tail -n +7 | sed 's/[ ]\+/ /g' | cut -d " " -f 1,3,4 | sed 's/^\(.*\) \(.*\) \(.*\)/{"disk":"\1", "WritekBps":"\2", "ReadkBps":"\3"},/') {$(get_timestamp)}\]
+    echo \[$(iostat | tail -n +7 | sed 's/[ ]\+/ /g' | cut -d " " -f 1,3,4 | sed "s/^\(.*\) \(.*\) \(.*\)/{\"disk\":\"\1\", \"WritekBps\":\"\2\", \"ReadkBps\":\"\3\", $(get_timestamp), \"className\": \"org.unict.ing.pds.dhtdb.utils.model.IOStat\" },/")#\] | sed 's/,#//'
 }
 
 function get_if_stats {

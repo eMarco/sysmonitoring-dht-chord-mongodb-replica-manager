@@ -59,7 +59,7 @@ public class ScannersResource {
     }
 
 
-        /**
+     /**
      *
      * @param scanner
      * @param tsStart
@@ -97,6 +97,23 @@ public class ScannersResource {
             @PathParam(value="topic")   String topic,
             @PathParam(value="scanner") String scanner) {
         dataManagerSessionBean.put(scanner, topic, content);
+    }
+
+    /**
+     * Retrieves representation of an instance of org.unict.ing.pds.dhtdb.datamanager.ScannersResource
+     * @param tsStart
+     * @param tsEnd
+     * @return an instance of java.lang.String
+     */
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path(value="test")
+    public String test() {
+        String respo = "CIAO";
+        String content = "overrided";
+        respo += dataManagerSessionBean.test(content);
+        return respo; 
+        //return dataManagerSessionBean.get(null, null, tsStart.substring(1), tsEnd.substring(1));
     }
 
     private DataManagerSessionBeanRemote lookupDataManagerSessionBeanRemote() {

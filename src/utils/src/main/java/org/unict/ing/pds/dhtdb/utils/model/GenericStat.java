@@ -23,16 +23,19 @@ import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
     @JsonSubTypes.Type(value = UptimeStat.class),
 })
 public abstract class GenericStat extends GenericValue {
-    private final long timestamp;
+    private long timestamp;
 
-    private final String scannerId;
+    private String scannerId;
 
     public GenericStat(long timestamp, String scannerId, Key key) {
         super(key);
         this.timestamp = timestamp;
         this.scannerId = scannerId;
     }
-
+    public GenericStat(){
+        super(new Key(""));
+    }
+    
     public String getScannerId() {
         return scannerId;
     }
@@ -40,4 +43,13 @@ public abstract class GenericStat extends GenericValue {
     public long getTimestamp() {
         return timestamp;
     }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public void setScannerId(String scannerId) {
+        this.scannerId = scannerId;
+    }
+    
 }

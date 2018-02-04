@@ -52,7 +52,7 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
         this.fingerTable = new FingerTable();
         TimerService timerService = context.getTimerService();
         timerService.getTimers().forEach((Timer t) -> t.cancel());
-        timerService.createIntervalTimer(2020, PERIOD * 1000, new TimerConfig("FINGERS", true));
+        //timerService.createIntervalTimer(2020, PERIOD * 1000, new TimerConfig("FINGERS", true));
     }
 
     @Timeout

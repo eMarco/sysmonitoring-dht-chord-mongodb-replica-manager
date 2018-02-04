@@ -10,30 +10,30 @@ import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
 
 
 public class RAMStat extends GenericStat {
-    private final int free, total, available;
+    private final int memFree, memTotal, memAvailable;
 
     public RAMStat(
-            @JsonProperty("free")      int free,
-            @JsonProperty("total")     int total,
-            @JsonProperty("available") int available,
-            @JsonProperty("timestamp") long timestamp,
-            @JsonProperty("scannerId") String scannerId,
-            @JsonProperty("key")       Key key) {
+            @JsonProperty("MemFree")      int free,
+            @JsonProperty("MemTotal")     int total,
+            @JsonProperty("MemAvailable") int available,
+            @JsonProperty("timestamp")    long timestamp,
+            @JsonProperty("scannerId")    String scannerId,
+            @JsonProperty("key")          Key key) {
         super(timestamp, scannerId, key);
-        this.free = free;
-        this.total = total;
-        this.available = available;
+        this.memFree = free;
+        this.memTotal = total;
+        this.memAvailable = available;
     }
 
-    public int getFree() {
-        return free;
+    public int getMemFree() {
+        return memFree;
     }
 
-    public int getTotal() {
-        return total;
+    public int getMemTotal() {
+        return memTotal;
     }
 
-    public int getAvailable() {
-        return available;
+    public int getMemAvailable() {
+        return memAvailable;
     }
 }
