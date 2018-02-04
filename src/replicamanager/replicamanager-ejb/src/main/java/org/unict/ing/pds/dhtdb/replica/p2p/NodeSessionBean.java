@@ -18,12 +18,19 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.Schedule;
+import javax.ejb.SessionContext;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.ejb.Timeout;
+import javax.ejb.Timer;
+import javax.ejb.TimerConfig;
+import javax.ejb.TimerService;
 import org.unict.ing.pds.dhtdb.replica.storage.MongoDBStorage;
 import org.unict.ing.pds.dhtdb.utils.model.CPUStat;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
@@ -48,6 +55,9 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
+
+    @Resource
+    private SessionContext context;
 
     public NodeSessionBean() {
         //init();
@@ -82,8 +92,25 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
             } else {
                 this.hasJoined = true;
             }
-
         }, 10, TimeUnit.SECONDS);
+
+        TimerService timerService = context.getTimerService();
+        timerService.getTimers().forEach((Timer t) -> t.cancel());
+        Timer t  =  timerService.createIntervalTimer(15000, PERIOD*1000,  new TimerConfig(new String("STABILIZE"), true));
+        Timer t2 =  timerService.createIntervalTimer(16000, 2*PERIOD*1000,  new TimerConfig(new String("FIXFINGERS"), true));
+    }
+
+    @Timeout
+    public void timeout(Timer timer) {
+        System.err.println("TIMERBEAN: timeout occurred " + timer.getInfo()); 
+        if (timer.getInfo().equals("STABILIZE")) {
+            System.err.println("STABILIZE CALLING"); 
+            stabilize();
+        }
+        if (timer.getInfo().equals("FIXFINGERS")) {
+            System.err.println("FIXFINGERS CALLING"); 
+            fixFingers();
+        }
     }
 
     /************** RING INIT/CONSISTENCY METHODS *****************/
@@ -191,7 +218,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
      *
      * Schedule this method every PERIOD
      */
-    @Schedule(second = "*/" + PERIOD, minute = "*", hour = "*", persistent = false)
+    //@Schedule(second = "*/" + PERIOD, minute = "*", hour = "*", persistent = false)
     private void stabilize() {
         if (!hasJoined) return;
 
@@ -306,7 +333,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
      *
      * Schedule this method every PERIOD
      */
-    @Schedule(second = "*/" + 2*PERIOD, minute = "*", hour = "*", persistent = false)
+    //@Schedule(second = "*/" + 2*PERIOD, minute = "*", hour = "*", persistent = false)
     private void fixFingers() {
         if (!hasJoined) return;
 
