@@ -117,7 +117,7 @@ public class RestAPI {
      * Retrieves successor of given Key
      * @param k
      * @return an instance of java.lang.String
-         * @throws com.fasterxml.jackson.core.JsonProcessingException
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Path(value="/successor/{key : ([A-Za-z0-9]+)}")
@@ -132,7 +132,7 @@ public class RestAPI {
      * Retrieves successor of given Key
      * @param k
      * @return an instance of java.lang.String
-         * @throws com.fasterxml.jackson.core.JsonProcessingException
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Path(value="/findPredecessor/{key : ([A-Za-z0-9]+)}")

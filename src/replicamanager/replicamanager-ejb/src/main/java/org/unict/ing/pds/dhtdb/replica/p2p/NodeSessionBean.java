@@ -13,17 +13,10 @@ import com.google.gson.Gson;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
-import javax.ejb.Schedule;
 import javax.ejb.SessionContext;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -44,11 +37,18 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
+    /***
+     * CONFIG VARS
+     */
     private static final int PERIOD = 5; //seconds
-
     private static final int JOIN_MULT      = 2;
     private static final int STABILIZE_MULT = 1;
     private static final int FIXFINGER_MULT = 10;
+
+    /***
+     * CONFIG VARS END
+     */
+
     private BaseNode        successor, predecessor;
     private FingerTable     fingerTable;
     private Storage         storage;
@@ -60,7 +60,6 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     private SessionContext context;
 
     public NodeSessionBean() {
-        //init();
     }
 
     @PostConstruct
@@ -88,22 +87,20 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     @Timeout
     public void timeout(Timer timer) {
-        System.err.println("TIMERBEAN: timeout occurred " + timer.getInfo()); 
         if (timer.getInfo().equals("STABILIZE")) {
-            System.err.println("STABILIZE CALLING"); 
+            System.err.println("STABILIZE CALLING");
             stabilize();
         }
         if (timer.getInfo().equals("FIXFINGERS")) {
-            System.err.println("FIXFINGERS CALLING"); 
+            System.err.println("FIXFINGERS CALLING");
             fixFingers();
         }
 
         if (timer.getInfo().equals("JOIN")) {
-            System.out.println(this.nodeRef.getHostname() + " JOINING THE RING");
             if (!this.join(joinEntryPoint)) {
-                System.out.println("JOIN FAILED");
+                System.out.println(this.nodeRef.getHostname() + " JOIN FAILED");
             } else {
-                System.out.println("JOIN SUCCESSFUL");
+                System.out.println(this.nodeRef.getHostname() + " JOIN SUCCESSFUL");
                 timer.cancel();
             }
         }
@@ -211,10 +208,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
      * Stabilize the ring.
      * Called periodically, asks the successor about its predecessor, verifies if our immediate
      * successor is consistent, and tells the successor about us.
-     *
-     * Schedule this method every PERIOD
      */
-    //@Schedule(second = "*/" + PERIOD, minute = "*", hour = "*", persistent = false)
     private void stabilize() {
         if (!hasJoined) return;
 
@@ -326,10 +320,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     /***
      * Fix fingers.
-     *
-     * Schedule this method every PERIOD
      */
-    //@Schedule(second = "*/" + 2*PERIOD, minute = "*", hour = "*", persistent = false)
     private void fixFingers() {
         if (!hasJoined) return;
 
@@ -552,36 +543,6 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     // triggered by http://localhost:8081/replicamanager-web/webresources/generic
     @Override
     public String myTest() {
-        //this.init();
-        //return this.thisRef.toString();
-
-        //return new Gson().toJson(x);
-        // Using this node's id as key, just for tests
-
-        //put(nodeRef.getNodeId(), x);
-        //System.out.println("DB: " + new Gson().toJson(get(nodeRef.getNodeId())));
-        //return new Gson().toJson(get(nodeRef.getNodeId()));
-        //RemoteNodeProxy thisRefRemote = new RemoteNodeProxy(nodeRef);
-
-        //List<GenericStat> ret = thisRefRemote.get(nodeRef.getNodeId());
-        //System.out.println("GOT " + ret.toString());
-
-        //return new Gson().toJson(ret);
-        //return findSuccessor(new NodeReference(thisRef.getNodeId(), "")).toString();
-
-        //System.out.println("PUT DONE");
-        /*System.out.println("PRINTING FINGERTABLE: ");
-        this.fingerTable.getTable().forEach((t) -> {
-            System.out.println("NODE " + t.getHostname() + " " + t.getNodeId());
-        });*/
-
-
-        /*Key myKey = new Key(String.valueOf(new Random().nextInt()));
-        Key myKey2= new Key(String.valueOf(new Random().nextInt()));
-        CPUStat x = new CPUStat((float)0.5, 4, "asd", myKey.toString());
-        CPUStat y = new CPUStat((float)0.8, 4, "asd", myKey2.toString());*/
-        //write(myKey, x);
-        //write(myKey2, y);
         return "";
     }
 
