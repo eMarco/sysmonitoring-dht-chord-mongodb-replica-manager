@@ -13,6 +13,11 @@ import com.google.gson.Gson;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
@@ -39,6 +44,10 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     private Storage         storage;
 
     private Boolean         hasJoined = false;
+    private NodeReference   joinEntryPoint = new NodeReference("distsystems_replicamanager_1");
+
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
 
     public NodeSessionBean() {
         //init();
@@ -56,14 +65,25 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         // Init the ring
         this.create();
 
-        System.out.println(this.nodeRef.getHostname() + " JOINING THE RING");
-        if (!this.nodeRef.getHostname().equals("distsystems_replicamanager_1")) {
-            while (!this.join(new NodeReference("distsystems_replicamanager_1"))) {
-                System.out.println("JOIN FAILED");
+        scheduler.schedule(() -> {
+            System.out.println(this.nodeRef.getHostname() + " JOINING THE RING");
+            if (!isLocal(joinEntryPoint)) {
+                while (!this.join(joinEntryPoint)) {
+
+                    System.out.println("JOIN FAILED");
+                    try {
+                        System.out.println("SLEEPING FAILED");
+                        Thread.sleep(10 * 1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(NodeSessionBean.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                System.out.println("JOIN SUCCESSFUL");
+            } else {
+                this.hasJoined = true;
             }
-            System.out.println("JOIN SUCCESSFUL");
-        }
-        else this.hasJoined = true;
+
+        }, 10, TimeUnit.SECONDS);
     }
 
     /************** RING INIT/CONSISTENCY METHODS *****************/
@@ -100,11 +120,22 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
         NodeReference successorsPredecessor = this.successor.notify(this.nodeRef);
 
-        if (successorsPredecessor != null && !isLocal(successorsPredecessor)) {
+        if (successorsPredecessor == null) return false;
+        else if(!isLocal(successorsPredecessor)) {
             // ERROR
             System.out.println("Error joining the ring. Successor didn't set this node as predecessor.");
 
             fingerTable.addNode(successorsPredecessor);
+            // Retry joining using the new successorsPredecessor
+
+            if (!entryPoint.equals(successorsPredecessor)) {
+                this.joinEntryPoint = successorsPredecessor;
+
+                 //this.join(successorsPredecessor);
+            }
+            else {
+                this.joinEntryPoint = fingerTable.getLast();
+            }
             return false;
         }
 
@@ -130,9 +161,13 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
                     // our predecessor has a greater key than ours (we're the first in the ring)
                     this.predecessor.getNodeReference().compareTo(this.nodeRef) > 0
                     // AND
-                    &&
-                    // the notifying node's ID is greater than our predecessor's. In this case, we're "enlarging" the ring
-                    this.predecessor.getNodeReference().compareTo(nodeRef) <= 0
+                    && (
+                        // the notifying node's ID is greater than our predecessor's. In this case, we're "enlarging" the ring
+                        this.predecessor.getNodeReference().compareTo(nodeRef) <= 0
+                        || // OR
+                        // the notifying node's ID is lower than ours. In this case, we're "enlarging" the ring
+                        this.nodeRef.compareTo(nodeRef) >= 0
+                    )
                 )
             ) {
             System.out.println(this.nodeRef.getHostname() + " NOTIFY SUCCESSFULL");
@@ -187,11 +222,14 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
                     || // OR if:
                         (
                             // our successor has a lower key than ours (we're the last in the ring)
-                            this.successor.getNodeReference().compareTo(this.nodeRef) <= 0
+                            this.successor.getNodeReference().compareTo(this.nodeRef) < 0
                             // AND
-                            &&
-                            // the node ID of the successor's predecessor is lower than our successor's. In this case, we're "enlarging" the ring
-                            this.successor.getNodeReference().compareTo(successorsPredecessor) > 0
+                            && (
+                                // the node ID of the successor's predecessor is lower than our successor's. In this case, we're "enlarging" the ring
+                                this.successor.getNodeReference().compareTo(successorsPredecessor) >= 0
+                                || // OR
+                                this.nodeRef.compareTo(successorsPredecessor) <= 0
+                            )
                         )
                     ) {
                 System.out.println(this.nodeRef.getHostname() + " UPDATED SUCCESSOR TO " + successorsPredecessor.getHostname());
@@ -385,7 +423,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
             // return (successor)
 //            System.out.println("I am the the closestPrecedingNode; My successor the owner for the key " + key);
             if (this.successor == null || isLocal(this.successor)) {
-                System.out.println("GETTING THE FIRST FROM THE FINGERTABLE");
+//                System.out.println("GETTING THE FIRST FROM THE FINGERTABLE");
                 return fingerTable.getFirst();
             }
 

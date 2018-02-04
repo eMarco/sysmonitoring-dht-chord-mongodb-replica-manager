@@ -66,4 +66,8 @@ public class FingerTable {
         return table.first();
     }
 
+    public NodeReference getLast() {
+        return table.last();
+    }
+
 }
