@@ -78,21 +78,19 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     /***
      * Join a ring using an entry point
-     * @param _entryPoint
+     * @param entryPoint
      * @return
      */
-    private Boolean join(NodeReference _entryPoint) {
+    private Boolean join(NodeReference entryPoint) {
         this.hasJoined = false;
 
-        if (isLocal(_entryPoint)) {
+        if (isLocal(entryPoint)) {
             // Join requires an external node
             System.out.println("Trying to build a ring with... myself?");
             return false;
         }
 
-        BaseNode entryPoint = new RemoteNodeProxy(_entryPoint);
-
-        NodeReference newSuccessor = entryPoint.findSuccessor(this.nodeRef.getNodeId());
+        NodeReference newSuccessor = new RemoteNodeProxy(entryPoint).findSuccessor(this.nodeRef.getNodeId());
         if (newSuccessor == null) {
             return false;
         }
@@ -229,16 +227,28 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         System.out.println("STABILIZE ENDED");
     }
 
+    /***
+     * TODO
+     * @param nodeRef
+     */
     @Override
     public void bootstrap(NodeReference nodeRef) {
         //nodeRef.bootstrap(node);
     }
 
+    /***
+     *
+     */
     private void moveKeys() {
         List<GenericValue> myKeys = this.successor.getLessThanAndRemove(this.nodeRef.getNodeId());
         put(myKeys);
     }
 
+    /***
+     *
+     * @param key
+     * @return
+     */
     @Override
     public List<GenericValue> getLessThanAndRemove(Key key) {
         return storage.lessThanAndRemove(key);
@@ -282,48 +292,73 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     /******** DHT/FUNCTIONAL/STORAGE METHODS ********/
 
+    /***
+     *
+     * @param key
+     * @return
+     */
     @Override
-    public List<GenericValue> get(Key k) {
-        System.out.println("SEARCHING DB FOR KEY: " + k);
-        List<GenericValue> foundValues = this.storage.find(k);
+    public List<GenericValue> get(Key key) {
+        System.out.println("SEARCHING DB FOR KEY: " + key);
+        List<GenericValue> foundValues = this.storage.find(key);
         System.out.println("FOUND " + foundValues.toString());
         // The returned list has length 0 or more
         return foundValues;
     }
 
+    /***
+     *
+     * @param elem
+     * @return
+     */
     @Override
     public Boolean put(GenericValue elem) {
         this.storage.insert(elem);
         return true;
     }
 
+    /***
+     *
+     * @param elem
+     * @return
+     */
     @Override
     public Boolean put(List<GenericValue> elem) {
         this.storage.insertMany(elem);
         return true;
     }
 
-    // Acting as a client (TODO move to the right class)
-    // Check if this.nodeRef is responsible for the given k or forward until the
-    // proper node is found to return the result
+    /***
+     * Acting as a client (TODO move to the right class)
+     * Check if this.nodeRef is responsible for the given k or forward until the
+     * proper node is found to return the result
+     * @param key
+     * @return
+     */
     @Override
-    public List<GenericValue> lookup(Key k) {
-        System.out.println("LOOKUP FOR " + k);
+    public List<GenericValue> lookup(Key key) {
+        System.out.println("LOOKUP FOR " + key);
 
-        return this.getReference(this.findSuccessor(k)).get(k);
+        return this.getReference(this.findSuccessor(key)).get(key);
     }
 
-    // Acting as a client (TODO move to the right class)
-    // Check if this.nodeRef is responsible for the given k or forward until the
-    // proper node is found to return the result
+    /***
+     * Acting as a client (TODO move to the right class)
+     * Check if this.nodeRef is responsible for the given k or forward until the
+     * proper node is found to return the result
+     * @param key
+     * @param elem
+     * @return
+     */
     @Override
-    public Boolean write(Key k, GenericValue elem) {
-        elem.setKey(k);
+    public Boolean write(Key key, GenericValue elem) {
+        elem.setKey(key);
         System.out.println("Trying to write");
-        return this.getReference(this.findSuccessor(k)).put(elem);
+        return this.getReference(this.findSuccessor(key)).put(elem);
     }
 
-    /******** CHORD METHODS ********/        
+    /******** CHORD METHODS ********/
+
     /***
      *
      * @param key
@@ -335,16 +370,16 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         // whose identifier, nodeId, is equal to or follows nodeRef.nodeId
         // in the identifier space; (TODO no equal sign on second (successor) condition? Needed in only one replica scenario)
         // TODO FIX: THIS IS WRONG!
-        NodeReference nodeRef = fingerTable.getClosestPrecedingNode(key);
+        NodeReference closestPrecedingNode = fingerTable.getClosestPrecedingNode(key);
 
-        if (isPredecessor(nodeRef)) {
+        if (isPredecessor(closestPrecedingNode)) {
             // System.out.println("The closestPrecedingNode is my predecessor; I'm the owner for the key " + key);
             return this.nodeRef;
         }
 
-        if (isLocal(nodeRef)) {
+        if (isLocal(closestPrecedingNode)) {
             // return (successor)
-            System.out.println("I am the the closestPrecedingNode; My successor the owner for the key " + key);
+//            System.out.println("I am the the closestPrecedingNode; My successor the owner for the key " + key);
             if (this.successor == null || isLocal(this.successor)) {
                 System.out.println("GETTING THE FIRST FROM THE FINGERTABLE");
                 return fingerTable.getFirst();
@@ -356,18 +391,23 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         // get the closest preceding node and trigger the findSuccessor (remote)
         // System.out.println("Looking for a candidate remote node as successor for the given key (" + key +") : " + nodeRef);
 
-        return getReference(nodeRef).findSuccessor(key); // As NodeReference returned
+        return getReference(closestPrecedingNode).findSuccessor(key); // As NodeReference returned
     }
 
+    /***
+     *
+     * @param key
+     * @return
+     */
     @Override
     public NodeReference findPredecessor(Key key) {
         // Actually for join (TODO improve)
 
-        NodeReference nodeRef;
+        NodeReference closestPrecedingNode;
 
-        nodeRef = fingerTable.getClosestPrecedingNode(key);
+        closestPrecedingNode = fingerTable.getClosestPrecedingNode(key);
 
-        if (isLocal(nodeRef)) {
+        if (isLocal(closestPrecedingNode)) {
             // return me
 
             System.out.println("I am the owner of this key's interval");
@@ -376,20 +416,25 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         }
         else {
             // get the closest preceding node and trigger the findSuccessor (remote)
-            System.out.println("Looking for a candidate remote node as successor for the given key (" + key +") : " + nodeRef);
+            System.out.println("Looking for a candidate remote node as successor for the given key (" + key +") : " + closestPrecedingNode);
 
-            return new RemoteNodeProxy(nodeRef).findPredecessor(key);
+            return new RemoteNodeProxy(closestPrecedingNode).findPredecessor(key);
         }
     }
 
     /****** COMODO METHODS ********/
 
-    private BaseNode getReference(NodeReference nodeRef) {
-        if (isLocal(nodeRef)) {
+    /***
+     *
+     * @param nodeReference
+     * @return
+     */
+    private BaseNode getReference(NodeReference nodeReference) {
+        if (isLocal(nodeReference)) {
             return this;
         }
         else {
-            return new RemoteNodeProxy(nodeRef);
+            return new RemoteNodeProxy(nodeReference);
         }
     }
 
@@ -417,13 +462,20 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         return this.predecessor.getNodeReference().equals(obj);
     }
 
-
+    /***
+     *
+     * @return
+     */
     public boolean checkPredecessor() {
         return this.predecessor.getNodeReference()
                 .equals(new RemoteNodeProxy(this.predecessor
                         .getNodeReference()).ping());
     }
 
+    /***
+     *
+     * @return
+     */
     @Override
     public NodeReference getPredecessor() {
         return (this.predecessor != null) ? this.predecessor.getNodeReference() : null;

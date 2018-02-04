@@ -8,9 +8,7 @@ package org.unict.ing.pds.dhtdb.replicamanager.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -102,6 +100,7 @@ public class RestAPI {
      * Get Data
      * @param k
      * @return an instance of java.lang.String
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @GET
     @Path(value="/moving/{key : ([A-Za-z0-9]+)}")
@@ -169,6 +168,11 @@ public class RestAPI {
         return new ObjectMapper().writeValueAsString(nodeSessionBean.notify(nodeRef));
     }
 
+    /**
+     *
+     * @return
+     * @throws JsonProcessingException
+     */
     @GET
     @Path(value="/ping")
     @Consumes(MediaType.TEXT_PLAIN)
