@@ -8,6 +8,7 @@ package org.unict.ing.pds.dhtdb.replica.p2p;
 import com.google.gson.Gson;
 import java.util.List;
 import java.util.Random;
+import java.util.TreeSet;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.ConcurrencyManagement;
@@ -27,7 +28,6 @@ import org.unict.ing.pds.dhtdb.utils.chord.FingerSessionBeanLocal;
 import org.unict.ing.pds.dhtdb.utils.model.CPUStat;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 import org.unict.ing.pds.dhtdb.utils.common.BaseNode;
-import org.unict.ing.pds.dhtdb.utils.chord.FingerTable;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import org.unict.ing.pds.dhtdb.utils.common.NodeReference;
 import org.unict.ing.pds.dhtdb.utils.common.RemoteNodeProxy;
@@ -332,17 +332,17 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
         // System.out.println("FIXING FINGERS");
 
-        FingerTable newFingerTable = new FingerTable();
+        TreeSet<NodeReference> newFingerTable = new TreeSet<>();
 
         // Add this node...
-        newFingerTable.addNode(this.nodeRef);
+        newFingerTable.add(this.nodeRef);
 
         // ... and both its successor and predecesor node
-        if (getSuccessor() != null) newFingerTable.addNode(getSuccessor().getNodeReference());
-        if (getPredecessor() != null) newFingerTable.addNode(getPredecessor().getNodeReference());
+        if (getSuccessor() != null) newFingerTable.add(getSuccessor().getNodeReference());
+        if (getPredecessor() != null) newFingerTable.add(getPredecessor().getNodeReference());
 
         for (int i = 0; i < Key.LENGHT; i++) {
-            newFingerTable.addNode(
+            newFingerTable.add(
                     this.findSuccessor(
                             this.nodeRef.getNodeId().sumPow(i)
                     )
