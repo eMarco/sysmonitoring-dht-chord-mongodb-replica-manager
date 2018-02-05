@@ -3,21 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.unict.ing.pds.dhtdb.utils.datamanager;
+package org.unict.ing.pds.dhtdb.datamanager;
 
-import javax.ejb.Remote;
+import javax.ejb.Local;
 
 /**
  *
- * @author aleskandro
+ * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
-@Remote
-public interface DataManagerSessionBeanRemote {
+@Local
+public interface DataManagerSessionBeanLocal {
 
     void put(String scanner, String topic, String content);
 
     String get(String scanner, String topic, String tsStart, String tsEnd);
 
     public String test(String content);
-
 }

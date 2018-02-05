@@ -18,7 +18,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
-import org.unict.ing.pds.dhtdb.utils.datamanager.DataManagerSessionBeanRemote;
 
 /**
  * REST Web Service
@@ -29,7 +28,7 @@ import org.unict.ing.pds.dhtdb.utils.datamanager.DataManagerSessionBeanRemote;
 @RequestScoped
 public class TopicsResource {
 
-    DataManagerSessionBeanRemote dataManagerSessionBean = lookupDataManagerSessionBeanRemote();
+    DataManagerSessionBeanLocal dataManagerSessionBean = lookupDataManagerSessionBeanLocal();
 
 
     @Context
@@ -87,10 +86,10 @@ public class TopicsResource {
         return dataManagerSessionBean.get(scanner, topic, tsStart, tsEnd);
     }
 
-    private DataManagerSessionBeanRemote lookupDataManagerSessionBeanRemote() {
+    private DataManagerSessionBeanLocal lookupDataManagerSessionBeanLocal() {
         try {
             javax.naming.Context c = new InitialContext();
-            return (DataManagerSessionBeanRemote) c.lookup("java:global/datamanager-ear-1.0-SNAPSHOT/datamanager-ejb-1.0-SNAPSHOT/DataManagerSessionBean!org.unict.ing.pds.dhtdb.utils.datamanager.DataManagerSessionBeanRemote");
+            return (DataManagerSessionBeanLocal) c.lookup("java:global/datamanager-ear-1.0-SNAPSHOT/datamanager-ejb-1.0-SNAPSHOT/DataManagerSessionBean!org.unict.ing.pds.dhtdb.datamanager.DataManagerSessionBeanLocal");
         } catch (NamingException ne) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
             throw new RuntimeException(ne);

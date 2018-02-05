@@ -29,6 +29,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>datamanager-ejb</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>javax</groupId>

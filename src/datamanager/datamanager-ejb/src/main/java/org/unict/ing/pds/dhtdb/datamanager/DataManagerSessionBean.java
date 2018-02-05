@@ -13,16 +13,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import org.unict.ing.pds.dhtdb.utils.datamanager.DataManagerSessionBeanRemote;
-import org.unict.ing.pds.dhtdb.utils.model.*;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
+import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
+import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**
  *
- * @author aleskandro
+ * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 @Stateless
-public class DataManagerSessionBean implements DataManagerSessionBeanRemote {
+public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
 
     @EJB
     private DataManagerChordSessionBeanLocal dataManagerChordSessionBean;
@@ -41,6 +41,7 @@ public class DataManagerSessionBean implements DataManagerSessionBeanRemote {
         }catch (IOException ex) {
             Logger.getLogger(DataManagerSessionBean.class.getName()).log(Level.SEVERE, null, ex);
         }
+        // Wrong topic in request
         // Wrong topic in request
 
     }
