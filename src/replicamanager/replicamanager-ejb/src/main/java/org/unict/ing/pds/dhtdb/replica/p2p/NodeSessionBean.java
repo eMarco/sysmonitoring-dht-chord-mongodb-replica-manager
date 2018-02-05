@@ -386,12 +386,12 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     /***
      *
-     * @param elem
+     * @param elems
      * @return
      */
     @Override
-    public Boolean put(List<GenericValue> elem) {
-        this.storage.insertMany(elem);
+    public Boolean put(List<GenericValue> elems) {
+        this.storage.insertMany(elems);
         return true;
     }
 
