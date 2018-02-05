@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.unict.ing.pds.dhtdb.utils.replicamanager;
+package org.unict.ing.pds.dhtdb.utils.common;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**

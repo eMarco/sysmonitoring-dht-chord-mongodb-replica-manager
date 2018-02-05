@@ -13,9 +13,9 @@ import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import org.unict.ing.pds.dhtdb.utils.chord.FingerSessionBeanLocal;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.FingerTable;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.NodeReference;
+import org.unict.ing.pds.dhtdb.utils.chord.FingerTable;
+import org.unict.ing.pds.dhtdb.utils.dht.Key;
+import org.unict.ing.pds.dhtdb.utils.common.NodeReference;
 
 /**
  *

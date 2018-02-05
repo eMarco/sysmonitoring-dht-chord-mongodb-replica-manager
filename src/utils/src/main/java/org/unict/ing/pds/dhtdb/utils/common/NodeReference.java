@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.unict.ing.pds.dhtdb.utils.replicamanager;
+package org.unict.ing.pds.dhtdb.utils.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
@@ -12,6 +12,7 @@ import java.net.UnknownHostException;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NodeReference implements Comparable<NodeReference>, Serializable {

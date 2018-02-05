@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.unict.ing.pds.dhtdb.utils.replicamanager;
+package org.unict.ing.pds.dhtdb.utils.chord;
 
 import javax.ejb.Local;
+import org.unict.ing.pds.dhtdb.utils.common.BaseNode;
 
 /**
  *

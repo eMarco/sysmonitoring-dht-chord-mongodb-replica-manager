@@ -23,11 +23,11 @@ import javax.naming.NamingException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
+import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 import org.unict.ing.pds.dhtdb.replica.p2p.NodeSessionBeanLocal;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.NodeReference;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.RemoteNodeProxy;
+import org.unict.ing.pds.dhtdb.utils.common.NodeReference;
+import org.unict.ing.pds.dhtdb.utils.common.RemoteNodeProxy;
 
 /**
  * REST Web Service

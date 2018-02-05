@@ -15,7 +15,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import org.unict.ing.pds.dhtdb.utils.datamanager.DataManagerSessionBeanRemote;
 import org.unict.ing.pds.dhtdb.utils.model.*;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
+import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
 /**
  *

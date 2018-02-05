@@ -1,7 +1,7 @@
 package org.unict.ing.pds.dhtdb.utils.model;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
+import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

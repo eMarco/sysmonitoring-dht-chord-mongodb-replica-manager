@@ -18,7 +18,7 @@ import org.jongo.MongoCollection;
 import org.jongo.MongoCursor;
 import org.unict.ing.pds.dhtdb.replica.p2p.Storage;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
+import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
 /**
  *

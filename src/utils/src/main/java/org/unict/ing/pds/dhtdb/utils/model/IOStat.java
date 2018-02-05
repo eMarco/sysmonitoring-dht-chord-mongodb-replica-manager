@@ -7,7 +7,7 @@ package org.unict.ing.pds.dhtdb.utils.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
+import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
 
 public class IOStat extends GenericStat {

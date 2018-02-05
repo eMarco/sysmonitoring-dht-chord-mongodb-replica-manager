@@ -7,7 +7,7 @@ package org.unict.ing.pds.dhtdb.datamanager;
 
 import javax.ejb.Local;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
+import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
 /**
  *

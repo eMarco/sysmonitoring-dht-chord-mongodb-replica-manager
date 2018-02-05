@@ -5,14 +5,14 @@
  */
 package org.unict.ing.pds.dhtdb.replica.p2p;
 
-import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.ChordNode;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.DHTNode;
+import org.unict.ing.pds.dhtdb.utils.dht.Key;
+import org.unict.ing.pds.dhtdb.utils.chord.ChordNode;
+import org.unict.ing.pds.dhtdb.utils.dht.DHTNode;
 import java.util.List;
 import javax.ejb.Local;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
-import org.unict.ing.pds.dhtdb.utils.replicamanager.NodeReference;
+import org.unict.ing.pds.dhtdb.utils.common.NodeReference;
 
 /**
  *

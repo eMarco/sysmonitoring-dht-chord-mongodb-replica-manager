@@ -11,8 +11,8 @@ import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.BaseNode;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.RingSessionBeanLocal;
+import org.unict.ing.pds.dhtdb.utils.common.BaseNode;
+import org.unict.ing.pds.dhtdb.utils.chord.RingSessionBeanLocal;
 
 /**
  *

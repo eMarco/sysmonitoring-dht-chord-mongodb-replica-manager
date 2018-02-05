@@ -3,10 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.unict.ing.pds.dhtdb.utils.replicamanager;
+package org.unict.ing.pds.dhtdb.utils.chord;
 
 import java.util.Collection;
 import java.util.TreeSet;
+import org.unict.ing.pds.dhtdb.utils.common.NodeReference;
+import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
 /**
  *

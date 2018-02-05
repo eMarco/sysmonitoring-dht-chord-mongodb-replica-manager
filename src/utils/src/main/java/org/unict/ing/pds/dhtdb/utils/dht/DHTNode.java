@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.unict.ing.pds.dhtdb.utils.replicamanager;
+package org.unict.ing.pds.dhtdb.utils.dht;
 
 import java.util.List;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;

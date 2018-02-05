@@ -7,9 +7,8 @@ package org.unict.ing.pds.dhtdb.utils.chord;
 
 import java.util.Collection;
 import javax.ejb.Local;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.FingerTable;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.NodeReference;
+import org.unict.ing.pds.dhtdb.utils.common.NodeReference;
+import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
 /**
  *
