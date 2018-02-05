@@ -76,26 +76,59 @@ public final class Key implements Comparable<Key>, Serializable {
     private static final int DEC = 10;
     private static final int BIN = 2;
 
+    /**
+     * Returns this.key + 2^pow
+     * @param pow
+     * @return
+     */
     public Key sumPow(int pow) {
-        return this.sumPow(pow, 1);
+        return this.sumPowDivided(pow, 1);
     }
 
-    public Key sumPow(int pow, int divisor) {
+    /**
+     * Returns this.key + 2^pow/divisor
+     * @param pow
+     * @param divisor
+     * @return
+     */
+    public Key sumPowDivided(int pow, int divisor) {
         return this.sum(new BigInteger("2", DEC).pow(pow).divide(new BigInteger(String.valueOf(divisor), DEC)));
     }
-    
+
+    /**
+     * Returns this.key + integer
+     * @param integer
+     * @return
+     */
     public Key sum(BigInteger integer) {
         return sum(this, integer);
     }
 
+    /**
+     * Returns this.key + (Key) b
+     * @param b
+     * @return
+     */
     public Key sum(Key b) {
         return sum(this, b);
     }
 
+    /**
+     * Returns (Key) a + (Key) b
+     * @param a
+     * @param b
+     * @return
+     */
     public static Key sum(Key a, Key b) {
         return Key.sum(a, new BigInteger(b.key, HEX));
     }
 
+    /**
+     * Returns (Key) a + integer
+     * @param a
+     * @param integer
+     * @return
+     */
     public static Key sum(Key a, BigInteger integer) {
         return new Key(
                 new BigInteger(a.key, HEX)  .add(integer)

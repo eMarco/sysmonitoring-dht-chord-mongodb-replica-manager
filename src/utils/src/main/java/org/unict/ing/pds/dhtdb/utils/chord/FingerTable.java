@@ -7,6 +7,8 @@ package org.unict.ing.pds.dhtdb.utils.chord;
 
 import java.util.Collection;
 import java.util.TreeSet;
+import javax.ejb.Lock;
+import javax.ejb.LockType;
 import org.unict.ing.pds.dhtdb.utils.common.NodeReference;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
@@ -14,8 +16,9 @@ import org.unict.ing.pds.dhtdb.utils.dht.Key;
  *
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
+@Lock(LockType.READ)
 public class FingerTable {
-    private final TreeSet<NodeReference> table = new TreeSet<>((NodeReference p1, NodeReference p2) -> p1.compareTo(p2));
+    private TreeSet<NodeReference> table = new TreeSet<>((NodeReference p1, NodeReference p2) -> p1.compareTo(p2));
 
     /**
      *
@@ -29,9 +32,15 @@ public class FingerTable {
      *
      * @param tableElements
      */
+    @Lock(LockType.WRITE)
     public void setTable(Collection<NodeReference> tableElements) {
         table.clear();
         table.addAll(tableElements);
+    }
+
+    @Lock(LockType.WRITE)
+    public void swapTable(TreeSet<NodeReference> newTable) {
+        this.table = newTable;
     }
 
     /**
@@ -61,6 +70,7 @@ public class FingerTable {
      *
      * @param node
      */
+    @Lock(LockType.WRITE)
     public void addNode(NodeReference node) {
         table.add(node);
     }

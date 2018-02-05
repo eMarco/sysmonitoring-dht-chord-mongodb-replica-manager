@@ -6,6 +6,7 @@
 package org.unict.ing.pds.dhtdb.datamanager;
 
 import java.util.List;
+import java.util.TreeSet;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.ConcurrencyManagement;
@@ -23,7 +24,6 @@ import javax.ejb.TimerService;
 import org.unict.ing.pds.dhtdb.utils.chord.FingerSessionBeanLocal;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 import org.unict.ing.pds.dhtdb.utils.common.BaseNode;
-import org.unict.ing.pds.dhtdb.utils.chord.FingerTable;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import org.unict.ing.pds.dhtdb.utils.common.NodeReference;
 import org.unict.ing.pds.dhtdb.utils.common.RemoteNodeProxy;
@@ -121,12 +121,13 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
      * Fix fingers.
      */
     private void fixFingers() {
-        FingerTable newFingerTable = new FingerTable();
-        newFingerTable.addNode(MASTER_NODE);
+        TreeSet<NodeReference> newFingerTable = new TreeSet<>();
+
+        newFingerTable.add(MASTER_NODE);
         for (int i = 0; i < Key.LENGHT; i++) {
-            Key sumPow = newFingerTable.getLast().getNodeId().sumPow(Key.LENGHT, Key.LENGHT);
+            Key sumPow = newFingerTable.last().getNodeId().sumPowDivided(Key.LENGHT, Key.LENGHT);
             NodeReference succ = findSuccessor(sumPow);
-            newFingerTable.addNode(succ);
+            newFingerTable.add(succ);
         }
 
         fingerSessionBean.swapTable(newFingerTable);
