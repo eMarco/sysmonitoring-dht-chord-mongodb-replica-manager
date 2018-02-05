@@ -6,7 +6,6 @@
 package org.unict.ing.pds.dhtdb.replica.storage;
 
 import com.mongodb.DB;
-import com.mongodb.WriteResult;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -82,7 +81,7 @@ public class MongoDBStorage implements Storage {
     private List<GenericValue> findBy(String query) {
         MongoCursor<GenericValue> iterDoc;
         List<GenericValue> ret = new LinkedList();
-        
+
         if (query == null) {
             // Put HERE a default query (TODO)
             iterDoc = collection.find().as(GenericValue.class);

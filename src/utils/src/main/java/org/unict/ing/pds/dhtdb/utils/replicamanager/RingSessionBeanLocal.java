@@ -6,7 +6,6 @@
 package org.unict.ing.pds.dhtdb.utils.replicamanager;
 
 import javax.ejb.Local;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.BaseNode;
 
 /**
  *

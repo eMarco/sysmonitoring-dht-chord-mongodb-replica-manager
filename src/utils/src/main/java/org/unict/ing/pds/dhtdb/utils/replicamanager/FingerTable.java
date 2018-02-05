@@ -6,8 +6,6 @@
 package org.unict.ing.pds.dhtdb.utils.replicamanager;
 
 import java.util.Collection;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.Key;
-import org.unict.ing.pds.dhtdb.utils.replicamanager.NodeReference;
 import java.util.TreeSet;
 
 /**

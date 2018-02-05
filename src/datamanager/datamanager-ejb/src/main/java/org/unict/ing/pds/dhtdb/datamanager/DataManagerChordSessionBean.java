@@ -5,9 +5,7 @@
  */
 package org.unict.ing.pds.dhtdb.datamanager;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.TreeSet;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.ConcurrencyManagement;
@@ -104,7 +102,7 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
         System.out.println("Trying to write");
         return this.getReference(this.findSuccessor(key)).put(elem);
     }
-    
+
     /***
      *
      * @param key
