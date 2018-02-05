@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
+import javax.ejb.EJB;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.SessionContext;
@@ -21,6 +22,7 @@ import javax.ejb.Timeout;
 import javax.ejb.Timer;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
+import org.unict.ing.pds.dhtdb.utils.chord.FingerSessionBeanLocal;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 import org.unict.ing.pds.dhtdb.utils.replicamanager.BaseNode;
 import org.unict.ing.pds.dhtdb.utils.replicamanager.FingerTable;
@@ -38,19 +40,28 @@ import org.unict.ing.pds.dhtdb.utils.replicamanager.RemoteNodeProxy;
 @Lock(LockType.READ)
 public class DataManagerChordSessionBean implements DataManagerChordSessionBeanLocal {
 
-    private FingerTable fingerTable;
-    private static final NodeReference MASTER_NODE = new NodeReference("distsystems_replicamanager_1");
-   
-    private static final int PERIOD = 30;
-    
+    /***
+     * CONFIG VARS
+     */
+    private static final int PERIOD = 30; //seconds
+
+    /***
+     * CONFIG VARS END
+     */
+
+    @EJB
+    private FingerSessionBeanLocal      fingerSessionBean;
+
+    private static final NodeReference  MASTER_NODE = new NodeReference("distsystems_replicamanager_1");
+
     @Resource
-    private SessionContext context;
+    private SessionContext              context;
 
     @PostConstruct
     private void init() {
         // Starting chord
-        this.fingerTable = new FingerTable();
-        this.fingerTable.addNode(MASTER_NODE);
+        fingerSessionBean.addNode(MASTER_NODE);
+
         TimerService timerService = context.getTimerService();
         timerService.getTimers().forEach((Timer t) -> t.cancel());
         timerService.createIntervalTimer(2020, PERIOD * 1000, new TimerConfig("FINGERS", true));
@@ -100,7 +111,7 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
      * @return
      */
     public NodeReference findSuccessor(Key key) {
-        NodeReference closestPrecedingNode = this.fingerTable.getClosestPrecedingNode(key);
+        NodeReference closestPrecedingNode = fingerSessionBean.getClosestPrecedingNode(key);
         return getReference(closestPrecedingNode).findSuccessor(key); // As NodeReference returned
     }
 
@@ -119,11 +130,7 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
             NodeReference succ = findSuccessor(sumPow);
             newFingerTable.addNode(succ);
         }
-        this.swapFingerTable(newFingerTable);
-    }
 
-    @Lock(LockType.WRITE)
-    private void swapFingerTable(FingerTable f) {
-        this.fingerTable = f;
+        fingerSessionBean.swapTable(newFingerTable);
     }
 }
