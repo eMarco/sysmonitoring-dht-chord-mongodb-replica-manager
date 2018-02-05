@@ -5,9 +5,12 @@
  */
 package org.unict.ing.pds.dhtdb.replica.p2p;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.ConcurrencyManagement;
@@ -565,8 +568,12 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         CPUStat x = new CPUStat((float)0.5, 4, "asd", myKey);
         CPUStat y = new CPUStat((float)0.8, 4, "asd", myKey);
         write(myKey, x);
-        //write(myKey2, y);
-        ret += new Gson().toJson(lookup(myKey));
+        try {
+            //write(myKey2, y);
+            ret += new ObjectMapper().writeValueAsString(lookup(myKey));
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(NodeSessionBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         return ret;
     }

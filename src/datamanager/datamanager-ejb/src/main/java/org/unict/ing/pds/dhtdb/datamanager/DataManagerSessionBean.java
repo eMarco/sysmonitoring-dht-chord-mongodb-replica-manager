@@ -70,7 +70,6 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
             List<GenericValue> fromJson = mapper.readValue(content,
                     mapper.getTypeFactory().constructCollectionType(List.class, GenericValue.class));
 
-            //nericValue fromJson = new Gson().fromJson(content, t); // is it going to work?
             String toJson = mapper.writeValueAsString(fromJson);
             List<GenericValue> fromJson2 = mapper.readValue(content,
                     mapper.getTypeFactory().constructCollectionType(List.class, GenericValue.class));
