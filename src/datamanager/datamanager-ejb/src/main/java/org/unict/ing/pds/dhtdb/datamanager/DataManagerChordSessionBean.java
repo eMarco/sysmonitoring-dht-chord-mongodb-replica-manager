@@ -50,6 +50,7 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
     private void init() {
         // Starting chord
         this.fingerTable = new FingerTable();
+        this.fingerTable.addNode(MASTER_NODE);
         TimerService timerService = context.getTimerService();
         timerService.getTimers().forEach((Timer t) -> t.cancel());
         timerService.createIntervalTimer(2020, PERIOD * 1000, new TimerConfig("FINGERS", true));
@@ -99,11 +100,7 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
      * @return
      */
     public NodeReference findSuccessor(Key key) {
-        return findSuccessor(key, this.fingerTable);
-    }
-
-    public NodeReference findSuccessor(Key key, FingerTable fingers) {
-        NodeReference closestPrecedingNode = fingers.getClosestPrecedingNode(key);
+        NodeReference closestPrecedingNode = this.fingerTable.getClosestPrecedingNode(key);
         return getReference(closestPrecedingNode).findSuccessor(key); // As NodeReference returned
     }
 
@@ -119,7 +116,7 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
         newFingerTable.addNode(MASTER_NODE);
         for (int i = 0; i < Key.LENGHT; i++) {
             Key sumPow = newFingerTable.getLast().getNodeId().sumPow(Key.LENGHT, Key.LENGHT);
-            NodeReference succ = findSuccessor(sumPow, newFingerTable);
+            NodeReference succ = findSuccessor(sumPow);
             newFingerTable.addNode(succ);
         }
         this.swapFingerTable(newFingerTable);
