@@ -28,4 +28,9 @@ public interface NodeSessionBeanLocal extends DHTNode, ChordNode {
 
     public String myTest2();
     public String myTest();
+
+
+    public List<GenericValue> remove(Key key);
+
+    public Boolean update(Key key, List<GenericValue> elems);
 }

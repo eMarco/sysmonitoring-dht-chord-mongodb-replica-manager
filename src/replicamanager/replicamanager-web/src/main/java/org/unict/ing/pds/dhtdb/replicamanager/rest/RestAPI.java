@@ -7,6 +7,7 @@ package org.unict.ing.pds.dhtdb.replicamanager.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.List;
@@ -20,7 +21,9 @@ import javax.ws.rs.Path;
 import javax.enterprise.context.RequestScoped;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
@@ -94,7 +97,48 @@ public class RestAPI {
         // TODO using responseCodes ?
         return "ERROR";
     }
+    /**
+     * Put data
+     * @param k
+     * @param u
+     * @return an instance of java.lang.String
+     */
+    @PUT
+    @Path(value="{key : ([A-Za-z0-9]+)}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public String putList(@PathParam(value="key") String k, String u) {
+        try {
+            ObjectMapper mapper = new ObjectMapper().enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+            List<GenericValue> ret = mapper.readValue(k,
+                    mapper.getTypeFactory().constructCollectionType(List.class, GenericValue.class));
+            nodeSessionBean.put(ret);
+            // TODO Return JSON
+            return "OK";
+        } catch (IOException ex) {
+            Logger.getLogger(RestAPI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 
+    /**
+     * Get Data
+     * @param k
+     * @return an instance of java.lang.String
+     */
+    @DELETE
+    @Path(value="{key : ([A-Za-z0-9]+)}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public String delete(@PathParam(value="key") String k) {
+        try {
+            Key key = new Key(k);
+            List<GenericValue> list =  nodeSessionBean.delete(key);
+            String jsonList = new ObjectMapper().writerFor(new TypeReference<List<GenericValue>>() {}).writeValueAsString(list);
+            return jsonList;
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(RestAPI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 
     /**
      * Get Data

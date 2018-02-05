@@ -24,4 +24,6 @@ public interface ChordNode {
     public NodeReference findSuccessor(Key key);
     public NodeReference findPredecessor(Key key);
     public NodeReference getPredecessorNodeRef();
+
+    public List<GenericValue> delete(Key key);
 }

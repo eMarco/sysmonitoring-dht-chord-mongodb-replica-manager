@@ -395,6 +395,12 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         return true;
     }
 
+    @Override
+    public List<GenericValue> delete(Key key) {
+        List<GenericValue> elems = this.get(key);
+        this.storage.remove(key);
+        return elems;
+    }
     /***
      * Acting as a client (TODO move to the right class)
      * Check if this.nodeRef is responsible for the given k or forward until the
@@ -423,7 +429,19 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         System.out.println("Trying to write");
         return getReference(this.findSuccessor(key)).put(elem);
     }
+    
+    @Override
+    public List<GenericValue> remove(Key key) {
+        return getReference(this.findSuccessor(key)).delete(key);
+    }
 
+    @Override
+    public Boolean update(Key key, List<GenericValue> elems) {
+        BaseNode proxy = getReference(this.findPredecessor(key));
+        proxy.delete(key);
+        proxy.put(elems);
+        return true;
+    }
     /******** CHORD METHODS ********/
 
     /***
@@ -623,4 +641,6 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     public void setHasJoined(Boolean hasJoined) {
         ringSessionBean.setHasJoined(hasJoined);
     }
+
+
 }

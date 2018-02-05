@@ -5,6 +5,7 @@
  */
 package org.unict.ing.pds.dhtdb.utils.common;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.api.client.Client;
@@ -62,6 +63,20 @@ public class RemoteNodeProxy extends BaseNode {
         return unmarshallList(res);
     }
 
+    @Override
+    public List<GenericValue> delete(Key key) {
+        ClientResponse clientResponse = getWebResource("/" + key.toString()).delete(ClientResponse.class);
+        String res = clientResponse.getEntity(String.class);
+
+        if (clientResponse.getStatus() != 200) {
+            System.out.println("[ERROR] Error in fetching GET response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
+            return new ArrayList<>();
+        }
+
+        return unmarshallList(res);
+
+    }
+    
     @Override
     public void bootstrap(NodeReference nodeRef) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -162,8 +177,24 @@ public class RemoteNodeProxy extends BaseNode {
     }
 
     @Override
-    public Boolean put(List<GenericValue> elem) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Boolean put(List<GenericValue> elems) {
+        try {
+
+            String jsonList = new ObjectMapper().writerFor(new TypeReference<List<GenericValue>>() {}).writeValueAsString(elems);
+            String k = elems.get(0).getKey().toString();
+            ClientResponse clientResponse = getWebResource("/" + k).put(ClientResponse.class, jsonList);
+
+            if (clientResponse.getStatus() != 200) {
+                System.out.println("[ERROR] Error in fetching PUT response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
+                return false;
+            }
+
+            return true;
+        } catch (JsonProcessingException ex) {
+            System.out.println(ex.getOriginalMessage());
+            Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
     @Override
@@ -191,4 +222,6 @@ public class RemoteNodeProxy extends BaseNode {
         }
         return null;
     }
+
+
 }
