@@ -125,7 +125,7 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
 
         newFingerTable.add(MASTER_NODE);
         for (int i = 0; i < Key.LENGHT; i++) {
-            Key sumPow = newFingerTable.last().getNodeId().sumPow(Key.LENGHT, Key.LENGHT);
+            Key sumPow = newFingerTable.last().getNodeId().sumPowDivided(Key.LENGHT, Key.LENGHT);
             NodeReference succ = findSuccessor(sumPow);
             newFingerTable.add(succ);
         }
