@@ -78,4 +78,11 @@ public class Label {
     public static Range interval(Range maximum_range) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    public boolean isRight(){
+        return true;
+    }
+    public boolean isLeft(){
+        return false;
+    }
 }
