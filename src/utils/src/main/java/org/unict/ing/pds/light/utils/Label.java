@@ -22,7 +22,20 @@ public class Label {
     public String getLabel() {
         return "#" + this.label;
     }
-    
+
+    public Label(long timestamp) {
+        // TODO
+
+        this.label = String.valueOf(timestamp);
+    }
+
+    public Label prefix(int mid) {
+        return null;
+    }
+
+    public int getLength() {
+        return 0;
+    }
     /**
      *
      * @return
@@ -40,15 +53,20 @@ public class Label {
         return new Key(toDHTKey().getLabel(), true);
     }
 
+    public Key toDataKey() {
+        return new Key(toDHTKey().getLabel() + "DATA", true);
+    }
+
     public static Label namingFunction(Label label) {
+        
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public static Label nextNamingFunction(Label label) {
+    public Label nextNamingFunction() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public static Label lowestCommonAncestor(Collection<Label> labels) {
+    public static Label lowestCommonAncestor(Label... labels) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

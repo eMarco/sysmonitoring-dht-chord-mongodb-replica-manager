@@ -26,6 +26,10 @@ public class Range {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public Boolean contains(long timestamp) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     public Boolean isContainedIn(Range range) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -33,4 +37,13 @@ public class Range {
     public Range intersect(Range range) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    public long getLower() {
+        return lower;
+    }
+
+    public long getUpper() {
+        return upper;
+    }
+    
 }
