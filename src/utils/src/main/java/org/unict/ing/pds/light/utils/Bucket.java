@@ -42,6 +42,9 @@ public class Bucket extends GenericValue {
         this.recordsCounter = 0;        
     }
 
+    public Bucket() {
+        super(new Key(""));
+    }
     public int getRecordsCounter() {
         return recordsCounter;
     }

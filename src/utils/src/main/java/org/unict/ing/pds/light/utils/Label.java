@@ -85,4 +85,12 @@ public class Label {
     public boolean isLeft(){
         return false;
     }
+
+    public Label childToLeft() {
+        return new Label(this.label + "0");
+    }
+
+    public Label childToRight(){
+        return new Label(this.label + "1");
+    }
 }

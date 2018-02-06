@@ -5,20 +5,16 @@
  */
 package org.unict.ing.pds.dhtdb.datamanager;
 
-import java.util.List;
 import javax.ejb.Local;
-import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
-import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
 /**
  *
  * @author aleskandro
  */
 @Local
-public interface DataManagerChordSessionBeanLocal {
+public interface LightSessionBeanLocal {
 
-    public Boolean write(Key key, GenericValue elem);
+    public int getTreeHeight();
 
-    public List<GenericValue> lookup(Key key);
-    
+    public void setTreeHeight(int treeHeight);
 }

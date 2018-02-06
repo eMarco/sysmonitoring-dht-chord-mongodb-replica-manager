@@ -29,4 +29,5 @@ public abstract class GenericValue implements Serializable {
     public void setKey(Key key) {
         this.key = key;
     }
+
 }

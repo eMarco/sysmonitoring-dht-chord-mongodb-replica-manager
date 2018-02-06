@@ -19,7 +19,7 @@ import org.unict.ing.pds.dhtdb.utils.dht.Key;
     @JsonSubTypes.Type(value = RAMStat.class),
     @JsonSubTypes.Type(value = UptimeStat.class),
 })
-public abstract class GenericStat extends GenericValue {
+public class GenericStat extends GenericValue {
     private long timestamp;
 
     private String scannerId;
@@ -28,6 +28,12 @@ public abstract class GenericStat extends GenericValue {
         super(key);
         this.timestamp = timestamp;
         this.scannerId = scannerId;
+    }
+
+    public GenericStat(long timestamp) {
+        super(new Key(""));
+        this.timestamp = timestamp;
+        
     }
     public GenericStat(){
         super(new Key(""));
@@ -48,5 +54,30 @@ public abstract class GenericStat extends GenericValue {
     public void setScannerId(String scannerId) {
         this.scannerId = scannerId;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final GenericStat other = (GenericStat) obj;
+        if (this.timestamp != other.timestamp) {
+            return false;
+        }
+        return true;
+    }
+    
     
 }

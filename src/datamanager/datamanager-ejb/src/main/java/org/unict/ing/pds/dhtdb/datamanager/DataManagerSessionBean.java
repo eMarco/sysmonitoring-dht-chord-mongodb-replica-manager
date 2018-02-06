@@ -18,6 +18,9 @@ import org.unict.ing.pds.dhtdb.utils.common.JsonHelper;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
+import org.unict.ing.pds.light.utils.Bucket;
+import org.unict.ing.pds.light.utils.Label;
+import org.unict.ing.pds.light.utils.Range;
 
 /**
  *
@@ -25,6 +28,10 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
  */
 @Stateless
 public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
+    private static final int TETA_SPLIT = 3;
+    
+    @EJB
+    private LightSessionBeanLocal lightSessionBean;
 
     @EJB
     private DataManagerChordSessionBeanLocal dataManagerChordSessionBean;
@@ -52,6 +59,87 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         return "TODO";
     }
 
+    private Label lowestCommonAncestor(Range range) {
+        Label lower = this.lightLabelLookup(range.getLower());
+        Label upper = this.lightLabelLookup(range.getUpper());
+        return Label.lowestCommonAncestor(lower, upper);
+    }
+
+    // Algorithm 1 modified
+    private Label lightLabelLookup(long timestamp) {
+        int lower = 2;
+        int upper = lightSessionBean.getTreeHeight() + 1;
+        int mid;
+        Label u = new Label(timestamp);
+        
+        while (lower < upper){
+            mid = (lower + upper) / 2;
+            Label x = u.prefix(mid);
+            Bucket bucket = (Bucket)dataManagerChordSessionBean.lookup(x.toKey()).get(0);
+            if (bucket == null) 
+                upper = x.toDHTKey().getLength();
+            else if (bucket.getRange().contains(timestamp)) {
+                return x; 
+            } else {
+                lower = x.nextNamingFunction().getLength();
+            }
+        }
+        return null;
+    }
+
+    // Algorithm 1 with Naming Function
+    private Label lightLookup(long timestamp) {
+        return lightLabelLookup(timestamp).toDHTKey();
+    }
+   
+    // Lookup an entire bucket
+    private List<GenericValue> lightLookupAndGetBucket(long timestamp) {
+        return dataManagerChordSessionBean.lookup(lightLookup(timestamp).toKey());
+    }
+    
+    // Exact match
+    private List<GenericValue> lightLookupAndGetValue(long timestamp) {
+        List<GenericValue> l = lightLookupAndGetBucket(timestamp);
+        /*List<GenericStat> stats = new LinkedList<>();
+        l.forEach((e) -> stats.add((GenericStat)e));*/
+        List<GenericStat> filter = new LinkedList<>();
+        filter.add(new GenericStat(timestamp));
+        l.retainAll(filter);
+        return l;
+
+    }
+  
+    public void lightPut(GenericStat stat) {
+        long timestamp = stat.getTimestamp();
+        Label dhtKey   = lightLookup(timestamp);
+        Bucket bucket  = (Bucket)dataManagerChordSessionBean.lookup(dhtKey.toKey());
+        if (bucket.getRecordsCounter() == TETA_SPLIT) {
+            dhtKey = this.splitAndPut(bucket, timestamp, stat);
+        }
+        stat.setKey(dhtKey.toDataKey());
+        dataManagerChordSessionBean.write(stat.getKey(), stat);
+        
+    }
+
+    private Label splitAndPut(Bucket localBucket, long timestamp, GenericStat stat) {
+        // TODO discuss about this method: is it right?
+        Label localLabel = localBucket.getLeafLabel();
+        //nge newRange   = 
+        //localBucket.setRange(localBucket.getRange().);
+        List<GenericValue> records = dataManagerChordSessionBean.lookup(localLabel.toDataKey());
+        Bucket remoteBucket = new Bucket();
+        if (localLabel.isRight()) {
+            remoteBucket.setLeafLabel(localLabel.childToLeft());
+            localLabel = localLabel.childToRight();
+        } else { // isLeft
+             remoteBucket.setLeafLabel(localLabel.childToRight());
+             localLabel = localLabel.childToLeft();
+        }
+        
+        localBucket.setLeafLabel(localLabel);
+        // select * from remoteBucket where timestamp < 
+       return null; 
+    }
     @Override
     public String test(String content) {
         try {
