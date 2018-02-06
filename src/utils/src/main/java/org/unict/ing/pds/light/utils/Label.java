@@ -33,8 +33,33 @@ public class Label {
         this.label = String.valueOf(timestamp);
     }
 
-    public Label prefix(int mid) {
-        return null;
+    public Label prefix(int lenght) {
+        long value = 0;
+
+        BitSet labelBits = new BitSet(lenght);
+
+        long lower, upper, mid;
+
+        lower = Range.REPRESENTABLE_RANGE.getLower();
+        upper = Range.REPRESENTABLE_RANGE.getUpper();
+
+        for (int i = 0; i < lenght; i++) {
+            mid = (upper - lower) / 2;
+
+            if (value < mid) {
+                labelBits.clear(i);
+
+                upper = mid;
+            }
+            else {
+                labelBits.set(i);
+
+                lower = mid;
+            }
+
+        }
+
+        return new Label(labelBits.toByteArray());
     }
 
     public int getLength() {
@@ -49,6 +74,7 @@ public class Label {
     }
 
     public Label toDHTKey() {
+        // TODO add #??
         return Label.namingFunction(this, 1);
     }
 
@@ -64,17 +90,14 @@ public class Label {
         return Label.namingFunction(this, 1);
     }
 
-//    public Label nextNamingFunction() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
-
     /**
      *
      * @param treeLenght
+     * @param prefixLenght
      * @return
      */
-    public Label nextNamingFunction(int treeLenght) {
-        return Label.nextNamingFunction(this, treeLenght);
+    public Label nextNamingFunction(int treeLenght, int prefixLenght) {
+        return Label.nextNamingFunction(this, prefixLenght, treeLenght);
     }
 
     /**
@@ -110,9 +133,43 @@ public class Label {
         }
     }
 
-    public static Label nextNamingFunction(Label label, int treeLenght) {
+    /**
+     * Γ(μ) is the set of possible prefixes of μ
+     * Γ(μ, D) set of possibile prefixes with maximum length D
+     *
+     * Notation: μ = label, x = prefix
+     *
+     * Locates the first bit in the suffix of μ (with respect to x) that differs from x’s ending bit; the value
+     * nextNamingFunction(μ, x) is then the prefix of μ, which ends up with this located bit.
+     *
+     * fnn(x, μ) =
+     *              p00∗1 ∈ Γ(μ) if x = p0,
+     *              p11∗0 ∈ Γ(μ) if x = p1.
+     *
+     * Intuitively, fnn locates the first bit in the suffix of μ (with respect to x) that differs from x’s ending bit;
+     * the value nextNamingFunction(μ, x) is then the prefix of μ, which ends up with this located bit.
+     * @param label
+     * @param prefixLength
+     * @param treeLenght
+     * @return
+     */
+    public static Label nextNamingFunction(Label label, int prefixLength, int treeLenght) {
+        BitSet labelBits = label.getBitSet();
 
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int firstDifferentBit;
+
+        // If prefix's last bit is 0 ==> p00∗1 (look for the first 1 bit)
+        if (labelBits.get(prefixLength) == false) {
+            firstDifferentBit = labelBits.nextSetBit(prefixLength);
+        }
+        // If prefix's last bit is 1 ==> p11∗0 (look for the first 0 bit)
+        else {
+            firstDifferentBit = labelBits.nextClearBit(prefixLength);
+        }
+
+        if (firstDifferentBit == -1) return null;
+
+        return new Label(labelBits.get(0, firstDifferentBit).toByteArray());
     }
 
     /**
