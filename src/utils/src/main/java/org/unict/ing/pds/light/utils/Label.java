@@ -33,6 +33,13 @@ public class Label {
         this.label = String.valueOf(timestamp);
     }
 
+    /**
+     * Given the value, returns the prefix label with the specified length.
+     * The label is obtained by iteratively dividing the subranges of the narrowest representable range
+     * in two and appending the 0 bit if the value is lower than mid, 1 otherwise.
+     * @param lenght
+     * @return
+     */
     public Label prefix(int lenght) {
         long value = 0;
 
@@ -56,7 +63,6 @@ public class Label {
 
                 lower = mid;
             }
-
         }
 
         return new Label(labelBits.toByteArray());
@@ -64,7 +70,9 @@ public class Label {
 
     public int getLength() {
         return 0;
-    }    /**
+    }
+
+    /**
      *
      * @return
      */
@@ -98,6 +106,39 @@ public class Label {
      */
     public Label nextNamingFunction(int treeLenght, int prefixLenght) {
         return Label.nextNamingFunction(this, prefixLenght, treeLenght);
+    }
+
+    /**
+     * Dual of prefix. Given a label, this function returns the range it represents.
+     * @param label
+     * @return
+     */
+    public static Range interval(Label label) {
+        BitSet labelBits = label.getBitSet();
+
+        long lower, upper, mid;
+        Boolean lowerIncluded, upperIncluded;
+
+        lower = Range.REPRESENTABLE_RANGE.getLower();
+        upper = Range.REPRESENTABLE_RANGE.getUpper();
+        lowerIncluded = upperIncluded = true;
+
+        for (int i = 0; i < labelBits.length(); i++) {
+            mid = (upper - lower) / 2;
+
+            // label[i] = 0
+            if (labelBits.get(i) == false) {
+                upper = mid;
+                upperIncluded = false;
+            }
+            // label[i] = 1
+            else {
+                lower = mid;
+//                lowerIncluded = true;
+            }
+        }
+
+        return new Range(lower, lowerIncluded, upper, upperIncluded);
     }
 
     /**
@@ -206,15 +247,6 @@ public class Label {
         // Return the prefix of one of the two parameter labels
         // Length of the prefix: Min(label1.len, label2.len, last_common_bit.pos)
         return label1.get(0, Integer.min(Integer.min(label1.length(), label2.length()), xor.nextSetBit(0)-1));
-    }
-
-    public static Range interval() {
-        return interval(Range.REPRESENTABLE_RANGE);
-    }
-
-    // TODO : rename maximum_range!!
-    public static Range interval(Range maximum_range) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public boolean isRight(){
