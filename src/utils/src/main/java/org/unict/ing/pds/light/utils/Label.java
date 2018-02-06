@@ -7,6 +7,7 @@ package org.unict.ing.pds.light.utils;
 
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import java.util.BitSet;
+import java.util.Set;
 
 /**
  *
@@ -151,7 +152,7 @@ public class Label {
         return label1.get(0, Integer.min(Integer.min(label1.length(), label2.length()), xor.nextSetBit(0)-1));
     }
 
-    public static Range interval() {
+    public Range interval() {
         return interval(Range.REPRESENTABLE_RANGE);
     }
 
@@ -181,5 +182,9 @@ public class Label {
 
     private BitSet getBitSet() {
         return BitSet.valueOf(this.label.getBytes());
+    }
+
+    public static Set<Label> branchNodesBetweenLabels(Label label1, Label label2) {
+       return null; 
     }
 }

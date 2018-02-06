@@ -46,4 +46,7 @@ public class Range {
         return upper;
     }
     
+    public boolean isEmpty() {
+        return false;   
+    }
 }

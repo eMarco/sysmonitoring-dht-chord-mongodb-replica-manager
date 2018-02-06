@@ -8,8 +8,10 @@ package org.unict.ing.pds.dhtdb.datamanager;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -65,7 +67,7 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         return Label.lowestCommonAncestor(lower, upper);
     }
 
-    // Algorithm 1 modified
+    // Algorithm 1 modified (needed for lowestCommonAncestor)
     private Label lightLabelLookup(long timestamp) {
         int lower = 2;
         int upper = lightSessionBean.getTreeHeight() + 1;
@@ -81,7 +83,7 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
             else if (bucket.getRange().contains(timestamp)) {
                 return x; 
             } else {
-                lower = x.nextNamingFunction().getLength();
+                lower = x.nextNamingFunction(lightSessionBean.getTreeHeight()).getLength();
             }
         }
         return null;
@@ -92,14 +94,20 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         return lightLabelLookup(timestamp).toDHTKey();
     }
    
-    // Lookup an entire bucket
+    // Lookup an entire bucket leaf (select buckets where `timestamp` is $timestamp
     private List<GenericValue> lightLookupAndGetBucket(long timestamp) {
         return dataManagerChordSessionBean.lookup(lightLookup(timestamp).toKey());
     }
+ 
+    // Lookup the entire bucket leaf and return the list of referenced datas that could contain a subSet with the timestamp 
+    // given (select stats where `timestamp` "contains" $timestamp)
+    public List<GenericValue> lightLookupAndGetDataBucket(long timestamp) {
+        return dataManagerChordSessionBean.lookup(lightLookup(timestamp).toDataKey());
+    }   
     
-    // Exact match
-    private List<GenericValue> lightLookupAndGetValue(long timestamp) {
-        List<GenericValue> l = lightLookupAndGetBucket(timestamp);
+    // Exact match (Get the data) (select stats where `timestamp` is exactly $timestamp
+    public List<GenericValue> lightLookupAndGetValue(long timestamp) {
+        List<GenericValue> l = lightLookupAndGetDataBucket(timestamp);
         /*List<GenericStat> stats = new LinkedList<>();
         l.forEach((e) -> stats.add((GenericStat)e));*/
         List<GenericStat> filter = new LinkedList<>();
@@ -108,7 +116,8 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         return l;
 
     }
-  
+ 
+    // Put a new GenericStat in the Database
     public void lightPut(GenericStat stat) {
         long timestamp = stat.getTimestamp();
         Label dhtKey   = lightLookup(timestamp);
@@ -121,6 +130,7 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         
     }
 
+    // TODO TODO TODO TODO
     private Label splitAndPut(Bucket localBucket, long timestamp, GenericStat stat) {
         // TODO discuss about this method: is it right?
         Label localLabel = localBucket.getLeafLabel();
@@ -140,6 +150,48 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         // select * from remoteBucket where timestamp < 
        return null; 
     }
+
+    // Used when the range query is spawned across different bucket leaves
+    private Set<Bucket> recursiveForward(Range range, Label region, Set<Bucket> subRangesSet) {
+        Bucket bucket = (Bucket)dataManagerChordSessionBean.lookup(region.toKey()).get(0);
+        subRangesSet.add(bucket);
+        Set<Label> branchNodes = Label.branchNodesBetweenLabels(bucket.getLeafLabel(), region);
+
+        for (Label branchNode : branchNodes) {
+            Range intersection = range.intersect(branchNode.interval());
+            if (!intersection.isEmpty()) {
+                recursiveForward(intersection, branchNode, subRangesSet);
+            } 
+        }
+        return subRangesSet;
+    }
+   
+    // Make the query and return the set of the Bucket leaves that reference the datas queried (select buckets where timestamp is between ($range.lower, $range.upper)
+    private Set<Bucket> rangeQuery(Range range) {
+        Label lca = lowestCommonAncestor(range);
+        Bucket bucket = (Bucket)dataManagerChordSessionBean.lookup(lca.toKey()).get(0);
+        Set<Bucket> returnedSet = new HashSet<>();
+        
+        if (bucket == null) { // the range is too small, just a lookup is going to return the only one bucket that references the datas
+            returnedSet.add((Bucket)lightLookupAndGetBucket(range.getLower()).get(0));
+            return returnedSet;
+        } else if (range.isContainedIn(bucket.getRange())) { // the range is totally contained in the bucket found, the algorithm has ended
+            returnedSet.add(bucket);
+            return returnedSet;
+        } 
+        return recursiveForward(range, lca, returnedSet); // the range has datas in more than one bucket calling recurse forward
+    }
+
+    // Make the query, get the bucket leaves and get the related datas (select stats where timestamp is between ($range.lower, $range.upper)
+    public List<GenericValue> getRangeQueryDatas(Range range) {
+        Set<Bucket> references = rangeQuery(range);
+        List<GenericValue> returnDatas = new LinkedList<>();
+        references.forEach((leaf) -> {
+            returnDatas.addAll(dataManagerChordSessionBean.lookup(leaf.getLeafLabel().toDataKey()));
+        });
+        return returnDatas;
+    } 
+    
     @Override
     public String test(String content) {
         try {
