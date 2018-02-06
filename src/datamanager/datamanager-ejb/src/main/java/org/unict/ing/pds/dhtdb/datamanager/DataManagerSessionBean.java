@@ -74,11 +74,11 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         int lower = 2;
         int upper = lightSessionBean.getTreeHeight() + 1;
         int mid;
-        Label u = new Label(timestamp);
+        Label u = Label.prefix(upper, timestamp);
         
         while (lower < upper){
             mid = (lower + upper) / 2;
-            Label x = u.prefix(mid);
+            Label x = Label.prefix(mid, timestamp);
             Bucket bucket = (Bucket)dataManagerChordSessionBean.lookup(x.toKey()).get(0);
             if (bucket == null) 
                 upper = x.toDHTKey().getLength();
@@ -130,10 +130,13 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         Bucket bucket  = (Bucket)dataManagerChordSessionBean.lookup(dhtKey.toKey());
         if (bucket.getRecordsCounter() == TETA_SPLIT) {
             dhtKey = this.splitAndPut(bucket, timestamp);
+        } else {
+            bucket.incrementRecordsCounter();
+            dataManagerChordSessionBean.update(bucket.getKey(), bucket);
         }
+        
         stat.setKey(dhtKey.toDataKey());
         dataManagerChordSessionBean.write(stat.getKey(), stat);
-        // update bucket (TODO)
     }
 
     private Label splitAndPut(Bucket localBucket, long timestamp) {
@@ -141,43 +144,54 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         Range localRange = localBucket.getRange();
         int   currentRecords = localBucket.getRecordsCounter();
         List<GenericValue> currentDatas = lightLookupAndGetDataBucket(localLabel);
-        List<GenericValue> remoteDatas  = new LinkedList<>();
         long mid = localRange.createSplit(false).getUpper();
         
         Bucket newLocalBucket;
         Bucket newRemoteBucket;
-        
+
+        // Just two pointers (TODO improve me)
+        Bucket leftPointer;
+        Bucket rightPointer;
+        List<GenericValue> leftDatas   = new LinkedList<>();
+        List<GenericValue> rightDatas  = new LinkedList<>();
+       
         List<GenericValue> records = dataManagerChordSessionBean.lookup(localLabel.toDataKey());
         Bucket remoteBucket = new Bucket();
         if (localLabel.isRight()) {
-            newRemoteBucket = new Bucket(localRange.createSplit(false), localLabel.leftChild(), currentRecords / 2);
-            newLocalBucket  = new Bucket(localRange.createSplit(true),  localLabel.rightChild(), currentRecords / 2 + currentRecords % 2);
+            newRemoteBucket = leftPointer  = new Bucket(localRange.createSplit(false), localLabel.leftChild(), currentRecords / 2);
+            newLocalBucket  = rightPointer = new Bucket(localRange.createSplit(true),  localLabel.rightChild(), currentRecords / 2 + currentRecords % 2);
         } else { // isLeft
-            newLocalBucket = new Bucket(localRange.createSplit(false), localLabel.leftChild(), currentRecords / 2);
-            newRemoteBucket  = new Bucket(localRange.createSplit(true),  localLabel.rightChild(), currentRecords / 2 + currentRecords % 2);
+            newLocalBucket   = leftPointer = new Bucket(localRange.createSplit(false), localLabel.leftChild(), currentRecords / 2);
+            newRemoteBucket  = rightPointer= new Bucket(localRange.createSplit(true),  localLabel.rightChild(), currentRecords / 2 + currentRecords % 2);
         }
         
         currentDatas.forEach((GenericValue e) -> {
-            if (e instanceof GenericStat
-                    && ((GenericStat) e).getTimestamp() > mid) {
-                e.setKey(newRemoteBucket.getLeafLabel().toDataKey());
-                remoteDatas.add(e);
-            }
+            if (e instanceof GenericStat)
+                if (((GenericStat) e).getTimestamp() >= mid) {
+                    e.setKey(rightPointer.getLeafLabel().toDataKey());
+                    rightDatas.add(e);
+                } else {
+                    e.setKey(leftPointer.getLeafLabel().toDataKey());
+                    leftDatas.add(e);
+                }
         });
-        // remove (TODO) from localBucket
-        // update (TODO) localBucket
+        // update localBucket
+        dataManagerChordSessionBean.update(newLocalBucket.getKey(), newLocalBucket);
         
         // put bucket to remoteBucket
         dataManagerChordSessionBean.write(newRemoteBucket.getKey(), newRemoteBucket);
-        
-        // put datas
-        dataManagerChordSessionBean.write(newRemoteBucket.getLeafLabel().toDataKey(), remoteDatas);
+
+        // TODO
+        // put datas (One of the children should not need to put the entire bucket but we need a way to 
+        // delete only one half of the datas associated with a given key derived from the localBucket label
+        dataManagerChordSessionBean.write(leftPointer.getLeafLabel().toDataKey(), leftDatas);
+        dataManagerChordSessionBean.write(rightPointer.getLeafLabel().toDataKey(), rightDatas);
         
         // return the label where the put has to send the new stat
         if (timestamp > mid) {
-            return newRemoteBucket.getLeafLabel();
+            return rightPointer.getLeafLabel();
         } 
-        return newRemoteBucket.getLeafLabel(); 
+        return leftPointer.getLeafLabel(); 
     }
 
     // Used when the range query is spawned across different bucket leaves

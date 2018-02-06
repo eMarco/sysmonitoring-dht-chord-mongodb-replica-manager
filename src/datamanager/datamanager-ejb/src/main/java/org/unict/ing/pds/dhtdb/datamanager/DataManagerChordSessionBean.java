@@ -110,6 +110,20 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
         return this.getReference(this.findSuccessor(key)).put(elems);
     }
 
+    @Override
+    public Boolean update(Key key, List<GenericValue> elems) {
+        System.out.println("Trying to write");
+        this.getReference(this.findSuccessor(key)).delete(key);
+        return this.getReference(this.findSuccessor(key)).put(elems);
+    }
+
+    @Override
+    public Boolean update(Key key, GenericValue elem) {
+        System.out.println("Trying to write");
+        this.getReference(this.findSuccessor(key)).delete(key);
+        return this.getReference(this.findSuccessor(key)).put(elem);
+    }
+
     /***
      *
      * @param key
@@ -120,7 +134,7 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
         return getReference(closestPrecedingNode).findSuccessor(key); // As NodeReference returned
     }
 
-    private BaseNode getReference(NodeReference nodeReference) {
+    private RemoteNodeProxy getReference(NodeReference nodeReference) {
         return new RemoteNodeProxy(nodeReference);
     }
 

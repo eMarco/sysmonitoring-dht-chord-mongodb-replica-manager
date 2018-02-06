@@ -22,5 +22,9 @@ public interface DataManagerChordSessionBeanLocal {
     public List<GenericValue> lookup(Key key);
 
     public Boolean write(Key key, List<GenericValue> elems);
+
+    public Boolean update(Key key, List<GenericValue> elems);
+
+    public Boolean update(Key key, GenericValue elem);
     
 }

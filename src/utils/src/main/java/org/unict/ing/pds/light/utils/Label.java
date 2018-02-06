@@ -15,7 +15,7 @@ import java.util.Set;
  */
 public class Label {
     private final String label;
-
+    
     public Label(String label) {
         this.label = label;
     }
@@ -28,21 +28,15 @@ public class Label {
         return "#" + this.label;
     }
 
-    public Label(long timestamp) {
-        // TODO
-
-        this.label = String.valueOf(timestamp);
-    }
-
     /**
      * Given the value, returns the prefix label with the specified length.
      * The label is obtained by iteratively dividing the subranges of the narrowest representable range
      * in two and appending the 0 bit if the value is lower than mid, 1 otherwise.
      * @param lenght
+     * @param value
      * @return
      */
-    public Label prefix(int lenght) {
-        long value = 0;
+    public static Label prefix(int lenght, long value) {
 
         BitSet labelBits = new BitSet(lenght);
 

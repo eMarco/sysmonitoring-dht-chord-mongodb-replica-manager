@@ -437,7 +437,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     @Override
     public Boolean update(Key key, List<GenericValue> elems) {
-        BaseNode proxy = getReference(this.findPredecessor(key));
+        BaseNode proxy = getReference(this.findSuccessor(key));
         proxy.delete(key);
         proxy.put(elems);
         return true;

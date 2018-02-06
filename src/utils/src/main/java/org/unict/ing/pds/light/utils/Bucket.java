@@ -53,6 +53,12 @@ public class Bucket extends GenericValue {
         this.recordsCounter = recordsCounter;
     }
 
+    public void incrementRecordsCounter(int i) {
+        this.recordsCounter += i;
+    }
+    public void incrementRecordsCounter() {
+        this.recordsCounter++;
+    }
     public Range getRange() {
         return range;
     }
