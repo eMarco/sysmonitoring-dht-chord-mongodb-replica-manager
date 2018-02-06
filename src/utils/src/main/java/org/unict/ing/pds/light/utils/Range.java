@@ -58,7 +58,8 @@ public class Range {
     
     public boolean isEmpty() {
         return false;   
-    
+    }
+
     public Boolean getLowerIncluded() {
         return this.lowerIncluded;
     }
