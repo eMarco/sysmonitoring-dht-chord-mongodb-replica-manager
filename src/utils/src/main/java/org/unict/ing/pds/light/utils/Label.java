@@ -34,13 +34,46 @@ public class Label {
         this.label = String.valueOf(timestamp);
     }
 
-    public Label prefix(int mid) {
-        return null;
+    /**
+     * Given the value, returns the prefix label with the specified length.
+     * The label is obtained by iteratively dividing the subranges of the narrowest representable range
+     * in two and appending the 0 bit if the value is lower than mid, 1 otherwise.
+     * @param lenght
+     * @return
+     */
+    public Label prefix(int lenght) {
+        long value = 0;
+
+        BitSet labelBits = new BitSet(lenght);
+
+        long lower, upper, mid;
+
+        lower = Range.REPRESENTABLE_RANGE.getLower();
+        upper = Range.REPRESENTABLE_RANGE.getUpper();
+
+        for (int i = 0; i < lenght; i++) {
+            mid = (upper - lower) / 2;
+
+            if (value < mid) {
+                labelBits.clear(i);
+
+                upper = mid;
+            }
+            else {
+                labelBits.set(i);
+
+                lower = mid;
+            }
+        }
+
+        return new Label(labelBits.toByteArray());
     }
 
     public int getLength() {
         return 0;
-    }    /**
+    }
+
+    /**
      *
      * @return
      */
@@ -50,6 +83,7 @@ public class Label {
     }
 
     public Label toDHTKey() {
+        // TODO add #??
         return Label.namingFunction(this, 1);
     }
 
@@ -65,17 +99,47 @@ public class Label {
         return Label.namingFunction(this, 1);
     }
 
-//    public Label nextNamingFunction() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
-
     /**
      *
      * @param treeLenght
+     * @param prefixLenght
      * @return
      */
-    public Label nextNamingFunction(int treeLenght) {
-        return Label.nextNamingFunction(this, treeLenght);
+    public Label nextNamingFunction(int treeLenght, int prefixLenght) {
+        return Label.nextNamingFunction(this, prefixLenght, treeLenght);
+    }
+
+    /**
+     * Dual of prefix. Given a label, this function returns the range it represents.
+     * @param label
+     * @return
+     */
+    public static Range interval(Label label) {
+        BitSet labelBits = label.getBitSet();
+
+        long lower, upper, mid;
+        Boolean lowerIncluded, upperIncluded;
+
+        lower = Range.REPRESENTABLE_RANGE.getLower();
+        upper = Range.REPRESENTABLE_RANGE.getUpper();
+        lowerIncluded = upperIncluded = true;
+
+        for (int i = 0; i < labelBits.length(); i++) {
+            mid = (upper - lower) / 2;
+
+            // label[i] = 0
+            if (labelBits.get(i) == false) {
+                upper = mid;
+                upperIncluded = false;
+            }
+            // label[i] = 1
+            else {
+                lower = mid;
+//                lowerIncluded = true;
+            }
+        }
+
+        return new Range(lower, lowerIncluded, upper, upperIncluded);
     }
 
     /**
@@ -111,9 +175,43 @@ public class Label {
         }
     }
 
-    public static Label nextNamingFunction(Label label, int treeLenght) {
+    /**
+     * Γ(μ) is the set of possible prefixes of μ
+     * Γ(μ, D) set of possibile prefixes with maximum length D
+     *
+     * Notation: μ = label, x = prefix
+     *
+     * Locates the first bit in the suffix of μ (with respect to x) that differs from x’s ending bit; the value
+     * nextNamingFunction(μ, x) is then the prefix of μ, which ends up with this located bit.
+     *
+     * fnn(x, μ) =
+     *              p00∗1 ∈ Γ(μ) if x = p0,
+     *              p11∗0 ∈ Γ(μ) if x = p1.
+     *
+     * Intuitively, fnn locates the first bit in the suffix of μ (with respect to x) that differs from x’s ending bit;
+     * the value nextNamingFunction(μ, x) is then the prefix of μ, which ends up with this located bit.
+     * @param label
+     * @param prefixLength
+     * @param treeLenght
+     * @return
+     */
+    public static Label nextNamingFunction(Label label, int prefixLength, int treeLenght) {
+        BitSet labelBits = label.getBitSet();
 
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int firstDifferentBit;
+
+        // If prefix's last bit is 0 ==> p00∗1 (look for the first 1 bit)
+        if (labelBits.get(prefixLength) == false) {
+            firstDifferentBit = labelBits.nextSetBit(prefixLength);
+        }
+        // If prefix's last bit is 1 ==> p11∗0 (look for the first 0 bit)
+        else {
+            firstDifferentBit = labelBits.nextClearBit(prefixLength);
+        }
+
+        if (firstDifferentBit == -1) return null;
+
+        return new Label(labelBits.get(0, firstDifferentBit).toByteArray());
     }
 
     /**
