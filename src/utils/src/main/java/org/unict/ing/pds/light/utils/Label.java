@@ -5,7 +5,6 @@
  */
 package org.unict.ing.pds.light.utils;
 
-import java.util.Collection;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import java.util.BitSet;
 
@@ -18,6 +17,10 @@ public class Label {
 
     public Label(String label) {
         this.label = label;
+    }
+
+    public Label(byte[] label) {
+        this.label = new String(label);
     }
 
     public String getLabel() {
@@ -57,20 +60,40 @@ public class Label {
         return new Key(toDHTKey().getLabel() + "DATA", true);
     }
 
+    public Label namingFunction() {
+        return Label.namingFunction(this, 1);
+    }
+
+//    public Label nextNamingFunction() {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
+
+    /**
+     *
+     * @param treeLenght
+     * @return
+     */
+    public Label nextNamingFunction(int treeLenght) {
+        return Label.nextNamingFunction(this, treeLenght);
+    }
+
+    /**
+     *
+     * @param label
+     * @return
+     */
     public static Label namingFunction(Label label) {
         return Label.namingFunction(label, 1);
     }
 
-    public Label nextNamingFunction() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+    /**
+     *
+     * @param label
+     * @param dimentions
+     * @return
+     */
     public static Label namingFunction(Label label, int dimentions) {
         byte[] bytes = label.getBytes();
-
-//        int len = bytes.length;
-
-//        int bits = len * BYTE_LEN;
 
         BitSet bits = BitSet.valueOf(bytes);
         return namingFunction(bits, dimentions, bits.length());
@@ -80,28 +103,15 @@ public class Label {
         if (bits.get(len - dimentions) == bits.get(len)) {
             // Unset last bit
             bits.clear(len);
-//            bits.set(len, false);
 
             return namingFunction(bits, dimentions, len - 1);
         } else {
-            return new Label(new String(bits.toByteArray()));
+            return new Label(bits.toByteArray());
         }
     }
 
-//    public static Label namingFunction(byte[] bytes, int dimentions, int len) {
-//        if (getBit(bytes, (len-dimentions)) == getBit(bytes, len)) {
-//
-//            // Remove byte?
-//            int byteN = len % BYTE_LEN;
-//            // bit len % BYTE_LEN
-//            bytes[byteN] = 0;
-//
-//            return namingFunction(bytes, dimentions, len-1);
-//        }
-//        else return new Label(new String(bytes));
-//    }
+    public static Label nextNamingFunction(Label label, int treeLenght) {
 
-    public static Label lowestCommonAncestor(Label... labels) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -110,8 +120,6 @@ public class Label {
     }
 
 
-//
-//    private static final short BYTE_LEN = 8;
 
     // TODO : rename maximum_range!!
     public static Range interval(Range maximum_range) {
@@ -137,23 +145,7 @@ public class Label {
         return this.label.getBytes();
     }
 
-//    private static byte getBit(byte[] fromBytes, int position) {
-//        int byteN = position % BYTE_LEN;
-//
-//        return getBit(fromBytes[byteN], (short) (position % BYTE_LEN));
-//    }
-//
-//    private static byte getBit(byte fromByte, short position) {
-//        // Todo throw new exception?
-//        if (position < 0 || position > 7) return (byte) 0;
-//
-//        return (byte) ((fromByte >> position) & 1);
-//    }
-//
-//    private static byte setBit(byte fromByte, short position, byte value) {
-//        // Todo throw new exception?
-//        if (position < 0 || position > 7) return (byte) 0;
-//
-//        return (byte) ((fromByte >> position) & 1);
-//    }
+    private BitSet getBitSet() {
+        return BitSet.valueOf(this.label.getBytes());
+    }
 }
