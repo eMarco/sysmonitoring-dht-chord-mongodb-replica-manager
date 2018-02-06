@@ -85,7 +85,7 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
             else if (bucket.getRange().contains(timestamp)) {
                 return x; 
             } else {
-                lower = x.nextNamingFunction(x.getLength(), lightSessionBean.getTreeHeight()).getLength();
+                lower = u.nextNamingFunction(x.getLength(), lightSessionBean.getTreeHeight()).getLength();
             }
         }
         return null;
