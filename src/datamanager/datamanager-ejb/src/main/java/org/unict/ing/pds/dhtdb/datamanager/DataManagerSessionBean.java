@@ -150,11 +150,11 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         List<GenericValue> records = dataManagerChordSessionBean.lookup(localLabel.toDataKey());
         Bucket remoteBucket = new Bucket();
         if (localLabel.isRight()) {
-            newRemoteBucket = new Bucket(localRange.createSplit(false), localLabel.childToLeft(), currentRecords / 2);
-            newLocalBucket  = new Bucket(localRange.createSplit(true),  localLabel.childToRight(), currentRecords / 2 + currentRecords % 2);
+            newRemoteBucket = new Bucket(localRange.createSplit(false), localLabel.leftChild(), currentRecords / 2);
+            newLocalBucket  = new Bucket(localRange.createSplit(true),  localLabel.rightChild(), currentRecords / 2 + currentRecords % 2);
         } else { // isLeft
-            newLocalBucket = new Bucket(localRange.createSplit(false), localLabel.childToLeft(), currentRecords / 2);
-            newRemoteBucket  = new Bucket(localRange.createSplit(true),  localLabel.childToRight(), currentRecords / 2 + currentRecords % 2);
+            newLocalBucket = new Bucket(localRange.createSplit(false), localLabel.leftChild(), currentRecords / 2);
+            newRemoteBucket  = new Bucket(localRange.createSplit(true),  localLabel.rightChild(), currentRecords / 2 + currentRecords % 2);
         }
         
         currentDatas.forEach((GenericValue e) -> {

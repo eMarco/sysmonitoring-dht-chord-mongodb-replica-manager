@@ -266,11 +266,11 @@ public class Label {
         return false;
     }
 
-    public Label childToLeft() {
+    public Label leftChild() {
         return new Label(this.label + "0");
     }
 
-    public Label childToRight(){
+    public Label rightChild(){
         return new Label(this.label + "1");
     }
 
