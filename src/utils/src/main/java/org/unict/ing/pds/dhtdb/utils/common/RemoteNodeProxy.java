@@ -4,14 +4,11 @@
  * and open the template in the editor.
  */
 package org.unict.ing.pds.dhtdb.utils.common;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,60 +25,73 @@ public class RemoteNodeProxy extends BaseNode {
     public RemoteNodeProxy(NodeReference nodeRef) {
         super(nodeRef);
     }
+    
+    private String request(String uri, String method, String payload) {
+        ClientResponse clientResponse;
+        if (payload == null)
+          clientResponse = getWebResource("/" + uri).method(method, ClientResponse.class);
+        else
+          clientResponse = getWebResource("/" + uri).method(method, ClientResponse.class, payload);
 
-    @Override
-    public Boolean put(GenericValue elem) {
-        try {
-            String jsonElem = new ObjectMapper().writeValueAsString(elem);
-            String k = elem.getKey().toString();
-            ClientResponse clientResponse = getWebResource("/" + k).post(ClientResponse.class, jsonElem);
-
-            if (clientResponse.getStatus() != 200) {
-                System.out.println("[ERROR] Error in fetching PUT response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
-                return false;
-            }
-
-            return true;
-        } catch (JsonProcessingException ex) {
-            System.out.println(ex.getOriginalMessage());
-            Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
+        if (clientResponse.getStatus() != 200) {
+            System.out.println("[ERROR] Error in fetching response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
+            return null;
         }
-        return false;
+        
+        String res = clientResponse.getEntity(String.class);
+        return res;
+    }
+    
+    /**
+     * Make a POST request
+     * @param uri
+     * @param payload
+     * @return 
+     */    
+    private Boolean request(String uri, String payload) {
+        return request(uri, "POST", payload) != null;
+    }
+
+    /**
+     * Make a GET request
+     * @param uri
+     * @return 
+     */
+    private String request(String uri) {
+        return request(uri, "GET", null);
+    }
+   
+    private WebResource getWebResource(String path) {
+        Client client = Client.create();
+        return client.resource(this.nodeRef.getEndpoint() + PATH + path);
     }
 
     @Override
     public List<GenericValue> get(Key key) {
-        ClientResponse clientResponse = getWebResource("/" + key.toString()).get(ClientResponse.class);
-        String res = clientResponse.getEntity(String.class);
-
-        if (clientResponse.getStatus() != 200) {
-            System.out.println("[ERROR] Error in fetching GET response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
-            return new ArrayList<>();
-        }
-
-        return unmarshallList(res);
+        return JsonHelper.readList(request(key.toString()));
     }
 
     @Override
-    public void bootstrap(NodeReference nodeRef) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Boolean put(GenericValue elem) {
+        // POST
+        return request(elem.getKey().toString(), 
+                new JsonHelper().write(elem));
     }
+    
+    @Override
+    public List<GenericValue> delete(Key key) {
+        return JsonHelper.readList(
+                request(key.toString(), "DELETE", null));
+    }
+    
 
     @Override
     public NodeReference findSuccessor(Key key) {
         try {
-                ClientResponse clientResponse = getWebResource("/successor/" + key.toString()).get(ClientResponse.class);
-
-                if (clientResponse.getStatus() != 200) {
-                        System.out.println("[ERROR] Error in fetching findSuccessor response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
-                        // TODO : handle null value
-                        return null;
-                }
-
-                String _key = clientResponse.getEntity(String.class);
-                return new ObjectMapper().readValue(_key, NodeReference.class);
+            return new ObjectMapper().readValue(
+                    request("successor/" + key.toString()), NodeReference.class);
         } catch (IOException ex) {
-                Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -89,17 +99,10 @@ public class RemoteNodeProxy extends BaseNode {
     @Override
     public NodeReference findPredecessor(Key key) {
         try {
-                ClientResponse clientResponse = getWebResource("/findPredecessor/" + key.toString()).get(ClientResponse.class);
-
-                if (clientResponse.getStatus() != 200) {
-                        System.out.println("[ERROR] Error in fetching findSuccessor response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
-                        return null;
-                }
-
-                String _key = clientResponse.getEntity(String.class);
-                return new ObjectMapper().readValue(_key, NodeReference.class);
+            return new ObjectMapper().readValue(
+                    request("findPredecessor/" + key.toString()), NodeReference.class);
         } catch (IOException ex) {
-                Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -107,21 +110,11 @@ public class RemoteNodeProxy extends BaseNode {
     @Override
     public NodeReference notify(NodeReference nodeRef) {
         try {
-                ObjectMapper mapper = new ObjectMapper();
-                String _nodeRef = mapper.writeValueAsString(nodeRef);
-
-                ClientResponse clientResponse = getWebResource("/notify").post(ClientResponse.class, _nodeRef);
-
-                if (clientResponse.getStatus() != 200) {
-                        System.out.println("[ERROR] Error in fetching PUT response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
-                        return null;
-                }
-
-                _nodeRef = clientResponse.getEntity(String.class);
-
-                return mapper.readValue(_nodeRef, NodeReference.class);
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(
+                    request("notify/", "POST", mapper.writeValueAsString(nodeRef)), NodeReference.class);
         } catch (IOException ex) {
-                Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -129,66 +122,36 @@ public class RemoteNodeProxy extends BaseNode {
     @Override
     public NodeReference getPredecessorNodeRef() {
         try {
-                ClientResponse clientResponse = getWebResource("/predecessor/").get(ClientResponse.class);
-
-                if (clientResponse.getStatus() != 200) {
-                        System.out.println("[ERROR] Error in fetching getPredecessor response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
-                        return null;
-                }
-
-                String _key = clientResponse.getEntity(String.class);
-                return new ObjectMapper().readValue(_key, NodeReference.class);
-        } catch (IOException ex) {
-                Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-
-    public WebResource getWebResource(String path) {
-        Client client = Client.create();
-
-        return client.resource(this.nodeRef.getEndpoint() + PATH + path);
-    }
-
-    public NodeReference ping() {
-        try {
-                String clientResponse = getWebResource("/ping").get(String.class);
-                return new ObjectMapper().readValue(clientResponse, NodeReference.class);
-        } catch (IOException ex) {
-                Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    @Override
-    public Boolean put(List<GenericValue> elem) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public List<GenericValue> getLessThanAndRemove(Key key) {
-        ClientResponse clientResponse = getWebResource("/moving/" + key.toString()).get(ClientResponse.class);
-
-        String res = clientResponse.getEntity(String.class);
-
-        if (clientResponse.getStatus() != 200) {
-            System.out.println("[ERROR] Error in fetching GET response [" + clientResponse.getStatus() + " " + clientResponse.getStatusInfo() + "]");
-            return new ArrayList<>();
-        }
-
-        return unmarshallList(res);
-    }
-
-    public List<GenericValue> unmarshallList(String res) {
-        try {
-            ObjectMapper mapper = new ObjectMapper().enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
-            List<GenericValue> ret = mapper.readValue(res,
-                    mapper.getTypeFactory().constructCollectionType(List.class, GenericValue.class));
-            return ret;
+            return new ObjectMapper().readValue(request("predecessor/"), NodeReference.class);
         } catch (IOException ex) {
             Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
+
+    public NodeReference ping() {
+        try {
+            return new ObjectMapper().readValue(request("ping"), NodeReference.class);
+        } catch (IOException ex) {
+            Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    @Override
+    public Boolean put(List<GenericValue> elems) {
+        request(elems.get(0).getKey().toString(), "PUT", JsonHelper.writeList(elems));
+        return true;
+    }
+
+    @Override
+    public List<GenericValue> getLessThanAndRemove(Key key) {
+        return JsonHelper.readList(request("moving/" + key.toString()));
+    }
+
+    @Override
+    public void bootstrap(NodeReference nodeRef) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

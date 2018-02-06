@@ -8,11 +8,13 @@ package org.unict.ing.pds.dhtdb.datamanager;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import org.unict.ing.pds.dhtdb.utils.common.JsonHelper;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
@@ -29,21 +31,18 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
 
     @Override
     public void put(String scanner, String topic, String content) {
-        try {
-            // Convert the request in the proper model object
-            ObjectMapper mapper = new ObjectMapper().enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
-            List<GenericStat> fromJson = mapper.readValue(content,
-                    mapper.getTypeFactory().constructCollectionType(List.class, GenericValue.class));
-            fromJson.forEach(elem -> {
-                elem.setScannerId(scanner);
-                dataManagerChordSessionBean.write(new Key("the key to be done" + fromJson.toString(), true), elem);
-            });
-        }catch (IOException ex) {
-            Logger.getLogger(DataManagerSessionBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        // Convert the request in the proper model object
+        List<GenericValue> fromJson2;
+        fromJson2 = JsonHelper.readList(content);
+        List<GenericStat> fromJson = new LinkedList<>();
+        fromJson2.forEach(elem -> {
+            fromJson.add((GenericStat)elem);
+        });
+        fromJson.forEach(elem -> {
+            elem.setScannerId(scanner);
+            dataManagerChordSessionBean.write(new Key("the key to be done" + fromJson.toString(), true), elem);
+        });
         // Wrong topic in request
-        // Wrong topic in request
-
     }
 
     @Override
