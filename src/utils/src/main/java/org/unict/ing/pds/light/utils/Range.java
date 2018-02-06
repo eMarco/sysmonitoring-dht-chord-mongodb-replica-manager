@@ -67,4 +67,16 @@ public class Range {
     public Boolean getUpperIncluded() {
         return this.upperIncluded;
     }
+
+    /**
+     * Creates the Range for the left or right child of the Bucket associated with this range
+     * @param second trigger the creation of the range for the right child (if true)
+     * @return a new Range in the interval [lower, lower + (upper - lower) / 2)
+     */
+    public Range createSplit(Boolean second) {
+        long mid = (lower + upper) / 2;
+        long lowerBound = (second)?mid:lower;
+        long upperBound = (second)?upper:mid;
+        return new Range(lowerBound, true, upperBound, false);
+    }
 }

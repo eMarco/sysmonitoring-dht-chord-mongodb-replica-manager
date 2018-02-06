@@ -104,6 +104,12 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
         return this.getReference(this.findSuccessor(key)).put(elem);
     }
 
+    @Override
+    public Boolean write(Key key, List<GenericValue> elems) {
+        System.out.println("Trying to write");
+        return this.getReference(this.findSuccessor(key)).put(elems);
+    }
+
     /***
      *
      * @param key
