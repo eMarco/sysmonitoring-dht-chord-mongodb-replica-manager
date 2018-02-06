@@ -115,11 +115,45 @@ public class Label {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *
+     * @param labels
+     * @return
+     */
+    public static Label lowestCommonAncestor(Label... labels) {
+        if (labels.length < 2) return labels[0];
+
+        BitSet prefix = lowestCommonAncestor(labels[0].getBitSet(), labels[1].getBitSet());
+
+        // TODO optimize this loop!
+        for (int i = 3; i < labels.length; i++) {
+            prefix = lowestCommonAncestor(prefix, labels[i].getBitSet());
+        }
+
+        return new Label(prefix.toByteArray());
+    }
+
+    /**
+     *
+     * @param label1
+     * @param label2
+     * @return
+     */
+    public static BitSet lowestCommonAncestor(BitSet label1, BitSet label2) {
+        BitSet xor = (BitSet) label1.clone();
+
+        // Label1 XOR label2
+        // xor[i] = 1 <==> label1[i] != label2[i]
+        xor.xor(label2);
+
+        // Return the prefix of one of the two parameter labels
+        // Length of the prefix: Min(label1.len, label2.len, last_common_bit.pos)
+        return label1.get(0, Integer.min(Integer.min(label1.length(), label2.length()), xor.nextSetBit(0)-1));
+    }
+
     public static Range interval() {
         return interval(Range.REPRESENTABLE_RANGE);
     }
-
-
 
     // TODO : rename maximum_range!!
     public static Range interval(Range maximum_range) {
