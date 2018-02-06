@@ -9,7 +9,7 @@ package org.unict.ing.pds.light.utils;
  *
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
-class Range {
+public class Range {
     public static Range REPRESENTABLE_RANGE = new Range(0, Boolean.TRUE, ((2^32)-1), Boolean.TRUE);
     
     private final Boolean lowerIncluded, upperIncluded;
