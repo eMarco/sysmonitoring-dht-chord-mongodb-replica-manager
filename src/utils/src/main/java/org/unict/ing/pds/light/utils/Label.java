@@ -161,7 +161,7 @@ public class Label {
      */
     @JsonIgnore
     public boolean isRight() {
-        return (this.label.get(this.length) == true);
+        return (this.label.get(this.length-1) == true);
     }
 
     /**
@@ -170,7 +170,7 @@ public class Label {
      */
     @JsonIgnore
     public boolean isLeft(){
-        return (this.label.get(this.length) == false);
+        return (this.label.get(this.length-1) == false);
     }
 
     public Label leftChild() {
