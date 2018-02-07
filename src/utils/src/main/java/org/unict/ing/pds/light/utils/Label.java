@@ -221,10 +221,12 @@ public class Label {
 
         lower = Range.REPRESENTABLE_RANGE.getLower();
         upper = Range.REPRESENTABLE_RANGE.getUpper();
-        lowerIncluded = upperIncluded = true;
+        lowerIncluded = Range.REPRESENTABLE_RANGE.getLowerIncluded();
+        upperIncluded = Range.REPRESENTABLE_RANGE.getUpperIncluded();
 
-        for (int i = 0; i < labelBits.length(); i++) {
-            mid = (upper - lower) / 2;
+        // bit[0] = root, includes every value in the representable range
+        for (int i = 1; i < labelBits.length(); i++) {
+            mid = lower + (upper - lower) / 2;
 
             // label[i] = 0
             if (labelBits.get(i) == false) {
@@ -305,7 +307,7 @@ public class Label {
         if (prefixLength < 0) throw new IllegalArgumentException("Prefix cannot be null!");
 
         // If prefix's last bit is 0 ==> p00∗1 (look for the first 1 bit)
-        if (labelBits.get(prefixLength) == false) {
+        if (labelBits.get(prefixLength-1) == false) {
             firstDifferentBit = labelBits.nextSetBit(prefixLength);
         }
         // If prefix's last bit is 1 ==> p11∗0 (look for the first 0 bit)
@@ -331,6 +333,7 @@ public class Label {
         // TODO optimize this loop!
         for (int i = 2; i < labels.length; i++) {
             prefixLength = lowestCommonAncestor(labels[0].getBitSet(), labels[i].getBitSet());
+            if (prefixLength == 0) return new Label("#");
         }
 
         return new Label(labels[0].getBitSet().get(0, prefixLength), prefixLength);
@@ -353,7 +356,7 @@ public class Label {
         int prefixLen = xor.nextSetBit(0);
         if (prefixLen < 0) {
             // labels are identical
-            return label1.length()-1;
+            return (label1.length() > 0) ? label1.length()-1 : 0;
         }
 
         // Return the prefix of one of the two parameter labels
