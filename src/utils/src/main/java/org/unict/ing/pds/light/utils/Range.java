@@ -45,7 +45,13 @@ public class Range {
     }
 
     public Range intersect(Range range) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        long lowerBound = Math.max(this.lower, range.getLower());
+        long upperBound = Math.min(this.upper, range.getUpper());
+        return new Range(
+                lowerBound,
+                this.contains(lowerBound) && range.contains(lowerBound),
+                upperBound,
+                this.contains(upperBound) && range.contains(upperBound));
     }
 
     public long getLower() {
