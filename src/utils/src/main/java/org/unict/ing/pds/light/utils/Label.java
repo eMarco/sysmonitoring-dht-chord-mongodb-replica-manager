@@ -118,11 +118,20 @@ public class Label {
         return Label.interval(this);
     }
 
-    public boolean isRight(){
-        return true;
+    /**
+     * Returns true if label ends by 0 bit, which means this is the child node on the right
+     * @return boolean
+     */
+    public boolean isRight() {
+        return (this.label.get(this.length) == false);
     }
+
+    /**
+     * Returns true if label ends by 1 bit, which means this is the child node on the left
+     * @return boolean
+     */
     public boolean isLeft(){
-        return false;
+        return (this.label.get(this.length) == true);
     }
 
     public Label leftChild() {
