@@ -5,6 +5,7 @@
  */
 package org.unict.ing.pds.light.utils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import java.util.BitSet;
 import java.util.HashSet;
@@ -154,19 +155,21 @@ public class Label {
     }
 
     /**
-     * Returns true if label ends by 0 bit, which means this is the child node on the right
+     * Returns true if label ends by 1 bit, which means this is the child node on the right
      * @return boolean
      */
+    @JsonIgnore
     public boolean isRight() {
-        return (this.label.get(this.length) == false);
+        return (this.label.get(this.length) == true);
     }
 
     /**
-     * Returns true if label ends by 1 bit, which means this is the child node on the left
+     * Returns true if label ends by 0 bit, which means this is the child node on the left
      * @return boolean
      */
+    @JsonIgnore
     public boolean isLeft(){
-        return (this.label.get(this.length) == true);
+        return (this.label.get(this.length) == false);
     }
 
     public Label leftChild() {
