@@ -61,10 +61,45 @@ public class LabelTest {
     @org.junit.Test
     public void testPrefix() {
         System.out.println("prefix");
+
+        // 1
         int length = 4;
         long value = 1517998300L;
         Label expResult = new Label("#0100");
+
         Label result = Label.prefix(length, value);
+        assertEquals(expResult, result);
+
+        // 2
+        length = 3;
+        value = Integer.MAX_VALUE;
+        expResult = new Label("#01");
+
+        result = Label.prefix(length, value);
+        assertEquals(expResult, result);
+
+        // 3
+        length = 5;
+        value = Integer.MAX_VALUE;
+        expResult = new Label("#0111");
+
+        result = Label.prefix(length, value);
+        assertEquals(expResult, result);
+
+        // 4
+        length = 5;
+        value = 0;
+        expResult = new Label("#0000");
+
+        result = Label.prefix(length, value);
+        assertEquals(expResult, result);
+
+        // 5
+        length = 5;
+        value = 268435455;
+        expResult = new Label("#0001");
+
+        result = Label.prefix(length, value);
         assertEquals(expResult, result);
     }
 
