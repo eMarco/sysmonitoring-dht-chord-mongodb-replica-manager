@@ -30,7 +30,7 @@ import org.unict.ing.pds.light.utils.Range;
  */
 @Stateless
 public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
-    private static final int TETA_SPLIT = 3;
+    private static final int TETA_SPLIT = 99999;
     
     @EJB
     private LightSessionBeanLocal lightSessionBean;
@@ -77,7 +77,12 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         while (lower < upper){
             mid = (lower + upper) / 2;
             Label x = Label.prefix(mid, timestamp);
-            Bucket bucket = (Bucket)dataManagerChordSessionBean.lookup(x.toKey()).get(0);
+            List<GenericValue> t = dataManagerChordSessionBean.lookup(x.toKey());
+            Bucket bucket = null;
+            if (t.size() > 0) {
+                bucket = (Bucket)t.get(0);
+                checkTreeHeight(bucket.getLeafLabel()); // TODO TEST
+            }
             if (bucket == null) 
                 upper = x.toDHTKey().getLength();
             else if (bucket.getRange().contains(timestamp)) {
@@ -91,7 +96,12 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
 
     // Algorithm 1 with Naming Function
     private Label lightLookup(long timestamp) {
-        return lightLabelLookup(timestamp).toDHTKey();
+        try {
+            return lightLabelLookup(timestamp).toDHTKey();
+        } catch (NullPointerException e) {
+            System.err.println("Label not found");
+        }
+        return null;
     }
    
     // Lookup an entire bucket leaf (select buckets where `timestamp` is $timestamp
@@ -125,8 +135,15 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
     public void lightPut(GenericStat stat) {
         long timestamp = stat.getTimestamp();
         Label dhtKey   = lightLookup(timestamp);
+        if (dhtKey == null) { // The database is empty
+            // Creates a new bucket
+            Bucket theFirst = new Bucket(Range.REPRESENTABLE_RANGE, new Label("#0"), 0);
+            dataManagerChordSessionBean.write(theFirst.getKey(), theFirst);
+            lightPut(stat);
+            return;
+        }
         Bucket bucket  = (Bucket)dataManagerChordSessionBean.lookup(dhtKey.toKey());
-        if (bucket.getRecordsCounter() == TETA_SPLIT) {
+        if (bucket.getRecordsCounter() >= TETA_SPLIT) {
             dhtKey = this.splitAndPut(bucket, timestamp);
         } else {
             bucket.incrementRecordsCounter();
@@ -136,7 +153,12 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         stat.setKey(dhtKey.toDataKey());
         dataManagerChordSessionBean.write(stat.getKey(), stat);
     }
-
+    private void checkTreeHeight(Label label) {
+        int currentHeight = lightSessionBean.getTreeHeight();
+        int max = Math.max(label.getLength(), currentHeight);
+        if (currentHeight != max)
+           lightSessionBean.setTreeHeight(max);
+    }
     private Label splitAndPut(Bucket localBucket, long timestamp) {
         Label localLabel = localBucket.getLeafLabel();
         Range localRange = localBucket.getRange();
@@ -162,7 +184,7 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
             newLocalBucket   = leftPointer = new Bucket(localRange.createSplit(false), localLabel.leftChild(), currentRecords / 2);
             newRemoteBucket  = rightPointer= new Bucket(localRange.createSplit(true),  localLabel.rightChild(), currentRecords / 2 + currentRecords % 2);
         }
-        
+        checkTreeHeight(leftPointer.getLeafLabel());
         currentDatas.forEach((GenericValue e) -> {
             if (e instanceof GenericStat)
                 if (((GenericStat) e).getTimestamp() >= mid) {
@@ -232,7 +254,17 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         });
         return returnDatas;
     } 
-    
+
+    @Override public String test(String content) {
+        Set<Bucket> buckets = rangeQuery(new Range(1517998266, false, 1518998266, false));
+        List<GenericValue> list = new LinkedList<>();
+        buckets.forEach(b -> { 
+            list.addAll(lightLookupAndGetDataBucket(b.getLeafLabel()));
+        });
+
+        return JsonHelper.writeList(list);
+    }
+/* 
     @Override
     public String test(String content) {
         try {
@@ -260,4 +292,5 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
             return "FUCK " + ex.getMessage();
         }
     }
+*/
 }
