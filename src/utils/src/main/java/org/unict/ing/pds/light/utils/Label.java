@@ -253,20 +253,20 @@ public class Label {
     public static Label namingFunction(Label label, int dimentions) {
         BitSet bits = label.getBitSet();
 
-        if (bits.length() <= 1) return new Label("#");
-        
         return namingFunction(bits, dimentions, bits.length());
     }
 
     private static Label namingFunction(BitSet bits, int dimentions, int len) {
-        if (len > 0 &&
-                bits.get(len - dimentions) == bits.get(len)) {
+        if (len <= dimentions) {
+            return new Label("#");
+        }
+        else if (bits.get(len -1 - dimentions) == bits.get(len-1)) {
             // Unset last bit
             bits.clear(len);
 
             return namingFunction(bits, dimentions, len - 1);
         } else {
-            return new Label(bits, len);
+            return new Label(bits.get(0, len), len);
         }
     }
 
