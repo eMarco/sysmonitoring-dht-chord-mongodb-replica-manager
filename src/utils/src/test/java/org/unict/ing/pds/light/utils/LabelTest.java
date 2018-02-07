@@ -285,9 +285,45 @@ public class LabelTest {
 
         // 3
         treeLength = 3;
+        prefixLength = 3;
+        instance = new Label("#01");
+        expResult = new Label("#010");
+
+        result = instance.nextNamingFunction(prefixLength, treeLength);
+        assertEquals(expResult, result);
+
+        // 3
+        treeLength = 3;
+        prefixLength = 7;
+        instance = new Label("#0100011011001001010111");
+        expResult = new Label("#01000110");
+
+        result = instance.nextNamingFunction(prefixLength, treeLength);
+        assertEquals(expResult, result);
+
+        // 4
+        treeLength = 2;
         prefixLength = 2;
-        instance = new Label("#0");
+        instance = new Label("#01");
         expResult = new Label("#01");
+
+        result = instance.nextNamingFunction(prefixLength, treeLength);
+        assertEquals(expResult, result);
+
+        // 5
+        treeLength = 2;
+        prefixLength = 2;
+        instance = new Label("#10");
+        expResult = new Label("#10");
+
+        result = instance.nextNamingFunction(prefixLength, treeLength);
+        assertEquals(expResult, result);
+
+        // 6
+        treeLength = 2;
+        prefixLength = 4;
+        instance = new Label("#10111011101101111101");
+        expResult = new Label("#101110");
 
         result = instance.nextNamingFunction(prefixLength, treeLength);
         assertEquals(expResult, result);

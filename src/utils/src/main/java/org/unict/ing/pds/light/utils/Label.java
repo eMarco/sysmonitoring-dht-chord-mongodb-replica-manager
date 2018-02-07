@@ -313,16 +313,19 @@ public class Label {
 
         // If prefix's last bit is 0 ==> p00∗1 (look for the first 1 bit)
         if (labelBits.get(prefixLength-1) == false) {
-            firstDifferentBit = labelBits.nextSetBit(prefixLength-1);
+            firstDifferentBit = labelBits.nextSetBit(prefixLength);
         }
         // If prefix's last bit is 1 ==> p11∗0 (look for the first 0 bit)
         else {
-            firstDifferentBit = labelBits.nextClearBit(prefixLength-1);
+            firstDifferentBit = labelBits.nextClearBit(prefixLength);
         }
 
-        if (firstDifferentBit == -1) return null;
+        if (firstDifferentBit == -1) {
+//            return null;
+            return label;
+        }
 
-        return new Label(labelBits.get(0, firstDifferentBit), firstDifferentBit);
+        return new Label(labelBits.get(0, firstDifferentBit+1), firstDifferentBit+1);
     }
 
     /**
@@ -333,11 +336,11 @@ public class Label {
     public static Label lowestCommonAncestor(Label... labels) {
         if (labels.length < 2) return labels[0];
 
-        int prefixLength = lowestCommonAncestor(labels[0].getBitSet(), labels[1].getBitSet());
+        int prefixLength = _lowestCommonAncestor(labels[0], labels[1]);
 
         // TODO optimize this loop!
         for (int i = 2; i < labels.length; i++) {
-            prefixLength = lowestCommonAncestor(labels[0].getBitSet(), labels[i].getBitSet());
+            prefixLength = _lowestCommonAncestor(labels[0], labels[i]);
             if (prefixLength == 0) return new Label("#");
         }
 
@@ -350,23 +353,23 @@ public class Label {
      * @param label2
      * @return
      */
-    public static int lowestCommonAncestor(BitSet label1, BitSet label2) {
-        BitSet xor = (BitSet) label1.clone();
+    public static int _lowestCommonAncestor(Label label1, Label label2) {
+        BitSet xor = label1.getBitSet();
 
         // Label1 XOR label2
         // xor[i] = 1 <==> label1[i] != label2[i]
-        xor.xor(label2);
+        xor.xor(label2.getBitSet());
 
         // get firstDifferentBit
         int prefixLen = xor.nextSetBit(0);
         if (prefixLen < 0) {
             // labels are identical
-            return (label1.length() > 0) ? label1.length()-1 : 0;
+            return (label1.length > 0) ? label1.length-1 : 0;
         }
 
         // Return the prefix of one of the two parameter labels
         // Length of the prefix: Min(label1.len, label2.len, last_common_bit.pos)
-        return Integer.min(Integer.min(label1.length(), label2.length()), (prefixLen > 0) ? prefixLen-1 : 0);
+        return Integer.min(Integer.min(label1.length, label2.length), (prefixLen > 0) ? prefixLen-1 : 0);
     }
 
     /**
