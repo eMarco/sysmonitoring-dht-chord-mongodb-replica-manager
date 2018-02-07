@@ -31,7 +31,7 @@ import org.unict.ing.pds.light.utils.Range;
  */
 @Stateless
 public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
-    private static final int TETA_SPLIT = 99999;
+    private static final int TETA_SPLIT = 5;
     
     @EJB
     private LightSessionBeanLocal lightSessionBean;
@@ -155,7 +155,8 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         }
         Bucket bucket  = (Bucket)dataManagerChordSessionBean.lookup(dhtKey.toKey()).get(0);
         if (bucket.getRecordsCounter() >= TETA_SPLIT) {
-            dhtKey = this.splitAndPut(bucket, timestamp);
+            dhtKey = this.splitAndPut(bucket, timestamp, stat);
+            //return;
         } else {
             bucket.incrementRecordsCounter();
             dataManagerChordSessionBean.update(bucket.getKey(), bucket);
@@ -170,7 +171,8 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         if (currentHeight != max)
            lightSessionBean.setTreeHeight(max);
     }
-    private Label splitAndPut(Bucket localBucket, long timestamp) {
+    private Label splitAndPut(Bucket localBucket, long timestamp, GenericStat elem) {
+        System.err.println("SPLITTING");
         Label localLabel = localBucket.getLeafLabel();
         Range localRange = localBucket.getRange();
         int   currentRecords = localBucket.getRecordsCounter();
@@ -192,9 +194,15 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
             newRemoteBucket = leftPointer  = new Bucket(localRange.createSplit(false), localLabel.leftChild(), currentRecords / 2);
             newLocalBucket  = rightPointer = new Bucket(localRange.createSplit(true),  localLabel.rightChild(), currentRecords / 2 + currentRecords % 2);
         } else { // isLeft
-            newLocalBucket   = leftPointer = new Bucket(localRange.createSplit(false), localLabel.leftChild(), currentRecords / 2);
-            newRemoteBucket  = rightPointer= new Bucket(localRange.createSplit(true),  localLabel.rightChild(), currentRecords / 2 + currentRecords % 2);
+            newLocalBucket  = leftPointer = new Bucket(localRange.createSplit(false), localLabel.leftChild(), currentRecords / 2);
+            newRemoteBucket = rightPointer= new Bucket(localRange.createSplit(true),  localLabel.rightChild(), currentRecords / 2 + currentRecords % 2);
         }
+        
+        System.err.println("Local Bucket");
+        System.err.println(localBucket);
+        System.err.println(newLocalBucket);
+        System.err.println("Remote bucket");
+        System.err.println(newRemoteBucket);
         checkTreeHeight(leftPointer.getLeafLabel());
         currentDatas.forEach((GenericValue e) -> {
             if (e instanceof GenericStat)
@@ -206,6 +214,10 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
                     leftDatas.add(e);
                 }
         });
+        System.err.println("Left Datas");
+        System.err.println(leftDatas);
+        System.err.println("Right Datas");
+        System.err.println(rightDatas);
         // update localBucket
         dataManagerChordSessionBean.update(newLocalBucket.getKey(), newLocalBucket);
         
@@ -218,11 +230,13 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         dataManagerChordSessionBean.write(leftPointer.getLeafLabel().toDataKey(), leftDatas);
         dataManagerChordSessionBean.write(rightPointer.getLeafLabel().toDataKey(), rightDatas);
         
-        // return the label where the put has to send the new stat
+        //return the label where the put has to send the new stat
         if (timestamp > mid) {
             return rightPointer.getLeafLabel();
         } 
         return leftPointer.getLeafLabel(); 
+        //lightPut(elem);
+        //return null;
     }
 
     // Used when the range query is spawned across different bucket leaves
@@ -287,7 +301,12 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         System.err.println("INIT: ");
         System.err.println(Range.REPRESENTABLE_RANGE.getUpper());
         lightPut(new CPUStat((float)0.5, 1517998300, "1", new Key("")));
-        
+        lightPut(new CPUStat((float)0.5, 1517998305, "1", new Key("")));
+        lightPut(new CPUStat((float)0.5, 1517998310, "1", new Key("")));
+        //lightPut(new CPUStat((float)0.5, 1517998320, "1", new Key("")));
+        //lightPut(new CPUStat((float)0.5, 1517998330, "1", new Key("")));
+        //lightPut(new CPUStat((float)0.5, 1517998340, "1", new Key("")));
+        //lightPut(new CPUStat((float)0.5, 1517998350, "1", new Key("")));
         System.err.println("DONE THE PUT");
         List<GenericValue> list = lightLookupAndGetDataBucket(1517998300);
         System.err.println("DONE THE LOOKUP");
