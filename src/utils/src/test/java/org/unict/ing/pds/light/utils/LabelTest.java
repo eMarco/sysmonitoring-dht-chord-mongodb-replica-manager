@@ -145,19 +145,18 @@ public class LabelTest {
 //        fail("The test case is a prototype.");
 //    }
 
-//    /**
-//     * Test of toKey method, of class Label.
-//     */
-//    @org.junit.Test
-//    public void testToKey() {
-//        System.out.println("toKey");
-//        Label instance = null;
-//        Key expResult = null;
-//        Key result = instance.toKey();
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
+    /**
+     * Test of toKey method, of class Label.
+     */
+    @org.junit.Test
+    public void testToKey() {
+        System.out.println("toKey");
+        Label instance = new Label("#0");
+        Key expResult = new Key("#", true);
+        System.out.println("KEY HASH " + expResult.getKey());
+        Key result = instance.toKey();
+        assertEquals(expResult, result);
+    }
 
 //    /**
 //     * Test of toDataKey method, of class Label.
@@ -182,25 +181,21 @@ public class LabelTest {
 
         // 1
         Label instance = new Label("#0");
-        System.out.println(instance.getLabel());
-
         Label expResult = new Label("#");
-        System.out.println(expResult.getLabel());
 
         Label result = instance.namingFunction();
-        System.out.println(result.getLabel());
 
         assertEquals(expResult, result);
 
         // 2
         instance = new Label("#000");
-        System.out.println(instance.getLabel());
+        result = instance.namingFunction();
 
         assertEquals(expResult, result);
 
         // 3
         instance = new Label("#111");
-        System.out.println(instance.getLabel());
+        result = instance.namingFunction();
 
         assertEquals(expResult, result);
 
@@ -209,8 +204,57 @@ public class LabelTest {
         expResult = new Label("#0");
         result = instance.namingFunction();
 
+        assertEquals(expResult, result);
+
+        // 5
+        System.out.println("\n\n\n5 TRY");
+        instance = new Label("#010");
+        expResult = new Label("#01");
+        result = instance.namingFunction();
+
         System.out.println("---> " + instance.getLabel() + " => naming => GOT " + result + "(" + expResult.getLabel() + " expected)");
 
+        assertEquals(expResult, result);
+
+        // 6
+        instance = new Label("#101");
+        expResult = new Label("#10");
+        result = instance.namingFunction();
+
+        System.out.println("---> " + instance.getLabel() + " => naming => GOT " + result + "(" + expResult.getLabel() + " expected)");
+
+        assertEquals(expResult, result);
+
+
+        // 7
+        instance = new Label("#011");
+        expResult = new Label("#0");
+        result = instance.namingFunction();
+
+        System.out.println("---> " + instance.getLabel() + " => naming => GOT " + result + "(" + expResult.getLabel() + " expected)");
+
+        // 8
+        instance = new Label("#101");
+        expResult = new Label("#10");
+        result = instance.namingFunction();
+
+        System.out.println("---> " + instance.getLabel() + " => naming => GOT " + result + "(" + expResult.getLabel() + " expected)");
+        assertEquals(expResult, result);
+
+        // 9
+        instance = new Label("#101011");
+        expResult = new Label("#1010");
+        result = instance.namingFunction();
+
+        System.out.println("---> " + instance.getLabel() + " => naming => GOT " + result + "(" + expResult.getLabel() + " expected)");
+        assertEquals(expResult, result);
+
+        // 10
+        instance = new Label("#101010");
+        expResult = new Label("#10101");
+        result = instance.namingFunction();
+
+        System.out.println("---> " + instance.getLabel() + " => naming => GOT " + result + "(" + expResult.getLabel() + " expected)");
         assertEquals(expResult, result);
     }
 
@@ -227,17 +271,26 @@ public class LabelTest {
         Label instance = new Label("#0011100");
         Label expResult = new Label("#0011100");
 
-        Label result = instance.nextNamingFunction(treeLength, prefixLength);
+        Label result = instance.nextNamingFunction(prefixLength, treeLength);
         assertEquals(expResult, result);
 
+        // 2
         treeLength = 14;
         prefixLength = 4;
         instance = new Label("#01110011001100");
         expResult = new Label("#01110");
 
-        result = instance.nextNamingFunction(treeLength, prefixLength);
+        result = instance.nextNamingFunction(prefixLength, treeLength);
         assertEquals(expResult, result);
 
+        // 3
+        treeLength = 3;
+        prefixLength = 2;
+        instance = new Label("#0");
+        expResult = new Label("#01");
+
+        result = instance.nextNamingFunction(prefixLength, treeLength);
+        assertEquals(expResult, result);
     }
 
 //    /**

@@ -29,7 +29,8 @@ public class Label {
         if (label.charAt(0) != '#') throw new IllegalArgumentException("Input label malformed: no # found at the beginning of the input.");
 
         int labelLength = label.length() - 1;
-        BitSet labelBits = new BitSet(labelLength);
+        BitSet labelBits = new BitSet();
+        labelBits.clear(0);
 
         for (int i = 1; i < label.length(); i++) {
             switch (label.charAt(i)) {
@@ -227,7 +228,7 @@ public class Label {
         upperIncluded = Range.REPRESENTABLE_RANGE.getUpperIncluded();
 
         // bit[0] = root, includes every value in the representable range
-        for (int i = 1; i < labelBits.length(); i++) {
+        for (int i = 1; i < label.length; i++) {
             mid = lower + (upper - lower) / 2;
 
             // label[i] = 0
@@ -263,16 +264,17 @@ public class Label {
     public static Label namingFunction(Label label, int dimentions) {
         BitSet bits = label.getBitSet();
 
-        return namingFunction(bits, dimentions, bits.length());
+
+        return namingFunction(bits, dimentions, label.length);
     }
 
     private static Label namingFunction(BitSet bits, int dimentions, int len) {
         if (len <= dimentions) {
             return new Label("#");
         }
-        else if (bits.get(len -1 - dimentions) == bits.get(len-1)) {
+        else if (bits.get(len -1 - dimentions) == bits.get(len - 1)) {
             // Unset last bit
-            bits.clear(len);
+            bits.clear(len-1);
             return namingFunction(bits, dimentions, len - 1);
         } else {
             return new Label(bits.get(0, len-1), len-1);
