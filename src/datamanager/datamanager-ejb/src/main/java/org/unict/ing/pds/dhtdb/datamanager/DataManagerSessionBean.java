@@ -88,13 +88,14 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
                 System.err.println("THE LABEL " + x.toString() + " HAS BEEN FOUND, GETTING...");
                 bucket = (Bucket)t.get(0);
                 System.err.println("BUCKET TAKEN: " + bucket.getLabel().toString() + "; RANGE: " + bucket.getRange().getUpper());
-                //checkTreeHeight(bucket.getLeafLabel()); // TODO TEST
+                checkTreeHeight(bucket.getLeafLabel()); // TODO TEST
             }
             if (bucket == null) 
                 upper = x.toDHTKey().getLength();
             else if (bucket.getRange().contains(timestamp)) {
                 return x; 
             } else {
+                System.out.println("Called nextNamingFunction... Iterating");
                 lower = u.nextNamingFunction(x.getLength(), lightSessionBean.getTreeHeight()).getLength();
             }
         }
@@ -191,11 +192,11 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         List<GenericValue> records = dataManagerChordSessionBean.lookup(localLabel.toDataKey());
         Bucket remoteBucket = new Bucket();
         if (localLabel.isRight()) {
-            newRemoteBucket = leftPointer  = new Bucket(localRange.createSplit(false), localLabel.leftChild(), currentRecords / 2);
-            newLocalBucket  = rightPointer = new Bucket(localRange.createSplit(true),  localLabel.rightChild(), currentRecords / 2 + currentRecords % 2);
+            newRemoteBucket = leftPointer  = new Bucket(localRange.createSplit(false), localLabel.leftChild(), 0);
+            newLocalBucket  = rightPointer = new Bucket(localRange.createSplit(true),  localLabel.rightChild(), 0);
         } else { // isLeft
-            newLocalBucket  = leftPointer = new Bucket(localRange.createSplit(false), localLabel.leftChild(), currentRecords / 2);
-            newRemoteBucket = rightPointer= new Bucket(localRange.createSplit(true),  localLabel.rightChild(), currentRecords / 2 + currentRecords % 2);
+            newLocalBucket  = leftPointer = new Bucket(localRange.createSplit(false), localLabel.leftChild(), 0);
+            newRemoteBucket = rightPointer= new Bucket(localRange.createSplit(true),  localLabel.rightChild(), 0);
         }
         
         System.err.println("Local Bucket");
@@ -214,6 +215,10 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
                     leftDatas.add(e);
                 }
         });
+        
+        leftPointer.setRecordsCounter(leftDatas.size());
+        rightPointer.setRecordsCounter(rightDatas.size());
+        
         System.err.println("Left Datas");
         System.err.println(leftDatas);
         System.err.println("Right Datas");
@@ -241,12 +246,21 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
 
     // Used when the range query is spawned across different bucket leaves
     private Set<Bucket> recursiveForward(Range range, Label region, Set<Bucket> subRangesSet) {
-        Bucket bucket = (Bucket)dataManagerChordSessionBean.lookup(region.toKey()).get(0);
+        System.err.println("Starting recursive forwarding");
+        List<GenericValue> t = dataManagerChordSessionBean.lookup(region.toKey());
+        Bucket bucket = null;
+        if (t.size() > 0)
+            bucket = (Bucket)t.get(0);
+        if (bucket == null) {
+            return null;
+        }
         subRangesSet.add(bucket);
         Set<Label> branchNodes = Label.branchNodesBetweenLabels(bucket.getLeafLabel(), region);
-
+        System.err.println("PRINTING BRANCH NODES");
+        System.err.println(branchNodes);
         for (Label branchNode : branchNodes) {
             Range intersection = range.intersect(branchNode.interval());
+            System.err.println("ENDING/RECURSION OF RECURSIVE WITH intersection: " + intersection + branchNode + subRangesSet);
             if (!intersection.isEmpty()) {
                 recursiveForward(intersection, branchNode, subRangesSet);
             } 
@@ -300,25 +314,36 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         
         System.err.println("INIT: ");
         System.err.println(Range.REPRESENTABLE_RANGE.getUpper());
-        lightPut(new CPUStat((float)0.5, 1517998300, "1", new Key("")));
+        /*lightPut(new CPUStat((float)0.5, 1517998300, "1", new Key("")));
         lightPut(new CPUStat((float)0.5, 1517998305, "1", new Key("")));
-        lightPut(new CPUStat((float)0.5, 1517998310, "1", new Key("")));
-        //lightPut(new CPUStat((float)0.5, 1517998320, "1", new Key("")));
-        //lightPut(new CPUStat((float)0.5, 1517998330, "1", new Key("")));
-        //lightPut(new CPUStat((float)0.5, 1517998340, "1", new Key("")));
+        lightPut(new CPUStat((float)0.5, 1517998310, "1", new Key("")));*/
+        lightPut(new CPUStat((float)0.5, 1517908320, "1", new Key("")));
+        lightPut(new CPUStat((float)0.5, 1618998330, "1", new Key("")));
+        lightPut(new CPUStat((float)0.5, 1517908340, "1", new Key("")));
         //lightPut(new CPUStat((float)0.5, 1517998350, "1", new Key("")));
         System.err.println("DONE THE PUT");
         List<GenericValue> list = lightLookupAndGetDataBucket(1517998300);
         System.err.println("DONE THE LOOKUP");
-        Set<Bucket> buckets = rangeQuery(new Range(1517998266, false, 1518998266, false));
+        /*Set<Bucket> buckets = rangeQuery(new Range(1517998266, false, 1518998266, false));
         List<GenericValue> list2 = new LinkedList<GenericValue>();
         buckets.forEach(b -> { 
             list2.addAll(lightLookupAndGetDataBucket(b.getLeafLabel()));
         });
-
-        return JsonHelper.writeList(list2);
+        */
+        return JsonHelper.writeList(list);
         //return "";
     }
+    @Override 
+    public String test2(String content) {
+        Set<Bucket> buckets = rangeQuery(new Range(1517998266, false, 1518998266, false));
+        List<GenericValue> list = new LinkedList<>();
+        buckets.forEach(b -> { 
+            list.addAll(lightLookupAndGetDataBucket(b.getLeafLabel()));
+        });
+        
+        return JsonHelper.writeList(list);
+    }
+    
 /* 
     @Override
     public String test(String content) {

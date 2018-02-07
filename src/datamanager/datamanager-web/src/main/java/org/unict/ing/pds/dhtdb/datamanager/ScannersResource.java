@@ -114,6 +114,17 @@ public class ScannersResource {
         return respo;
         //return dataManagerSessionBean.get(null, null, tsStart.substring(1), tsEnd.substring(1));
     }
+    
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path(value="test2")
+    public String test2() {
+        String respo = "CIAO";
+        String content = "overrided";
+        respo += dataManagerSessionBean.test2(content);
+        return respo;
+        //return dataManagerSessionBean.get(null, null, tsStart.substring(1), tsEnd.substring(1));
+    }
 
     private DataManagerSessionBeanLocal lookupDataManagerSessionBeanLocal() {
         try {
