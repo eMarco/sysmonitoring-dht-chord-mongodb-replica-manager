@@ -67,7 +67,7 @@ public class Label {
     }
 
     public int getLength() {
-        return this.length;
+        return this.length + 1;
     }
 
     /**
@@ -313,9 +313,9 @@ public class Label {
      * @return
      */
     public static Set<Label> branchNodesBetweenLabels(Label label, Label region) {
-        int lcaLength = lowestCommonAncestor(label, region).getLength();
+        int lcaLength = lowestCommonAncestor(label, region).length;
 
-        if (lcaLength == label.getLength()) return null;
+        if (lcaLength == label.length) return null;
 
         BitSet labelBits = label.getBitSet();
 
@@ -329,7 +329,7 @@ public class Label {
         int i;
         for (Label l : buffer) {
             lBits = l.getBitSet();
-            i = l.getLength() - 1;
+            i = l.length - 1;
 
             if (lBits.get(i) != labelBits.get(i))  {
                 ret.add(l);
@@ -342,7 +342,6 @@ public class Label {
 
             buffer.remove(l);
         }
-
 
         return ret;
     }
