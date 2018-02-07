@@ -7,6 +7,7 @@ package org.unict.ing.pds.light.utils;
 
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import java.util.BitSet;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -304,9 +305,45 @@ public class Label {
         return Integer.min(Integer.min(label1.length(), label2.length()), xor.nextSetBit(0)-1);
     }
 
+    /**
+     * Among all branch nodes (i.e., the second children of the ancestors) in the local tree, there exist one or more whose
+     * regions overlap the query range. This function returns all those nodes.
+     * @param label
+     * @param region
+     * @return
+     */
+    public static Set<Label> branchNodesBetweenLabels(Label label, Label region) {
+        int lcaLength = lowestCommonAncestor(label, region).getLength();
+
+        if (lcaLength == label.getLength()) return null;
+
+        BitSet labelBits = label.getBitSet();
+
+        Set<Label> buffer = new HashSet<>();
+        Set<Label> ret = new HashSet<>();
+
+        buffer.add(label.leftChild());
+        buffer.add(label.rightChild());
+
+        BitSet lBits;
+        int i;
+        for (Label l : buffer) {
+            lBits = l.getBitSet();
+            i = l.getLength() - 1;
+
+            if (lBits.get(i) != labelBits.get(i))  {
+                ret.add(l);
+            }
+
+            if (i < label.length) {
+                buffer.add(l.leftChild());
+                buffer.add(l.rightChild());
+            }
+
+            buffer.remove(l);
+        }
 
 
-    public static Set<Label> branchNodesBetweenLabels(Label label1, Label label2) {
-       return null;
+        return ret;
     }
 }
