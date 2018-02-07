@@ -19,4 +19,6 @@ public interface DataManagerSessionBeanLocal {
     String get(String scanner, String topic, String tsStart, String tsEnd);
 
     public String test(String content);
+
+    public String test2(String content);
 }

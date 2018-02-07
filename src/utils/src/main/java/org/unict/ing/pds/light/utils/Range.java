@@ -17,7 +17,7 @@ import java.io.Serializable;import java.util.Objects;
  */
 public class Range implements Serializable {
     public static Range REPRESENTABLE_RANGE = new Range(0, true, Integer.MAX_VALUE, false);
-    
+    public static Range EMPTY_RANGE = new Range(-2, false, -1, false);
     private final Boolean lowerIncluded, upperIncluded;
     private final long lower, upper;
     
@@ -31,7 +31,7 @@ public class Range implements Serializable {
             @JsonProperty("lowerIncluded")Boolean lowerIncluded, 
             @JsonProperty("upper")long upper, 
             @JsonProperty("upperIncluded")Boolean upperIncluded) {
-        if (lower > upper) throw new IllegalArgumentException("Wrong range interval");
+        //if (lower > upper) throw new IllegalArgumentException("Wrong range interval");
 
         this.lowerIncluded = lowerIncluded;
         this.upperIncluded = upperIncluded;
@@ -62,6 +62,9 @@ public class Range implements Serializable {
     public Range intersect(Range range) {
         long lowerBound = Math.max(this.lower, range.getLower());
         long upperBound = Math.min(this.upper, range.getUpper());
+        if (upperBound < lowerBound) {
+            return EMPTY_RANGE;
+        }
         return new Range(
                 lowerBound,
                 this.contains(lowerBound) && range.contains(lowerBound),
@@ -79,7 +82,7 @@ public class Range implements Serializable {
     
     @JsonIgnore 
     public boolean isEmpty() {
-        return false;   
+        return this.equals(EMPTY_RANGE);   
     }
 
     public Boolean getLowerIncluded() {
