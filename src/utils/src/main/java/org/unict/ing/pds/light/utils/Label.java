@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import java.util.BitSet;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -379,15 +381,17 @@ public class Label {
 
         BitSet labelBits = label.getBitSet();
 
-        Set<Label> buffer = new HashSet<>();
+        List<Label> buffer = new LinkedList<>();
         Set<Label> ret = new HashSet<>();
 
-        buffer.add(label.leftChild());
-        buffer.add(label.rightChild());
+        buffer.add(region.leftChild());
+        buffer.add(region.rightChild());
 
         BitSet lBits;
         int i;
-        for (Label l : buffer) {
+        for (int j = 0; j < buffer.size(); j++) {
+            Label l = buffer.get(j);
+
             lBits = l.getBitSet();
             i = l.length - 1;
 
@@ -395,12 +399,10 @@ public class Label {
                 ret.add(l);
             }
 
-            if (i < label.length) {
+            if (i < label.length-1) {
                 buffer.add(l.leftChild());
                 buffer.add(l.rightChild());
             }
-
-            buffer.remove(l);
         }
 
         return ret;
