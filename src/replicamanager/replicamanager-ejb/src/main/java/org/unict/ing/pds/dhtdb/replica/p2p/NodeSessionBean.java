@@ -101,11 +101,11 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     @Timeout
     public void timeout(Timer timer) {
         if (timer.getInfo().equals("STABILIZE")) {
-            System.err.println("STABILIZE CALLING");
+            //System.err.println("STABILIZE CALLING");
             stabilize();
         }
         if (timer.getInfo().equals("FIXFINGERS")) {
-            System.err.println("FIXFINGERS CALLING");
+            //System.err.println("FIXFINGERS CALLING");
             fixFingers();
         }
 
@@ -223,7 +223,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     private void stabilize() {
         if (!getHasJoined()) return;
 
-        System.out.println(this.nodeRef.getHostname() + " STABILIZE TRIGGERED. SUCCESSOR NODE " + getSuccessor().getNodeReference());
+        //System.out.println(this.nodeRef.getHostname() + " STABILIZE TRIGGERED. SUCCESSOR NODE " + getSuccessor().getNodeReference());
         // TODO : Fix NPE
 
         NodeReference successorsPredecessor;
@@ -231,7 +231,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
             if (getPredecessor() != null)
                 successorsPredecessor = getPredecessor().getNodeReference();
             else {
-                System.out.println("SUCCESSORS PREDECESSOR IS NULL");
+                //System.out.println("SUCCESSORS PREDECESSOR IS NULL");
                 return;
             }
         }
@@ -241,7 +241,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
 
         if (successorsPredecessor != null && !isLocal(successorsPredecessor)) {
-            System.out.println(this.nodeRef.getHostname() + " SUCCESSORS PREDECESSOR : " + successorsPredecessor.getHostname() + " " + this.getNodeReference().compareTo(successorsPredecessor) + " " + successorsPredecessor.compareTo(getSuccessor().getNodeReference()));
+            //System.out.println(this.nodeRef.getHostname() + " SUCCESSORS PREDECESSOR : " + successorsPredecessor.getHostname() + " " + this.getNodeReference().compareTo(successorsPredecessor) + " " + successorsPredecessor.compareTo(getSuccessor().getNodeReference()));
             // if (this.successor == this
             if (isLocal(getSuccessor())
                     // OR if successorsPredecessor ∈ (this, successor))
@@ -258,7 +258,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
                             )
                         )
                     ) {
-                System.out.println(this.nodeRef.getHostname() + " UPDATED SUCCESSOR TO " + successorsPredecessor.getHostname());
+                //System.out.println(this.nodeRef.getHostname() + " UPDATED SUCCESSOR TO " + successorsPredecessor.getHostname());
                 // Set the new successor and notify it about its new predecessor
                 setSuccessor(getReference(successorsPredecessor));
 
@@ -266,7 +266,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
                 fingerSessionBean.addNode(successorsPredecessor);
             }
             else {
-                System.out.println(this.nodeRef.getHostname() + " SUCCESSOR STILL " + getSuccessor().getNodeReference().getHostname());
+                //System.out.println(this.nodeRef.getHostname() + " SUCCESSOR STILL " + getSuccessor().getNodeReference().getHostname());
             }
 
             if (!isLocal(getSuccessor())) {
@@ -283,12 +283,12 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
                 }
             }
         }
-        else System.out.println("SUCCESSORS PREDECESSOR LOCAL OR NULL");
+        //else System.out.println("SUCCESSORS PREDECESSOR LOCAL OR NULL");
 
-        if (getPredecessor() != null) System.out.println(this.nodeRef.getHostname() + " CURRENT PREDECESSOR: " + getPredecessor().getNodeReference().getHostname());
-        if (getSuccessor() != null) System.out.println(this.nodeRef.getHostname() + " CURRENT SUCCESSOR " + getSuccessor().getNodeReference().getHostname());
+        //if (getPredecessor() != null) System.out.println(this.nodeRef.getHostname() + " CURRENT PREDECESSOR: " + getPredecessor().getNodeReference().getHostname());
+  //      if (getSuccessor() != null) System.out.println(this.nodeRef.getHostname() + " CURRENT SUCCESSOR " + getSuccessor().getNodeReference().getHostname());
 
-        System.out.println("STABILIZE ENDED");
+        //System.out.println("STABILIZE ENDED");
     }
 
     /***

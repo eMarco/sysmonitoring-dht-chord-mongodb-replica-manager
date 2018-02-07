@@ -67,7 +67,7 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
 
     @Timeout
     public void timeout(Timer timer) {
-        System.err.println("TIMEOUT: " + timer.getInfo());
+        //System.err.println("TIMEOUT: " + timer.getInfo());
         if (timer.getInfo().equals("FINGERS")) {
             this.fixFingers();
         }
