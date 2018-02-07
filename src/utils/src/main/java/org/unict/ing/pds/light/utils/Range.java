@@ -100,16 +100,11 @@ public class Range {
             return false;
         }
         final Range other = (Range) obj;
-        if (this.lower != other.lower) {
+        if (this.lower != other.lower || this.upper != other.upper) {
             return false;
         }
-        if (this.upper != other.upper) {
-            return false;
-        }
-        if (!Objects.equals(this.lowerIncluded, other.lowerIncluded)) {
-            return false;
-        }
-        if (!Objects.equals(this.upperIncluded, other.upperIncluded)) {
+        if (!((this.lowerIncluded ^ other.lowerIncluded) &&
+               (this.upperIncluded ^ other.upperIncluded))) {
             return false;
         }
         return true;
