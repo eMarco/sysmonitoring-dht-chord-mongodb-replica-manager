@@ -84,8 +84,13 @@ public class Label {
         lower = Range.REPRESENTABLE_RANGE.getLower();
         upper = Range.REPRESENTABLE_RANGE.getUpper();
 
-        for (int i = 0; i < length; i++) {
-            mid = (upper - lower) / 2;
+        // Root contains [lower, upper]
+        labelBits.clear(0);
+
+        for (int i = 1; i < length; i++) {
+            mid = lower + (upper - lower) / 2;
+
+            System.out.println("MID: " + mid);
 
             if (value < mid) {
                 labelBits.clear(i);
@@ -259,16 +264,13 @@ public class Label {
 
     private static Label namingFunction(BitSet bits, int dimentions, int len) {
         if (len <= dimentions) {
-            System.out.println("labels are equal");
             return new Label("#");
         }
         else if (bits.get(len -1 - dimentions) == bits.get(len-1)) {
             // Unset last bit
             bits.clear(len);
-            System.out.println("clearing big");
             return namingFunction(bits, dimentions, len - 1);
         } else {
-            System.out.println("returning");
             return new Label(bits.get(0, len-1), len-1);
         }
     }
