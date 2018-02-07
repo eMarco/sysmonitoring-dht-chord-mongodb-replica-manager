@@ -18,6 +18,35 @@ public class Label {
     private final BitSet label;
     private int length = -1;
 
+    /**
+     * Returns the corresponding label given the "binary" label.
+     * @param label
+     */
+    public Label(String label) {
+        if (label.charAt(0) != '#') throw new IllegalArgumentException("Input label malformed: no # found at the beginning of the input.");
+
+        int labelLength = label.length() - 1;
+        BitSet labelBits = new BitSet(labelLength);
+
+        for (int i = 1; i <= label.length(); i++) {
+            switch (label.charAt(i)) {
+                case '0':
+                    // TODO: unnecessary clear (new BitSets have no bit set)
+                    labelBits.clear(i);
+                    break;
+
+                case '1':
+                    labelBits.set(i);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Input label malformed: found char != (0 | 1) ");
+            }
+        }
+
+        this.label = labelBits;
+        this.length = labelLength;
+    }
+
     public Label(String label, int length) {
         this(BitSet.valueOf(label.getBytes()), length);
     }
