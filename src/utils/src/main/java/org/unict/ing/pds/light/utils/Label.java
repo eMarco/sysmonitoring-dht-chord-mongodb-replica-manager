@@ -5,9 +5,7 @@
  */
 package org.unict.ing.pds.light.utils;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import java.util.BitSet;
 import java.util.HashSet;
@@ -35,11 +33,11 @@ public class Label {
             switch (label.charAt(i)) {
                 case '0':
                     // TODO: unnecessary clear (new BitSets have no bit set)
-                    labelBits.clear(i);
+                    labelBits.clear(i-1);
                     break;
 
                 case '1':
-                    labelBits.set(i);
+                    labelBits.set(i-1);
                     break;
                 default:
                     throw new IllegalArgumentException("Input label malformed: found char != (0 | 1) ");
@@ -50,7 +48,7 @@ public class Label {
         this.length = labelLength;
     }
 
-    private Label(String label, 
+    private Label(String label,
             int length) {
         this(BitSet.valueOf(label.getBytes()), length);
     }
@@ -261,15 +259,17 @@ public class Label {
 
     private static Label namingFunction(BitSet bits, int dimentions, int len) {
         if (len <= dimentions) {
+            System.out.println("labels are equal");
             return new Label("#");
         }
         else if (bits.get(len -1 - dimentions) == bits.get(len-1)) {
             // Unset last bit
             bits.clear(len);
-
+            System.out.println("clearing big");
             return namingFunction(bits, dimentions, len - 1);
         } else {
-            return new Label(bits.get(0, len), len);
+            System.out.println("returning");
+            return new Label(bits.get(0, len-1), len-1);
         }
     }
 
@@ -398,5 +398,25 @@ public class Label {
         }
 
         return ret;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Label other = (Label) obj;
+
+        if (!this.label.get(0, this.length).equals(other.label.get(0, other.length))) {
+            return false;
+        }
+
+        return true;
     }
 }
