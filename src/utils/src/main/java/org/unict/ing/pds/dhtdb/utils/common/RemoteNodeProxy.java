@@ -140,7 +140,9 @@ public class RemoteNodeProxy extends BaseNode {
 
     @Override
     public Boolean put(List<GenericValue> elems) {
-        request(elems.get(0).getKey().toString(), "PUT", JsonHelper.writeList(elems));
+        // Very hacky (TODO)
+        if (elems.size() > 0)
+            request(elems.get(0).getKey().toString(), "PUT", JsonHelper.writeList(elems));
         return true;
     }
 
