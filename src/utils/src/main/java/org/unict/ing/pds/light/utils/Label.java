@@ -305,14 +305,15 @@ public class Label {
         // '#' is not a bit
         prefixLength -= 1;
         if (prefixLength < 0) throw new IllegalArgumentException("Prefix cannot be null!");
+        else if (prefixLength > label.length) throw new IllegalArgumentException("Prefix cannot be longer than label itself!");
 
         // If prefix's last bit is 0 ==> p00∗1 (look for the first 1 bit)
         if (labelBits.get(prefixLength-1) == false) {
-            firstDifferentBit = labelBits.nextSetBit(prefixLength);
+            firstDifferentBit = labelBits.nextSetBit(prefixLength-1);
         }
         // If prefix's last bit is 1 ==> p11∗0 (look for the first 0 bit)
         else {
-            firstDifferentBit = labelBits.nextClearBit(prefixLength);
+            firstDifferentBit = labelBits.nextClearBit(prefixLength-1);
         }
 
         if (firstDifferentBit == -1) return null;
