@@ -327,7 +327,7 @@ public class Label {
         int prefixLength = lowestCommonAncestor(labels[0].getBitSet(), labels[1].getBitSet());
 
         // TODO optimize this loop!
-        for (int i = 3; i < labels.length; i++) {
+        for (int i = 2; i < labels.length; i++) {
             prefixLength = lowestCommonAncestor(labels[0].getBitSet(), labels[i].getBitSet());
         }
 
@@ -356,7 +356,7 @@ public class Label {
 
         // Return the prefix of one of the two parameter labels
         // Length of the prefix: Min(label1.len, label2.len, last_common_bit.pos)
-        return Integer.min(Integer.min(label1.length(), label2.length()), prefixLen-1);
+        return Integer.min(Integer.min(label1.length(), label2.length()), (prefixLen > 0) ? prefixLen-1 : 0);
     }
 
     /**
