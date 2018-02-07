@@ -17,6 +17,7 @@ import org.jongo.Jongo;
 import org.jongo.MongoCollection;
 import org.jongo.MongoCursor;
 import org.unict.ing.pds.dhtdb.replica.p2p.Storage;
+import org.unict.ing.pds.dhtdb.utils.common.JsonHelper;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
@@ -35,11 +36,12 @@ public class MongoDBStorage implements Storage {
         // Using a single connection to provide better (query-oriented) scalability
         this.db = dbSessionBean.getDatabase();
         Jongo jongo = new Jongo(db);
-        this.collection = jongo.getCollection("myMonitor2");
+        this.collection = jongo.getCollection("myMonitor15");
     }
 
     @Override
     public void insert(GenericValue elem) {
+        System.err.println(JsonHelper.write(elem));
         collection.insert(elem);
     }
 
@@ -50,14 +52,14 @@ public class MongoDBStorage implements Storage {
 
     @Override
     public void remove(Key key) {
-        String query = "{ key: '"+ key + "' } }";
+        String query = "{ key: { key: '"+ key + "' } }";
         removeBy(query);
     }
 
     @Override
     public List<GenericValue> find(Key key) {
         // TODO Validation
-        String query = "{ key: { key: '"+ key + "' } } }";
+        String query = "{ key: { key: '"+ key + "' } }";
         return findBy(query);
     }
 

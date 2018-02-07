@@ -5,7 +5,9 @@
  */
 package org.unict.ing.pds.light.utils;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import java.util.BitSet;
 import java.util.HashSet;
@@ -48,7 +50,8 @@ public class Label {
         this.length = labelLength;
     }
 
-    private Label(String label, int length) {
+    private Label(String label, 
+            int length) {
         this(BitSet.valueOf(label.getBytes()), length);
     }
 

@@ -6,6 +6,8 @@
 package org.unict.ing.pds.light.utils;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
@@ -22,14 +24,17 @@ public class Bucket extends GenericValue {
         super(key);
     }
     
-    @JsonCreator
-    public Bucket(Key key, Range range, Label leafLabel, int recordsCounter) {
+    public Bucket(Key key, Range range, 
+            Label leafLabel, 
+                    int recordsCounter) {
         super(key);
         this.range = range;
         this.leafLabel = leafLabel;
         this.recordsCounter = recordsCounter;
         
     }
+
+
 
     public Bucket(Range range, Label leafLabel, int recordsCounter) {
         super(leafLabel.toKey());
@@ -47,6 +52,7 @@ public class Bucket extends GenericValue {
     public Bucket() {
         super(new Key(""));
     }
+    
     public int getRecordsCounter() {
         return recordsCounter;
     }
@@ -58,9 +64,12 @@ public class Bucket extends GenericValue {
     public void incrementRecordsCounter(int i) {
         this.recordsCounter += i;
     }
+    
     public void incrementRecordsCounter() {
         this.recordsCounter++;
     }
+    
+    @JsonIgnore
     public Range getRange() {
         return range;
     }
@@ -69,6 +78,7 @@ public class Bucket extends GenericValue {
         this.range = range;
     }
 
+    @JsonIgnore
     public Label getLeafLabel() {
         return leafLabel;
     }
@@ -76,5 +86,33 @@ public class Bucket extends GenericValue {
     public void setLeafLabel(Label leafLabel) {
         this.leafLabel = leafLabel;
     }
-
+    
+    // Methods for JSON to Jongo to Mongo
+    @JsonCreator 
+    public Bucket(@JsonProperty("key")Key key,
+            @JsonProperty("lower")long lower, 
+            @JsonProperty("upper")long upper, 
+            @JsonProperty("label")String label, 
+            @JsonProperty("recordsCounter") int recordsCounter) {
+        super(key);
+        this.range = new Range(lower, true, upper, false);
+        this.leafLabel = new Label(label);
+        this.recordsCounter = recordsCounter;
+    }
+    
+    @JsonProperty("upper")
+    public long getUpper() {
+        return this.range.getUpper();
+    }
+    
+    @JsonProperty("lower")
+    public long getLower() {
+        return this.range.getLower();
+    }
+    
+    @JsonProperty("label")
+    public String getLabel() {
+        return this.leafLabel.getLabel();
+    }
+    
 }

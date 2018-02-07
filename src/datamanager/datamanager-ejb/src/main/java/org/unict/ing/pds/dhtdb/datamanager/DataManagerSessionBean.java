@@ -18,6 +18,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import org.unict.ing.pds.dhtdb.utils.common.JsonHelper;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
+import org.unict.ing.pds.dhtdb.utils.model.CPUStat;
 import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 import org.unict.ing.pds.light.utils.Bucket;
@@ -49,7 +50,7 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         });
         fromJson.forEach(elem -> {
             elem.setScannerId(scanner);
-            lightPut(elem);
+            //lightPut(elem);
         });
         // Wrong topic in request
     }
@@ -80,8 +81,10 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
             List<GenericValue> t = dataManagerChordSessionBean.lookup(x.toKey());
             Bucket bucket = null;
             if (t.size() > 0) {
+                System.err.println("THE LABEL HAS BEEN FOUND, GETTING...");
                 bucket = (Bucket)t.get(0);
-                checkTreeHeight(bucket.getLeafLabel()); // TODO TEST
+                System.err.println("BUCKET TAKEN: " + bucket.getLabel().toString() + "; RANGE: " + bucket.getRange().getUpper());
+                //checkTreeHeight(bucket.getLeafLabel()); // TODO TEST
             }
             if (bucket == null) 
                 upper = x.toDHTKey().getLength();
@@ -138,11 +141,15 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         if (dhtKey == null) { // The database is empty
             // Creates a new bucket
             Bucket theFirst = new Bucket(Range.REPRESENTABLE_RANGE, new Label("#0"), 0);
+            System.err.println("#0");
+            System.err.println(new Label("#0").toKey());
+            System.err.println(new Label("#0").toDHTKey().toKey());
+            System.err.println(theFirst.getKey());
             dataManagerChordSessionBean.write(theFirst.getKey(), theFirst);
             lightPut(stat);
             return;
         }
-        Bucket bucket  = (Bucket)dataManagerChordSessionBean.lookup(dhtKey.toKey());
+        Bucket bucket  = (Bucket)dataManagerChordSessionBean.lookup(dhtKey.toKey()).get(0);
         if (bucket.getRecordsCounter() >= TETA_SPLIT) {
             dhtKey = this.splitAndPut(bucket, timestamp);
         } else {
@@ -256,13 +263,22 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
     } 
 
     @Override public String test(String content) {
+        
+        System.err.println("INIT: ");
+        System.err.println(Range.REPRESENTABLE_RANGE.getUpper());
+        lightPut(new CPUStat((float)0.5, 1517998300, "1", new Key("")));
+        
+        System.err.println("DONE THE PUT");
+        List<GenericValue> list = lightLookupAndGetDataBucket(1517998300);
+        System.err.println("DONE THE LOOKUP");
         Set<Bucket> buckets = rangeQuery(new Range(1517998266, false, 1518998266, false));
-        List<GenericValue> list = new LinkedList<>();
+        List<GenericValue> list2 = new LinkedList<GenericValue>();
         buckets.forEach(b -> { 
-            list.addAll(lightLookupAndGetDataBucket(b.getLeafLabel()));
+            list2.addAll(lightLookupAndGetDataBucket(b.getLeafLabel()));
         });
 
-        return JsonHelper.writeList(list);
+        return JsonHelper.writeList(list2);
+        //return "";
     }
 /* 
     @Override

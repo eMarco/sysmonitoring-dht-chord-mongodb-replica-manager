@@ -7,20 +7,25 @@ package org.unict.ing.pds.light.utils;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serializable;;
 
 /**
  *
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
-public class Range {
-    public static Range REPRESENTABLE_RANGE = new Range(0, Boolean.TRUE, ((2^32)-1), Boolean.TRUE);
+public class Range implements Serializable {
+    public static Range REPRESENTABLE_RANGE = new Range(0, true, Integer.MAX_VALUE, false);
+           
 
     private final Boolean lowerIncluded, upperIncluded;
     private final long lower, upper;
     
     @JsonCreator
-    public Range(long lower, Boolean lowerIncluded, long upper, Boolean upperIncluded) {
+    public Range(@JsonProperty("lower")long lower, 
+            @JsonProperty("lowerIncluded")Boolean lowerIncluded, 
+            @JsonProperty("upper")long upper, 
+            @JsonProperty("upperIncluded")Boolean upperIncluded) {
         if (lower > upper) throw new IllegalArgumentException("Wrong range interval");
 
         this.lowerIncluded = lowerIncluded;
