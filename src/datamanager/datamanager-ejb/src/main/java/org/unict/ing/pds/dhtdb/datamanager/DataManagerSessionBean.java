@@ -5,15 +5,10 @@
  */
 package org.unict.ing.pds.dhtdb.datamanager;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import org.unict.ing.pds.dhtdb.utils.common.JsonHelper;
@@ -82,12 +77,13 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
             mid = (lower + upper) / 2;
             System.err.println("LightLookup: MID: " + mid + " \t TIMESTAMP: " + timestamp);
             Label x = Label.prefix(mid, timestamp);
+            System.err.println("TRYING PREFIX: " + x);
             List<GenericValue> t = dataManagerChordSessionBean.lookup(x.toKey());
             Bucket bucket = null;
             if (t.size() > 0) {
                 System.err.println("THE LABEL " + x.toString() + " HAS BEEN FOUND, GETTING...");
                 bucket = (Bucket)t.get(0);
-                System.err.println("BUCKET TAKEN: " + bucket.getLabel().toString() + "; RANGE: " + bucket.getRange().getUpper());
+                System.err.println("BUCKET TAKEN: " + bucket);
                 checkTreeHeight(bucket.getLeafLabel()); // TODO TEST
             }
             if (bucket == null) 
@@ -141,6 +137,8 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
  
     // Put a new GenericStat in the Database
     public void lightPut(GenericStat stat) {
+        
+        System.err.println("PUT PUT");
         long timestamp = stat.getTimestamp();
         Label dhtKey   = lightLookup(timestamp);
         if (dhtKey == null) { // The database is empty
@@ -196,7 +194,7 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
             newLocalBucket  = rightPointer = new Bucket(localRange.createSplit(true),  localLabel.rightChild(), 0);
         } else { // isLeft
             newLocalBucket  = leftPointer = new Bucket(localRange.createSplit(false), localLabel.leftChild(), 0);
-            newRemoteBucket = rightPointer= new Bucket(localRange.createSplit(true),  localLabel.rightChild(), 0);
+            newRemoteBucket = rightPointer  = new Bucket(localRange.createSplit(true),  localLabel.rightChild(), 0);
         }
         
         System.err.println("Local Bucket");
@@ -312,25 +310,26 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
 
     @Override public String test(String content) {
         
-        System.err.println("INIT: ");
-        System.err.println(Range.REPRESENTABLE_RANGE.getUpper());
+        //System.err.println("INIT: ");
+        //System.err.println(Range.REPRESENTABLE_RANGE.getUpper());
         /*lightPut(new CPUStat((float)0.5, 1517998300, "1", new Key("")));
         lightPut(new CPUStat((float)0.5, 1517998305, "1", new Key("")));
         lightPut(new CPUStat((float)0.5, 1517998310, "1", new Key("")));*/
-        lightPut(new CPUStat((float)0.5, 1517908320, "1", new Key("")));
-        lightPut(new CPUStat((float)0.5, 1618998330, "1", new Key("")));
-        lightPut(new CPUStat((float)0.5, 1517908340, "1", new Key("")));
+        CPUStat x = new CPUStat((float)0.5, System.currentTimeMillis() / 1000l, "1", new Key(""));
+        System.out.println("Making a put for:");
+        System.out.println(JsonHelper.write(x));
+        lightPut(x);
         //lightPut(new CPUStat((float)0.5, 1517998350, "1", new Key("")));
         System.err.println("DONE THE PUT");
-        List<GenericValue> list = lightLookupAndGetDataBucket(1517998300);
-        System.err.println("DONE THE LOOKUP");
+        //List<GenericValue> list = lightLookupAndGetDataBucket(1517998300);
+        //System.err.println("DONE THE LOOKUP");
         /*Set<Bucket> buckets = rangeQuery(new Range(1517998266, false, 1518998266, false));
         List<GenericValue> list2 = new LinkedList<GenericValue>();
         buckets.forEach(b -> { 
             list2.addAll(lightLookupAndGetDataBucket(b.getLeafLabel()));
         });
         */
-        return JsonHelper.writeList(list);
+        return "";
         //return "";
     }
     @Override 
