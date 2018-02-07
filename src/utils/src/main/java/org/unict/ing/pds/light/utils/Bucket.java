@@ -5,6 +5,7 @@
  */
 package org.unict.ing.pds.light.utils;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
@@ -21,6 +22,7 @@ public class Bucket extends GenericValue {
         super(key);
     }
     
+    @JsonCreator
     public Bucket(Key key, Range range, Label leafLabel, int recordsCounter) {
         super(key);
         this.range = range;

@@ -5,6 +5,8 @@
  */
 package org.unict.ing.pds.light.utils;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Objects;
 
 /**
@@ -16,7 +18,8 @@ public class Range {
 
     private final Boolean lowerIncluded, upperIncluded;
     private final long lower, upper;
-
+    
+    @JsonCreator
     public Range(long lower, Boolean lowerIncluded, long upper, Boolean upperIncluded) {
         if (lower > upper) throw new IllegalArgumentException("Wrong range interval");
 
@@ -64,6 +67,7 @@ public class Range {
         return upper;
     }
     
+    @JsonIgnore 
     public boolean isEmpty() {
         return false;   
     }
