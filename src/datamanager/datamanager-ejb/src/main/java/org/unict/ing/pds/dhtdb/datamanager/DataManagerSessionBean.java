@@ -8,12 +8,10 @@ package org.unict.ing.pds.dhtdb.datamanager;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -51,7 +49,7 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         });
         fromJson.forEach(elem -> {
             elem.setScannerId(scanner);
-            dataManagerChordSessionBean.write(new Key("the key to be done" + fromJson.toString(), true), elem);
+            lightPut(elem);
         });
         // Wrong topic in request
     }
