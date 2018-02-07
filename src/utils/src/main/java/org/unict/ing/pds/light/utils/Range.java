@@ -8,7 +8,8 @@ package org.unict.ing.pds.light.utils;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.io.Serializable;;
+import java.io.Serializable;import java.util.Objects;
+;
 
 /**
  *
@@ -16,11 +17,15 @@ import java.io.Serializable;;
  */
 public class Range implements Serializable {
     public static Range REPRESENTABLE_RANGE = new Range(0, true, Integer.MAX_VALUE, false);
-           
-
+    
     private final Boolean lowerIncluded, upperIncluded;
     private final long lower, upper;
     
+    @Override
+    public String toString() {
+        return "Range{" + "lowerIncluded=" + lowerIncluded + ", upperIncluded=" + upperIncluded + ", lower=" + lower + ", upper=" + upper + '}';
+    }
+         
     @JsonCreator
     public Range(@JsonProperty("lower")long lower, 
             @JsonProperty("lowerIncluded")Boolean lowerIncluded, 
@@ -98,6 +103,16 @@ public class Range implements Serializable {
     }
 
     @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 67 * hash + Objects.hashCode(this.lowerIncluded);
+        hash = 67 * hash + Objects.hashCode(this.upperIncluded);
+        hash = 67 * hash + (int) (this.lower ^ (this.lower >>> 32));
+        hash = 67 * hash + (int) (this.upper ^ (this.upper >>> 32));
+        return hash;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -109,13 +124,20 @@ public class Range implements Serializable {
             return false;
         }
         final Range other = (Range) obj;
-        if (this.lower != other.lower || this.upper != other.upper) {
+        if (this.lower != other.lower) {
             return false;
         }
-        if (!((this.lowerIncluded ^ other.lowerIncluded) &&
-               (this.upperIncluded ^ other.upperIncluded))) {
+        if (this.upper != other.upper) {
+            return false;
+        }
+        if (!Objects.equals(this.lowerIncluded, other.lowerIncluded)) {
+            return false;
+        }
+        if (!Objects.equals(this.upperIncluded, other.upperIncluded)) {
             return false;
         }
         return true;
     }
+
+    
 }

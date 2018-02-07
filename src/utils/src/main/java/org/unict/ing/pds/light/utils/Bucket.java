@@ -23,6 +23,11 @@ public class Bucket extends GenericValue {
     public Bucket(Key key) {
         super(key);
     }
+
+    @Override
+    public String toString() {
+        return "Bucket{" + "recordsCounter=" + recordsCounter + ", range=" + range + ", leafLabel=" + leafLabel + '}';
+    }
     
     public Bucket(Key key, Range range, 
             Label leafLabel, 

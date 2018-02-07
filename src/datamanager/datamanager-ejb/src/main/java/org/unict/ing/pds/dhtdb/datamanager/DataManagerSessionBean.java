@@ -63,8 +63,11 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
     }
 
     private Label lowestCommonAncestor(Range range) {
+        System.err.println("LOWEST COMMON ANCESTOR");
         Label lower = this.lightLabelLookup(range.getLower());
+        System.err.println(lower.toString());
         Label upper = this.lightLabelLookup(range.getUpper());
+        System.err.println(upper.toString());
         return Label.lowestCommonAncestor(lower, upper);
     }
 
@@ -77,11 +80,12 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         
         while (lower < upper){
             mid = (lower + upper) / 2;
+            System.err.println("LightLookup: MID: " + mid + " \t TIMESTAMP: " + timestamp);
             Label x = Label.prefix(mid, timestamp);
             List<GenericValue> t = dataManagerChordSessionBean.lookup(x.toKey());
             Bucket bucket = null;
             if (t.size() > 0) {
-                System.err.println("THE LABEL HAS BEEN FOUND, GETTING...");
+                System.err.println("THE LABEL " + x.toString() + " HAS BEEN FOUND, GETTING...");
                 bucket = (Bucket)t.get(0);
                 System.err.println("BUCKET TAKEN: " + bucket.getLabel().toString() + "; RANGE: " + bucket.getRange().getUpper());
                 //checkTreeHeight(bucket.getLeafLabel()); // TODO TEST
@@ -238,17 +242,33 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
    
     // Make the query and return the set of the Bucket leaves that reference the datas queried (select buckets where timestamp is between ($range.lower, $range.upper)
     private Set<Bucket> rangeQuery(Range range) {
+        System.err.println("RANGE IS " + range.toString());
         Label lca = lowestCommonAncestor(range);
+        System.err.println("FIRST LOOKUP: LCA " + lca.getLabel());
         Bucket bucket = (Bucket)dataManagerChordSessionBean.lookup(lca.toKey()).get(0);
         Set<Bucket> returnedSet = new HashSet<>();
+        System.err.println("FIRST LOOKUP RETURNED: " + bucket);
         
         if (bucket == null) { // the range is too small, just a lookup is going to return the only one bucket that references the datas
+            System.err.println("BUCKET NULL");
             returnedSet.add((Bucket)lightLookupAndGetBucket(range.getLower()).get(0));
             return returnedSet;
-        } else if (range.isContainedIn(bucket.getRange())) { // the range is totally contained in the bucket found, the algorithm has ended
+        } 
+        
+        System.err.println("Range Query");
+        System.err.println(range);
+        System.err.println("Bucket range");
+        System.err.println(bucket.getRange());
+        System.err.println("Intersection");
+        Range inters = bucket.getRange().intersect(range);
+        System.err.println(inters);
+        
+        if (bucket.getRange().contains(range)) { // the range is totally contained in the bucket found, the algorithm has ended
             returnedSet.add(bucket);
             return returnedSet;
         } 
+
+        System.err.println("RECURSIVE FORWARD");
         return recursiveForward(range, lca, returnedSet); // the range has datas in more than one bucket calling recurse forward
     }
 
