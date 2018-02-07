@@ -15,13 +15,17 @@ import java.util.Set;
  */
 public class Label {
     private final String label;
-    
-    public Label(String label) {
+//    private final BitSet labelBits;
+    private int length = -1;
+
+    public Label(String label, int length) {
         this.label = label;
+        this.length = length;
     }
 
-    public Label(byte[] label) {
-        this.label = new String(label);
+
+    public Label(BitSet bits, int length) {
+        this(new String(bits.toByteArray()), length);
     }
 
     public String getLabel() {
@@ -37,7 +41,6 @@ public class Label {
      * @return
      */
     public static Label prefix(int lenght, long value) {
-
         BitSet labelBits = new BitSet(lenght);
 
         long lower, upper, mid;
@@ -60,7 +63,7 @@ public class Label {
             }
         }
 
-        return new Label(labelBits.toByteArray());
+        return new Label(labelBits, lenght);
     }
 
     public int getLength() {
@@ -73,7 +76,16 @@ public class Label {
      */
     @Override
     public String toString() {
-        return this.getLabel();
+        StringBuilder ret = new StringBuilder();
+        ret.append("#");
+
+        BitSet labelBits = this.getBitSet();
+
+        for (int i = 0; i < this.length; i++) {
+            ret.append((labelBits.get(i) == true) ? '1' : '0');
+        }
+
+        return ret.toString();
     }
 
     public Label toDHTKey() {
@@ -152,9 +164,8 @@ public class Label {
      * @return
      */
     public static Label namingFunction(Label label, int dimentions) {
-        byte[] bytes = label.getBytes();
+        BitSet bits = label.getBitSet();
 
-        BitSet bits = BitSet.valueOf(bytes);
         return namingFunction(bits, dimentions, bits.length());
     }
 
@@ -165,7 +176,7 @@ public class Label {
 
             return namingFunction(bits, dimentions, len - 1);
         } else {
-            return new Label(bits.toByteArray());
+            return new Label(bits, len);
         }
     }
 
@@ -205,7 +216,7 @@ public class Label {
 
         if (firstDifferentBit == -1) return null;
 
-        return new Label(labelBits.get(0, firstDifferentBit).toByteArray());
+        return new Label(labelBits.get(0, firstDifferentBit), firstDifferentBit);
     }
 
     /**
@@ -216,14 +227,14 @@ public class Label {
     public static Label lowestCommonAncestor(Label... labels) {
         if (labels.length < 2) return labels[0];
 
-        BitSet prefix = lowestCommonAncestor(labels[0].getBitSet(), labels[1].getBitSet());
+        int prefixLength = lowestCommonAncestor(labels[0].getBitSet(), labels[1].getBitSet());
 
         // TODO optimize this loop!
         for (int i = 3; i < labels.length; i++) {
-            prefix = lowestCommonAncestor(prefix, labels[i].getBitSet());
+            prefixLength = lowestCommonAncestor(labels[0].getBitSet(), labels[i].getBitSet());
         }
 
-        return new Label(prefix.toByteArray());
+        return new Label(labels[0].getBitSet().get(0, prefixLength), prefixLength);
     }
 
     /**
@@ -232,7 +243,7 @@ public class Label {
      * @param label2
      * @return
      */
-    public static BitSet lowestCommonAncestor(BitSet label1, BitSet label2) {
+    public static int lowestCommonAncestor(BitSet label1, BitSet label2) {
         BitSet xor = (BitSet) label1.clone();
 
         // Label1 XOR label2
@@ -241,7 +252,7 @@ public class Label {
 
         // Return the prefix of one of the two parameter labels
         // Length of the prefix: Min(label1.len, label2.len, last_common_bit.pos)
-        return label1.get(0, Integer.min(Integer.min(label1.length(), label2.length()), xor.nextSetBit(0)-1));
+        return Integer.min(Integer.min(label1.length(), label2.length()), xor.nextSetBit(0)-1);
     }
 
     public Range interval() {
@@ -261,15 +272,29 @@ public class Label {
     }
 
     public Label leftChild() {
-        return new Label(this.label + "0");
+        BitSet labelBits = this.getBitSet();
+        int newLength = this.length + 1;
+
+        BitSet newLabelBits = new BitSet(newLength);
+        newLabelBits.xor(labelBits);
+
+        // this + "0"
+        newLabelBits.clear(newLength);
+
+        return new Label(newLabelBits, newLength);
     }
 
     public Label rightChild(){
-        return new Label(this.label + "1");
-    }
+        BitSet labelBits = this.getBitSet();
+        int newLength = this.length + 1;
 
-    private byte[] getBytes() {
-        return this.label.getBytes();
+        BitSet newLabelBits = new BitSet(newLength);
+        newLabelBits.xor(labelBits);
+
+        // this + "1"
+        newLabelBits.set(newLength);
+
+        return new Label(newLabelBits, newLength);
     }
 
     private BitSet getBitSet() {
@@ -277,6 +302,6 @@ public class Label {
     }
 
     public static Set<Label> branchNodesBetweenLabels(Label label1, Label label2) {
-       return null; 
+       return null;
     }
 }
