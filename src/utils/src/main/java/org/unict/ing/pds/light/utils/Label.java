@@ -28,7 +28,7 @@ public class Label {
         int labelLength = label.length() - 1;
         BitSet labelBits = new BitSet(labelLength);
 
-        for (int i = 1; i <= label.length(); i++) {
+        for (int i = 1; i < label.length(); i++) {
             switch (label.charAt(i)) {
                 case '0':
                     // TODO: unnecessary clear (new BitSets have no bit set)
