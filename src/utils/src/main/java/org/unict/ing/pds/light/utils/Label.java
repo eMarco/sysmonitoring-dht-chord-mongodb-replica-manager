@@ -154,7 +154,7 @@ public class Label {
      * @param prefixLength
      * @return
      */
-    public Label nextNamingFunction(int treeLength, int prefixLength) {
+    public Label nextNamingFunction(int prefixLength, int treeLength) {
         return Label.nextNamingFunction(this, prefixLength, treeLength);
     }
 
@@ -419,12 +419,8 @@ public class Label {
         if (getClass() != obj.getClass()) {
             return false;
         }
+
         final Label other = (Label) obj;
-
-        if (!this.label.get(0, this.length).equals(other.label.get(0, other.length))) {
-            return false;
-        }
-
-        return true;
+        return this.label.get(0, this.length).equals(other.label.get(0, other.length));
     }
 }
