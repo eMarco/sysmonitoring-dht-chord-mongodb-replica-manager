@@ -356,7 +356,7 @@ public class Label {
 
         // Return the prefix of one of the two parameter labels
         // Length of the prefix: Min(label1.len, label2.len, last_common_bit.pos)
-        return Integer.min(Integer.min(label1.length(), label2.length()), prefixLen);
+        return Integer.min(Integer.min(label1.length(), label2.length()), prefixLen-1);
     }
 
     /**
