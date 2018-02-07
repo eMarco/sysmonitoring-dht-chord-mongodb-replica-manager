@@ -47,11 +47,11 @@ public class Label {
         this.length = labelLength;
     }
 
-    public Label(String label, int length) {
+    private Label(String label, int length) {
         this(BitSet.valueOf(label.getBytes()), length);
     }
 
-    public Label(BitSet bits, int length) {
+    private Label(BitSet bits, int length) {
         // TODO remove clone?
         this.label = (BitSet) bits.clone();
         this.length = length;
@@ -70,6 +70,11 @@ public class Label {
      * @return
      */
     public static Label prefix(int length, long value) {
+        // '#' is not a bit!
+        length -= 1;
+
+        if (length < 0) throw new IllegalArgumentException("Prefix cannot be null!");
+
         BitSet labelBits = new BitSet(length);
 
         long lower, upper, mid;
@@ -248,7 +253,7 @@ public class Label {
         return namingFunction(bits, dimentions, bits.length());
     }
 
-    public static Label namingFunction(BitSet bits, int dimentions, int len) {
+    private static Label namingFunction(BitSet bits, int dimentions, int len) {
         if (bits.get(len - dimentions) == bits.get(len)) {
             // Unset last bit
             bits.clear(len);
@@ -283,6 +288,10 @@ public class Label {
         BitSet labelBits = label.getBitSet();
 
         int firstDifferentBit;
+
+        // '#' is not a bit
+        prefixLength -= 1;
+        if (prefixLength < 0) throw new IllegalArgumentException("Prefix cannot be null!");
 
         // If prefix's last bit is 0 ==> p00∗1 (look for the first 1 bit)
         if (labelBits.get(prefixLength) == false) {
