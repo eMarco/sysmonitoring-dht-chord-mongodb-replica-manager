@@ -347,9 +347,16 @@ public class Label {
         // xor[i] = 1 <==> label1[i] != label2[i]
         xor.xor(label2);
 
+        // get firstDifferentBit
+        int prefixLen = xor.nextSetBit(0);
+        if (prefixLen < 0) {
+            // labels are identical
+            return label1.length()-1;
+        }
+
         // Return the prefix of one of the two parameter labels
         // Length of the prefix: Min(label1.len, label2.len, last_common_bit.pos)
-        return Integer.min(Integer.min(label1.length(), label2.length()), xor.nextSetBit(0)-1);
+        return Integer.min(Integer.min(label1.length(), label2.length()), prefixLen);
     }
 
     /**
