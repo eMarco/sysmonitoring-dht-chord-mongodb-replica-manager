@@ -118,6 +118,43 @@ public class Label {
         return Label.interval(this);
     }
 
+    public boolean isRight(){
+        return true;
+    }
+    public boolean isLeft(){
+        return false;
+    }
+
+    public Label leftChild() {
+        BitSet labelBits = this.getBitSet();
+        int newLength = this.length + 1;
+
+        BitSet newLabelBits = new BitSet(newLength);
+        newLabelBits.xor(labelBits);
+
+        // this + "0"
+        newLabelBits.clear(newLength);
+
+        return new Label(newLabelBits, newLength);
+    }
+
+    public Label rightChild(){
+        BitSet labelBits = this.getBitSet();
+        int newLength = this.length + 1;
+
+        BitSet newLabelBits = new BitSet(newLength);
+        newLabelBits.xor(labelBits);
+
+        // this + "1"
+        newLabelBits.set(newLength);
+
+        return new Label(newLabelBits, newLength);
+    }
+
+    private BitSet getBitSet() {
+        return (BitSet) label.clone();
+    }
+
     /**
      * Dual of prefix. Given a label, this function returns the range it represents.
      * @param label
@@ -258,42 +295,7 @@ public class Label {
         return Integer.min(Integer.min(label1.length(), label2.length()), xor.nextSetBit(0)-1);
     }
 
-    public boolean isRight(){
-        return true;
-    }
-    public boolean isLeft(){
-        return false;
-    }
 
-    public Label leftChild() {
-        BitSet labelBits = this.getBitSet();
-        int newLength = this.length + 1;
-
-        BitSet newLabelBits = new BitSet(newLength);
-        newLabelBits.xor(labelBits);
-
-        // this + "0"
-        newLabelBits.clear(newLength);
-
-        return new Label(newLabelBits, newLength);
-    }
-
-    public Label rightChild(){
-        BitSet labelBits = this.getBitSet();
-        int newLength = this.length + 1;
-
-        BitSet newLabelBits = new BitSet(newLength);
-        newLabelBits.xor(labelBits);
-
-        // this + "1"
-        newLabelBits.set(newLength);
-
-        return new Label(newLabelBits, newLength);
-    }
-
-    private BitSet getBitSet() {
-        return (BitSet) label.clone();
-    }
 
     public static Set<Label> branchNodesBetweenLabels(Label label1, Label label2) {
        return null;
