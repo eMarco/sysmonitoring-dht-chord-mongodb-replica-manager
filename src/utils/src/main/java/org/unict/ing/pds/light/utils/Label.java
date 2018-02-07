@@ -14,22 +14,21 @@ import java.util.Set;
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 public class Label {
-    private final String label;
-//    private final BitSet labelBits;
+    private final BitSet label;
     private int length = -1;
 
     public Label(String label, int length) {
-        this.label = label;
+        this(BitSet.valueOf(label.getBytes()), length);
+    }
+
+    public Label(BitSet bits, int length) {
+        // TODO remove clone?
+        this.label = (BitSet) bits.clone();
         this.length = length;
     }
 
-
-    public Label(BitSet bits, int length) {
-        this(new String(bits.toByteArray()), length);
-    }
-
     public String getLabel() {
-        return "#" + this.label;
+        return this.toString();
     }
 
     /**
@@ -67,7 +66,7 @@ public class Label {
     }
 
     public int getLength() {
-        return 0;
+        return this.length;
     }
 
     /**
@@ -113,6 +112,10 @@ public class Label {
      */
     public Label nextNamingFunction(int treeLenght, int prefixLenght) {
         return Label.nextNamingFunction(this, prefixLenght, treeLenght);
+    }
+
+    public Range interval() {
+        return Label.interval(this);
     }
 
     /**
@@ -255,15 +258,6 @@ public class Label {
         return Integer.min(Integer.min(label1.length(), label2.length()), xor.nextSetBit(0)-1);
     }
 
-    public Range interval() {
-        return interval(Range.REPRESENTABLE_RANGE);
-    }
-
-    // TODO : rename maximum_range!!
-    public static Range interval(Range maximum_range) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     public boolean isRight(){
         return true;
     }
@@ -298,7 +292,7 @@ public class Label {
     }
 
     private BitSet getBitSet() {
-        return BitSet.valueOf(this.label.getBytes());
+        return (BitSet) label.clone();
     }
 
     public static Set<Label> branchNodesBetweenLabels(Label label1, Label label2) {
