@@ -181,7 +181,7 @@ public class Label {
         newLabelBits.xor(labelBits);
 
         // this + "0"
-        newLabelBits.clear(newLength);
+        newLabelBits.clear(newLength-1);
 
         return new Label(newLabelBits, newLength);
     }
@@ -194,7 +194,7 @@ public class Label {
         newLabelBits.xor(labelBits);
 
         // this + "1"
-        newLabelBits.set(newLength);
+        newLabelBits.set(newLength-1);
 
         return new Label(newLabelBits, newLength);
     }
