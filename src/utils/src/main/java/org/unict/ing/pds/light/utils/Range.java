@@ -5,6 +5,8 @@
  */
 package org.unict.ing.pds.light.utils;
 
+import java.util.Objects;
+
 /**
  *
  * @author Marco Grassia <marco.grassia@studium.unict.it>
@@ -25,19 +27,19 @@ public class Range {
     }
 
     public Boolean contains(Range range) {
-        Boolean lower, upper;
-
-        lower = ((this.lower == range.lower && ((this.lowerIncluded & range.lowerIncluded) || !range.lowerIncluded))
-                || this.lower < range.lower);
-
-        upper = ((this.upper == range.upper && ((this.upperIncluded & range.upperIncluded) || !range.upperIncluded))
-                || this.upper > range.upper);
-
-        return lower && upper;
+        return (this.intersect(range).equals(range));
     }
 
-    public Boolean contains(long timestamp) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private Boolean isLowerBound(long v) {
+        return this.lowerIncluded && v == lower;
+    }
+
+    private Boolean isUpperBound(long v) {
+        return this.upperIncluded && v == upper;
+    }
+    
+    public Boolean contains(long v) {
+        return ((lower < v && v < upper) || isLowerBound(v) || isUpperBound(v));
     }
 
     public Boolean isContainedIn(Range range) {
@@ -84,5 +86,32 @@ public class Range {
         long lowerBound = (second)?mid:lower;
         long upperBound = (second)?upper:mid;
         return new Range(lowerBound, true, upperBound, false);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Range other = (Range) obj;
+        if (this.lower != other.lower) {
+            return false;
+        }
+        if (this.upper != other.upper) {
+            return false;
+        }
+        if (!Objects.equals(this.lowerIncluded, other.lowerIncluded)) {
+            return false;
+        }
+        if (!Objects.equals(this.upperIncluded, other.upperIncluded)) {
+            return false;
+        }
+        return true;
     }
 }
