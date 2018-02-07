@@ -419,12 +419,8 @@ public class Label {
         if (getClass() != obj.getClass()) {
             return false;
         }
+        
         final Label other = (Label) obj;
-
-        if (!this.label.get(0, this.length).equals(other.label.get(0, other.length))) {
-            return false;
-        }
-
-        return true;
+        return this.label.get(0, this.length).equals(other.label.get(0, other.length));
     }
 }
