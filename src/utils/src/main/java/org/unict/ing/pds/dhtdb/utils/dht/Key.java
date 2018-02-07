@@ -17,7 +17,7 @@ import org.apache.commons.codec.digest.DigestUtils;
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 public final class Key implements Comparable<Key>, Serializable {
-    public static final int LENGHT = 160;
+    public static final int LENGTH = 160;
 
     private final String key;
 
@@ -132,7 +132,7 @@ public final class Key implements Comparable<Key>, Serializable {
     public static Key sum(Key a, BigInteger integer) {
         return new Key(
                 new BigInteger(a.key, HEX)  .add(integer)
-                                            .mod(new BigInteger("2", DEC).pow(LENGHT))
+                                            .mod(new BigInteger("2", DEC).pow(LENGTH))
                                             .toString(HEX)
                 );
     }

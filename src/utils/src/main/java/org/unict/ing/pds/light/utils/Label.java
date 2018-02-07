@@ -65,19 +65,19 @@ public class Label {
      * Given the value, returns the prefix label with the specified length.
      * The label is obtained by iteratively dividing the subranges of the narrowest representable range
      * in two and appending the 0 bit if the value is lower than mid, 1 otherwise.
-     * @param lenght
+     * @param length
      * @param value
      * @return
      */
-    public static Label prefix(int lenght, long value) {
-        BitSet labelBits = new BitSet(lenght);
+    public static Label prefix(int length, long value) {
+        BitSet labelBits = new BitSet(length);
 
         long lower, upper, mid;
 
         lower = Range.REPRESENTABLE_RANGE.getLower();
         upper = Range.REPRESENTABLE_RANGE.getUpper();
 
-        for (int i = 0; i < lenght; i++) {
+        for (int i = 0; i < length; i++) {
             mid = (upper - lower) / 2;
 
             if (value < mid) {
@@ -92,7 +92,7 @@ public class Label {
             }
         }
 
-        return new Label(labelBits, lenght);
+        return new Label(labelBits, length);
     }
 
     public int getLength() {
@@ -136,12 +136,12 @@ public class Label {
 
     /**
      *
-     * @param treeLenght
-     * @param prefixLenght
+     * @param treeLength
+     * @param prefixLength
      * @return
      */
-    public Label nextNamingFunction(int treeLenght, int prefixLenght) {
-        return Label.nextNamingFunction(this, prefixLenght, treeLenght);
+    public Label nextNamingFunction(int treeLength, int prefixLength) {
+        return Label.nextNamingFunction(this, prefixLength, treeLength);
     }
 
     public Range interval() {
@@ -276,10 +276,10 @@ public class Label {
      * the value nextNamingFunction(μ, x) is then the prefix of μ, which ends up with this located bit.
      * @param label
      * @param prefixLength
-     * @param treeLenght
+     * @param treeLength
      * @return
      */
-    public static Label nextNamingFunction(Label label, int prefixLength, int treeLenght) {
+    public static Label nextNamingFunction(Label label, int prefixLength, int treeLength) {
         BitSet labelBits = label.getBitSet();
 
         int firstDifferentBit;

@@ -344,7 +344,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         if (getSuccessor() != null) newFingerTable.add(getSuccessor().getNodeReference());
         if (getPredecessor() != null) newFingerTable.add(getPredecessor().getNodeReference());
 
-        for (int i = 0; i < Key.LENGHT; i++) {
+        for (int i = 0; i < Key.LENGTH; i++) {
             newFingerTable.add(
                     this.findSuccessor(
                             this.nodeRef.getNodeId().sumPow(i)
