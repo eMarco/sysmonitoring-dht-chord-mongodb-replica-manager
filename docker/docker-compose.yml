@@ -1,10 +1,10 @@
 version: '2.2'
 services:
     web_analyzer:
-        image: nginx
+        build: analyzer/
         restart: always
         volumes:
-            - ../src/analyzer:/usr/share/nginx/html
+            - ../src/analyzer/:/code/
         ports:
             - 80:80
     msg_handler:
