@@ -48,12 +48,10 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
      */
 
     @EJB
-    private FingerSessionBeanLocal      fingerSessionBean;
-
-    
+    private FingerSessionBeanLocal fingerSessionBean;
 
     @Resource
-    private SessionContext              context;
+    private SessionContext context;
 
     @PostConstruct
     private void init() {

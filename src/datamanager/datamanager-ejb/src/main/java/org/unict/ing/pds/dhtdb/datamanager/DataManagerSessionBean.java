@@ -45,7 +45,7 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         });
         fromJson.forEach(elem -> {
             elem.setScannerId(scanner);
-            //putSessionBean.lightPut(elem);
+            putSessionBean.lightPut(elem);
         });
         // Wrong topic in request
     }
