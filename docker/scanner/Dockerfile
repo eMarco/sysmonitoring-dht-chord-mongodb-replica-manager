@@ -5,7 +5,6 @@ FROM debian:stable-slim
 RUN apt-get update && apt-get install -y python3 python3-pip curl stress
 RUN pip3 install pika
 
-
 # Symbolic linking python3 to python
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
@@ -14,9 +13,8 @@ RUN apt-get install -y procps iproute sysstat
 
 # Dependencies for Replica identification
 RUN apt-get install -y host
-# Bash completion
-# RUN sh -c 'rabbitmqadmin --bash-completion > /etc/bash_completion.d/rabbitmqadmin'
 
+# Pushing crontab to the root user (this is a workaround: global crontab is not working well inside the container)
 COPY crontab /root/crontab
 RUN crontab -u root /root/crontab
 

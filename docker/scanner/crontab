@@ -3,6 +3,3 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 # m h dom mon dow command
 *  *    * * *     bash /code/scanner.sh > /tmp/log 2>&1
-
-# [OPTIONAL] To get a period less than 1 minute and more rows as above with the right argument for sleep
-#  * *  *  *  * sleep 30 && scanner.sh 
