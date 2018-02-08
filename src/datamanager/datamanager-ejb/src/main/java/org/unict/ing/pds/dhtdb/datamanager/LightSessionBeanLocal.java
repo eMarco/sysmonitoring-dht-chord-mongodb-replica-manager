@@ -6,6 +6,7 @@
 package org.unict.ing.pds.dhtdb.datamanager;
 
 import javax.ejb.Local;
+import org.unict.ing.pds.light.utils.Label;
 
 /**
  *
@@ -17,4 +18,6 @@ public interface LightSessionBeanLocal {
     public int getTreeHeight();
 
     public void setTreeHeight(int treeHeight);
+
+    public void checkTreeHeight(Label label);
 }

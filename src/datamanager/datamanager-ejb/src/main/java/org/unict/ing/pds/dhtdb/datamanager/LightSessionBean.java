@@ -24,6 +24,7 @@ import javax.naming.NamingException;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
+import org.unict.ing.pds.light.utils.Label;
 
 /**
  *
@@ -75,6 +76,17 @@ public class LightSessionBean implements LightSessionBeanLocal {
             dataManagerChordSessionBean.update(TREE_HEIGHT_KEY, new GenericStat(treeHeight, "TREE", TREE_HEIGHT_KEY));
         }
         
+    }
+    
+    @Override
+    public void checkTreeHeight(Label label) {
+        int currentHeight = getTreeHeight();
+        System.err.println("CURRENT HEIGHT: " + currentHeight);
+        System.err.println("LABEL LENGTH: " + label.getLength() + " " + label);
+        int max = Math.max(label.getLength(), currentHeight);
+        if (currentHeight < max)
+           setTreeHeight(max);
+        System.err.println("New HEIGHT: " + getTreeHeight());
     }
     
     @Override
