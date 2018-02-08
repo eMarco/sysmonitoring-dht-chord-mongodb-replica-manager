@@ -26,6 +26,8 @@ import org.unict.ing.pds.light.utils.Range;
  */
 @Stateless
 public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
+    
+    
     private static final int TETA_SPLIT = 100;
     
     @EJB
