@@ -313,11 +313,11 @@ public class Label {
 
         // If prefix's last bit is 0 ==> p00∗1 (look for the first 1 bit)
         if (labelBits.get(prefixLength-1) == false) {
-            firstDifferentBit = labelBits.nextSetBit(prefixLength);
+            firstDifferentBit = labelBits.nextSetBit(prefixLength-1);
         }
         // If prefix's last bit is 1 ==> p11∗0 (look for the first 0 bit)
         else {
-            firstDifferentBit = labelBits.nextClearBit(prefixLength);
+            firstDifferentBit = labelBits.nextClearBit(prefixLength-1);
         }
 
         if (firstDifferentBit == -1) {

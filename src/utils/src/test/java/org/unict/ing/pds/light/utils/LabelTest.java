@@ -327,6 +327,15 @@ public class LabelTest {
 
         result = instance.nextNamingFunction(prefixLength, treeLength);
         assertEquals(expResult, result);
+
+        // 6
+        treeLength = 2;
+        prefixLength = 4;
+        instance = new Label("#0101");
+        expResult = new Label("#0101");
+
+        result = instance.nextNamingFunction(prefixLength, treeLength);
+        assertEquals(expResult, result);
     }
 
 //    /**
