@@ -10,15 +10,9 @@ function init() {
     echo "Init script launched..."
     echo "Looking for number of replicas"
     REPLICAS=1
-    while [ $(host -4 -t a distsystems_scanner_$REPLICAS | grep "has no" > /dev/null; echo $?) -eq 0 ]
-    do
-        echo "Waiting for scanner 1..."
-        sleep 5
-    done
-
 
     # Loop until DNS resolution of common_name_$REPLICA_ID fails
-    while [ $(host -4 -t a distsystems_scanner_$REPLICAS | grep "has no" > /dev/null; echo $?) -ne 0 ]
+    while [ $(host -4 -t a distsystems_scanner_$REPLICAS | grep "not found" > /dev/null; echo $?) -ne 0 ]
     do
         ((REPLICAS++))
     done
@@ -43,5 +37,6 @@ function init() {
 
 init > /var/log/init.log &
 
-tail -f /var/log/init.log
+tail -f /var/log/init.log &
+tail -f /var/log/rabbitmq/rabbit1.log
 

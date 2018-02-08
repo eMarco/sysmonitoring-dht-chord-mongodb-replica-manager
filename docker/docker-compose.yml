@@ -17,7 +17,6 @@ services:
             - datamanager
         links:
             - rabbitmq
-            - datamanager
         environment: # TODO groups of environment vars if possible
             - RABBIT_USER=message_handler
             - RABBIT_PASS=somepass
@@ -30,9 +29,6 @@ services:
         ports:
             - 15678:15672
             - 5678:5672
-        depends_on:
-            - scanner
-
     bastion:
         build: bastion_node/
         volumes:
@@ -41,6 +37,9 @@ services:
             - rabbitmq
             - msg_handler
             - web_analyzer
+        depends_on:
+            - msg_handler
+            - scanner
         environment:
             - RABBIT_USER=root
             - RABBIT_PASS=toor
@@ -55,6 +54,8 @@ services:
         cpus: 0.15 # < 5% of host CPU time
         mem_limit: 128m # < 128MB of host RAM
         memswap_limit: 128m # do not allow swap (https://docs.docker.com/engine/admin/resource_constraints/#--memory-swap-details)
+        depends_on: 
+            - msg_handler
 
     datamanager:
         build:
@@ -67,8 +68,6 @@ services:
         restart: always
         volumes:
             - ../src/datamanager/datamanager-ear:/code/
-        depends_on:
-            - replicamanager
         ports:
             - 8080:8080
             - 9990:9990
@@ -81,6 +80,8 @@ services:
                 - WILDFLY_ADMIN=root
                 - WILDFLY_PASSWORD=toor
         restart: always
+        depends_on: 
+                - datamanager
         scale: 5
         volumes:
             - ../src/replicamanager/replicamanager-ear:/code

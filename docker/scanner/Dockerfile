@@ -1,15 +1,8 @@
-# Simple Debian Docker container for the scanners
-FROM debian:stable-slim
-
-# Install Python3 and stress from repos
-RUN apt-get update && apt-get install -y python3 python3-pip curl
-RUN pip3 install pika
-
-# Symbolic linking python3 to python
-RUN ln -s /usr/bin/python3 /usr/bin/python
+FROM distsystems_msg_handler
 
 # Dependencies for scanner
 RUN apt-get install -y procps iproute sysstat
+RUN apt-get update && apt-get install -y stress
 
 # Dependencies for Replica identification
 RUN apt-get install -y host
@@ -18,9 +11,5 @@ RUN apt-get install -y host
 COPY crontab /root/crontab
 RUN crontab -u root /root/crontab
 
-# Make code dir
-RUN mkdir /code
-WORKDIR /code
-
-ENTRYPOINT ["bash", "./stress.sh"]
+CMD ./stress.sh
 
