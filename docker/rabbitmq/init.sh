@@ -12,7 +12,7 @@ function init() {
     REPLICAS=1
 
     # Loop until DNS resolution of common_name_$REPLICA_ID fails
-    while [ $(host -4 -t a distsystems_scanner_$REPLICAS | grep "not found" > /dev/null; echo $?) -ne 0 ]
+    while [ $(host -4 -t a distsystems_scanner_$REPLICAS | grep "has address" > /dev/null; echo $?) -eq 0 ]
     do
         ((REPLICAS++))
     done
