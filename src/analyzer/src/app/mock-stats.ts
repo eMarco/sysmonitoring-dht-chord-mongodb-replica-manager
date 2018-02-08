@@ -1,14 +1,21 @@
-import { CPUStat } from './data-model';
+import { CPUStat } from './model/cpu-stat';
+import { RAMStat } from './model/ram-stat';
+import { UptimeStat } from './model/uptime-stat';
 
 export const CPUSTATS: CPUStat[] = [
-  { usage: 0.5, timestamp: 4, scannerId: asd, key: { key:1699d6b5508374cf2becc8778548b263271da293}},
-
+  { usage: 0.5, timestamp: 4, scannerId: "asd", key: { key:"1699d6b5508374cf2becc8778548b263271da293"} }
 ]
 
-/*
-{ MemTotal: 12126164, MemFree:230924, MemAvailable:838236, timestamp: 1517777828, className: org.unict.ing.pds.dhtdb.utils.model.RAMStat },
+export const MEMSTATS: RAMStat[] = [
+  { MemTotal: 12126164, MemFree:230924, MemAvailable:838236, timestamp: 1517777828, className: "org.unict.ing.pds.dhtdb.utils.model.RAMStat", scannerId: "1" }
+]
 
-{seconds: 17, minutes:7, hours:6, days: 0, timestamp: 1517778670, className: org.unict.ing.pds.dhtdb.utils.model.UptimeStat},
+export const UPTIMESTATS: UptimeStat[] = [
+  {seconds: 17, minutes:7, hours:6, days: 0, timestamp: 1517778670, className: "org.unict.ing.pds.dhtdb.utils.model.UptimeStat", scannerId: "1"}
+]
+/*
+
+
 
 [
   {disk:sda, WritekBps:313.87, ReadkBps:694.29, timestamp: 1517780002, className: org.unict.ing.pds.dhtdb.utils.model.IOStat },

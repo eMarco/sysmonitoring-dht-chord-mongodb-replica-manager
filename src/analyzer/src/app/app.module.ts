@@ -9,7 +9,7 @@ import { InMemoryDataService }  from './in-memory-data.service';
 import { AppRoutingModule }     from './app-routing.module';
 
 import { AppComponent }         from './app.component';
-import { GenericStatService }   from './generic-stat.service';
+// import { GenericStatService }   from './generic-stat.service';
 // import { MessageService }       from './message.service';
 // import { MessagesComponent }    from './messages/messages.component';
 import { NavmenuComponent }     from './navmenu/navmenu.component';
