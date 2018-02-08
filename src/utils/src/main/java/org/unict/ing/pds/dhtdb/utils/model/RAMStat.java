@@ -20,8 +20,9 @@ public class RAMStat extends GenericStat {
             @JsonProperty("scannerId")    String scannerId,
             @JsonProperty("key")          Key key) {
         super(timestamp, scannerId, key);
-        this.memFree = free;
-        this.memTotal = total;
+        this.topic        = "ramstat";
+        this.memFree      = free;
+        this.memTotal     = total;
         this.memAvailable = available;
     }
 

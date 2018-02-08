@@ -17,7 +17,7 @@ import org.unict.ing.pds.dhtdb.utils.dht.Key;
 public abstract class GenericValue implements Serializable {
 
     protected Key key;
-
+    
     public GenericValue(Key key) {
         this.key = key;
     }

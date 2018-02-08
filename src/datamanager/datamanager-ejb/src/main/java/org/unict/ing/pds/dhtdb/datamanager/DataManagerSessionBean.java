@@ -55,7 +55,38 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
     public String get(String scanner, String topic, String tsStart, String tsEnd) {
         // TODO calculate the dht node, based on f([tsStart, tsEnd], scanner)
         // TODO send the query to the proper nodes
-        return "TODO";
+        long upperTs = System.currentTimeMillis() / 1000l;
+        long lowerTs = upperTs - 24 * 3600;
+        try {
+            if (tsStart != null) {
+                lowerTs = Long.valueOf(tsStart);
+                if (tsEnd != null) {
+                    upperTs = Long.valueOf(tsEnd);
+                }
+            }
+            if (upperTs < lowerTs) {
+                return this.get(scanner, topic, null, null);
+            }
+        } catch (NumberFormatException e) {
+            return this.get(scanner, topic, null, null);
+        }
+        List<GenericValue> ret = new LinkedList<>();
+        querySessionBean.getRangeQueryDatas(new Range(lowerTs, true, upperTs, true)).forEach((e) -> {
+            boolean match = true;
+            GenericStat stat = (GenericStat)e;
+            System.err.println(stat.getScannerId());
+            System.err.println(scanner);
+            if (scanner != null && !stat.getScannerId().equals(scanner)) {
+                match = false;
+            }
+            /*
+            if (topic != null && stat.getTopic().equalsIgnoreCase(topic)) {
+                match = false;
+            }*/
+            if (match)
+                ret.add(e);
+        });
+        return(JsonHelper.writeList(ret));
     }
 
 

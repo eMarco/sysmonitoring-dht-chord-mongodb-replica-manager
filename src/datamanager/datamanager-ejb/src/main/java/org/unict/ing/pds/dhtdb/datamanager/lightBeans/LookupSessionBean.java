@@ -50,7 +50,7 @@ public class LookupSessionBean implements LookupSessionBeanLocal {
                 System.err.println("THE LABEL " + x.toString() + " HAS BEEN FOUND, GETTING...");
                 bucket = (Bucket)t.get(0);
                 System.err.println("BUCKET TAKEN: " + bucket);
-                lightSessionBean.checkTreeHeight(bucket.getLeafLabel()); // TODO TEST
+                lightSessionBean.checkTreeHeight(bucket.getLeafLabel()); 
             }
             if (bucket == null)  {
                 System.err.println("LOOKUP FAILED");
@@ -86,6 +86,9 @@ public class LookupSessionBean implements LookupSessionBeanLocal {
         Bucket lower = this.lightLabelLookup(range.getLower());
         System.err.println(lower.toString());
         Bucket upper = this.lightLabelLookup(range.getUpper());
+        if (upper == null)
+            return lower.getLeafLabel();
+        
         System.err.println(upper.toString());
         return Label.lowestCommonAncestor(lower.getLeafLabel(), upper.getLeafLabel());
     }

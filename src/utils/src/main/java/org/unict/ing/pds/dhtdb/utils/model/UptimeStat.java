@@ -23,6 +23,7 @@ public class UptimeStat extends GenericStat {
             @JsonProperty("scannerId") String scannerId,
             @JsonProperty("key") Key key) {
         super(timestamp, scannerId, key);
+        this.topic   = "uptimestat";
         this.seconds = seconds;
         this.minutes = minutes;
         this.hours   = hours;

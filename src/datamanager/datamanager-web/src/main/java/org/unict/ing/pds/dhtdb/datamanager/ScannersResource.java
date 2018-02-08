@@ -31,8 +31,6 @@ public class ScannersResource {
 
     DataManagerSessionBeanLocal dataManagerSessionBean = lookupDataManagerSessionBeanLocal();
 
-
-
     @Context
     private UriInfo context;
 
@@ -42,6 +40,12 @@ public class ScannersResource {
     public ScannersResource() {
     }
 
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path(value="/")
+    public String getAlls() {
+        return dataManagerSessionBean.get(null, null, null, null);
+    }
     /**
      * Retrieves representation of an instance of org.unict.ing.pds.dhtdb.datamanager.ScannersResource
      * @param tsStart
@@ -50,11 +54,11 @@ public class ScannersResource {
      */
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    @Path(value="{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
+    @Path(value="/{tsStart:([0-9]+)?}{tsEnd:(/[0-9]+)?}")
     public String getAll(
             @PathParam(value="tsStart") String tsStart,
             @PathParam(value="tsEnd") String tsEnd) {
-        return dataManagerSessionBean.get(null, null, tsStart.substring(1), tsEnd.substring(1));
+        return dataManagerSessionBean.get(null, null, tsStart, RestHelper.ts(tsEnd));
     }
 
 
@@ -67,13 +71,13 @@ public class ScannersResource {
      */
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
-    @Path(value="/{scanner:[0-9]+}{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
+    @Path(value="/{scanner:[a-zA-Z]+_[0-9]+}{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
     public String getByScannerInterval(
             @PathParam(value="scanner") String scanner,
             @PathParam(value="tsStart") String tsStart,
             @PathParam(value="tsEnd") String tsEnd) {
 
-        return dataManagerSessionBean.get(scanner, null, tsStart.substring(1), tsEnd.substring(1));
+        return dataManagerSessionBean.get(scanner, null, RestHelper.ts(tsStart), RestHelper.ts(tsEnd));
     }
 
 
@@ -86,7 +90,7 @@ public class ScannersResource {
             @PathParam(value="tsEnd")   String tsEnd,
             @PathParam(value="scanner") String scanner) {
 
-        return dataManagerSessionBean.get(scanner, topic, tsStart.substring(1), tsEnd.substring(1));
+        return dataManagerSessionBean.get(scanner, topic, RestHelper.ts(tsStart), RestHelper.ts(tsEnd));
     }
 
     @POST

@@ -53,7 +53,7 @@ public class TopicsResource {
             @PathParam(value="tsStart") String tsStart,
             @PathParam(value="tsEnd") String tsEnd) {
 
-        return dataManagerSessionBean.get(null, null, tsStart, tsEnd);
+        return dataManagerSessionBean.get(null, null, RestHelper.ts(tsStart), RestHelper.ts(tsEnd));
     }
     /**
      *
@@ -70,7 +70,7 @@ public class TopicsResource {
             @PathParam(value="tsStart") String tsStart,
             @PathParam(value="tsEnd") String tsEnd) {
 
-        return dataManagerSessionBean.get(null, topic, tsStart, tsEnd);
+        return dataManagerSessionBean.get(null, topic,  RestHelper.ts(tsStart), RestHelper.ts(tsEnd));
     }
 
 
@@ -83,7 +83,7 @@ public class TopicsResource {
             @PathParam(value="tsEnd")   String tsEnd,
             @PathParam(value="scanner") String scanner) {
 
-        return dataManagerSessionBean.get(scanner, topic, tsStart, tsEnd);
+        return dataManagerSessionBean.get(scanner, topic, RestHelper.ts(tsStart), RestHelper.ts(tsEnd));
     }
 
     private DataManagerSessionBeanLocal lookupDataManagerSessionBeanLocal() {

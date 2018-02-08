@@ -20,6 +20,7 @@ public class CPUStat extends GenericStat {
             @JsonProperty("scannerId")    String scannerId,
             @JsonProperty("key")          Key key) {
         super(timestamp, scannerId, key);
+        this.topic     = "cpustat";
         this.usage = usage;
     }
 
