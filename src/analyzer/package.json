@@ -26,6 +26,7 @@
     "@angular/router": "~5.0.0",
     "@angular/upgrade": "~5.0.0",
     "angular-in-memory-web-api": "~0.5.0",
+    "angular-rest-client": "^2.0.0",
     "angular2-google-chart": "^2.3.0",
     "bootstrap": "^3.3.7",
     "core-js": "^2.4.1",
