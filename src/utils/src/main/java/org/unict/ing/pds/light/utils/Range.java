@@ -16,7 +16,7 @@ import java.io.Serializable;import java.util.Objects;
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 public class Range implements Serializable {
-    public static Range REPRESENTABLE_RANGE = new Range(0, true, Integer.MAX_VALUE, false);
+    public static Range REPRESENTABLE_RANGE = new Range(1400000000L, true, 1800000000L, false);
     public static Range EMPTY_RANGE = new Range(-2, false, -1, false);
     private final Boolean lowerIncluded, upperIncluded;
     private final long lower, upper;

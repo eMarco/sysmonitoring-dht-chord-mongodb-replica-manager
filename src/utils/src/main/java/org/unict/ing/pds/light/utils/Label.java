@@ -91,9 +91,7 @@ public class Label {
         labelBits.clear(0);
 
         for (int i = 1; i < length; i++) {
-            mid = lower + (upper - lower) / 2;
-
-            System.out.println("MID: " + mid);
+            mid = (lower + upper) / 2;
 
             if (value < mid) {
                 labelBits.clear(i);
