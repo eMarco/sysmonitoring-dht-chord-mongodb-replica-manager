@@ -10,7 +10,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import org.unict.ing.pds.dhtdb.datamanager.DataManagerChordSessionBeanLocal;
-import org.unict.ing.pds.dhtdb.datamanager.LightSessionBeanLocal;
 import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 import org.unict.ing.pds.light.utils.Bucket;
