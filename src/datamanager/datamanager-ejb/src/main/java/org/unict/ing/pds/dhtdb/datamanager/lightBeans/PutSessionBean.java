@@ -129,8 +129,8 @@ public class PutSessionBean implements PutSessionBeanLocal {
         // TODO
         // put datas (One of the children should not need to put the entire bucket but we need a way to 
         // delete only one half of the datas associated with a given key derived from the localBucket label
-        dataManagerChordSessionBean.write(leftPointer.getLeafLabel().toDataKey(), leftDatas);
-        dataManagerChordSessionBean.write(rightPointer.getLeafLabel().toDataKey(), rightDatas);
+        dataManagerChordSessionBean.update(leftPointer.getLeafLabel().toDataKey(), leftDatas);
+        dataManagerChordSessionBean.update(rightPointer.getLeafLabel().toDataKey(), rightDatas);
         
         //return the label where the put has to send the new stat
         if (timestamp > mid) {
