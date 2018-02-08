@@ -2,7 +2,7 @@
 FROM debian:stable-slim
 
 # Install Python3 and stress from repos
-RUN apt-get update && apt-get install -y python3 python3-pip curl stress
+RUN apt-get update && apt-get install -y python3 python3-pip curl
 RUN pip3 install pika
 
 # Symbolic linking python3 to python
