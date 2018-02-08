@@ -42,7 +42,7 @@ public class PutSessionBean implements PutSessionBeanLocal {
         
         System.err.println("PUT PUT");
         long timestamp = stat.getTimestamp();
-        Label dhtKey   = lookupSessionBean.lightLabelLookup(timestamp);
+        Bucket dhtKey   = lookupSessionBean.lightLabelLookup(timestamp);
         if (dhtKey == null) { // The database is empty
             // Creates a new bucket
             Bucket theFirst = new Bucket(Range.REPRESENTABLE_RANGE, new Label("#0"), 0);
@@ -55,7 +55,7 @@ public class PutSessionBean implements PutSessionBeanLocal {
             return;
         }
         System.err.println("GET THE BUCKET FOR " + dhtKey + " AFTER LIGHT LOOKUP");
-        Bucket bucket  = (Bucket)dataManagerChordSessionBean.lookup(dhtKey.toKey()).get(0);
+        Bucket bucket  = dhtKey;
         System.err.println("BUCKET NEWLY " + bucket);
         if (bucket.getRecordsCounter() >= TETA_SPLIT) {
             dhtKey = this.splitAndPut(bucket, timestamp, stat);
@@ -65,11 +65,11 @@ public class PutSessionBean implements PutSessionBeanLocal {
             dataManagerChordSessionBean.update(bucket.getKey(), bucket);
         }
         
-        stat.setKey(dhtKey.toDataKey());
+        stat.setKey(dhtKey.getLeafLabel().toDataKey());
         dataManagerChordSessionBean.write(stat.getKey(), stat);
     }
 
-    private Label splitAndPut(Bucket localBucket, long timestamp, GenericStat elem) {
+    private Bucket splitAndPut(Bucket localBucket, long timestamp, GenericStat elem) {
         System.err.println("SPLITTING");
         Label localLabel = localBucket.getLeafLabel();
         Range localRange = localBucket.getRange();
@@ -134,8 +134,8 @@ public class PutSessionBean implements PutSessionBeanLocal {
         
         //return the label where the put has to send the new stat
         if (timestamp > mid) {
-            return rightPointer.getLeafLabel();
+            return rightPointer;
         } 
-        return leftPointer.getLeafLabel(); 
+        return leftPointer; 
     }
 }

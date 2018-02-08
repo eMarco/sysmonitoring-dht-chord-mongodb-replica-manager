@@ -31,9 +31,9 @@ public class LookupSessionBean implements LookupSessionBeanLocal {
     private DataManagerChordSessionBeanLocal dataManagerChordSessionBean;
 
     
-    // Algorithm 1 modified (needed for lowestCommonAncestor)
+    // Algorithm 1
     @Override
-    public Label lightLabelLookup(long timestamp) {
+    public Bucket lightLabelLookup(long timestamp) {
         int lower = 2;
         int upper = lightSessionBean.getTreeHeight() + 1;
         int mid;
@@ -59,7 +59,7 @@ public class LookupSessionBean implements LookupSessionBeanLocal {
             }
             else if (bucket.getRange().contains(timestamp)) {
                 System.err.println("THE BUCKET COVER DELTA: returning " + x);
-                return x; 
+                return bucket; 
             } else {
                 System.out.println("Called nextNamingFunction... Iterating (" + u + " ; " + x.getLength() + "; " + lightSessionBean.getTreeHeight());
                 lower = u.nextNamingFunction(x.getLength(), lightSessionBean.getTreeHeight()).getLength();
@@ -68,27 +68,12 @@ public class LookupSessionBean implements LookupSessionBeanLocal {
         return null;
     }
 
-    // Algorithm 1 with Naming Function
-    private Label lightLookup(long timestamp) {
-        try {
-            return lightLabelLookup(timestamp).toDHTKey();
-        } catch (NullPointerException e) {
-            System.err.println("Label not found");
-        }
-        return null;
-    }
-   
-    // Lookup an entire bucket leaf (select buckets where `timestamp` is $timestamp
-    @Override
-    public List<GenericValue> lightLookupAndGetBucket(long timestamp) {
-        return dataManagerChordSessionBean.lookup(lightLookup(timestamp).toKey());
-    }
- 
     // Lookup the entire bucket leaf and return the list of referenced datas that could contain a subSet with the timestamp 
     // given (select stats where `timestamp` "contains" $timestamp)
     @Override
     public List<GenericValue> lightLookupAndGetDataBucket(long timestamp) {
-        return dataManagerChordSessionBean.lookup(lightLookup(timestamp).toDataKey());
+        return dataManagerChordSessionBean.lookup(lightLabelLookup(timestamp)
+                .getLeafLabel().toDataKey());
     }   
  
     @Override
@@ -99,24 +84,19 @@ public class LookupSessionBean implements LookupSessionBeanLocal {
     @Override
     public Label lowestCommonAncestor(Range range) {
         System.err.println("LOWEST COMMON ANCESTOR");
-        Label lower = this.lightLabelLookup(range.getLower());
+        Bucket lower = this.lightLabelLookup(range.getLower());
         System.err.println(lower.toString());
-        Label upper = this.lightLabelLookup(range.getUpper());
+        Bucket upper = this.lightLabelLookup(range.getUpper());
         System.err.println(upper.toString());
-        return Label.lowestCommonAncestor(lower, upper);
+        return Label.lowestCommonAncestor(lower.getLeafLabel(), upper.getLeafLabel());
     }
     
     // Exact match (Get the data) (select stats where `timestamp` is exactly $timestamp
-    
     private List<GenericValue> lightLookupAndGetValue(long timestamp) {
         List<GenericValue> l = lightLookupAndGetDataBucket(timestamp);
-        /*List<GenericStat> stats = new LinkedList<>();
-        l.forEach((e) -> stats.add((GenericStat)e));*/
         List<GenericStat> filter = new LinkedList<>();
         filter.add(new GenericStat(timestamp));
         l.retainAll(filter);
         return l;
-
     }
-    
 }

@@ -64,7 +64,7 @@ public class QuerySessionBean implements QuerySessionBeanLocal {
         
         if (bucket == null) { // the range is too small, just a lookup is going to return the only one bucket that references the datas
             System.err.println("BUCKET NULL");
-            returnedSet.add((Bucket)lookupSessionBean.lightLookupAndGetBucket(range.getLower()).get(0));
+            returnedSet.add((Bucket)lookupSessionBean.lightLabelLookup(range.getLower()));
             return returnedSet;
         } 
         
