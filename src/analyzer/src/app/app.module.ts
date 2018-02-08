@@ -9,12 +9,12 @@ import { InMemoryDataService }  from './in-memory-data.service';
 import { AppRoutingModule }     from './app-routing.module';
 
 import { AppComponent }         from './app.component';
-// import { HeroService }          from './hero.service';
+import { GenericStatService }   from './generic-stat.service';
 // import { MessageService }       from './message.service';
 // import { MessagesComponent }    from './messages/messages.component';
 import { NavmenuComponent }     from './navmenu/navmenu.component';
 import { HomeComponent }        from './home/home.component';
-import { AnalyzerComponent } from './analyzer/analyzer.component';
+import { AnalyzerComponent }    from './analyzer/analyzer.component';
 
 @NgModule({
   imports: [
