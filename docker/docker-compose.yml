@@ -1,6 +1,5 @@
 version: '2.2'
 services:
-###
     web_analyzer:
         image: nginx
         restart: always
@@ -26,10 +25,8 @@ services:
         build: rabbitmq/
         restart: always
         environment:
-            - RABBITMQ_DEFAULT_USER=root
-            - RABBITMQ_DEFAULT_PASS=toor
-            - RABBITMQ_LOGS=/var/log/rabbit.log
-            - RABBITMQ_SASL_LOGS=/var/log/rabbit.log
+            - RABBITMQ_LOGS=/var/log/init.log
+            - RABBITMQ_SASL_LOGS=/var/log/init.log
         volumes:
             - ds_rabbitmq_home:/var/lib/rabbitmq
         ports:
@@ -85,12 +82,12 @@ services:
             args:
                 - WILDFLY_ADMIN=root
                 - WILDFLY_PASSWORD=toor
-                # - USER=$USER
         restart: always
         scale: 5
         volumes:
             - ../src/replicamanager/replicamanager-ear:/code
 
 ### Volumes and networking
-volumes: ## TODO read about the differences with the other way of volumes definition
+volumes:
     ds_rabbitmq_home:
+
