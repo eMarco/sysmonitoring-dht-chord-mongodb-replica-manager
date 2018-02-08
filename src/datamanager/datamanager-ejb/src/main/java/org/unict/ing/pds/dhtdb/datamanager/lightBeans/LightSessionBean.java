@@ -125,6 +125,7 @@ public class LightSessionBean implements LightSessionBeanLocal {
     
     @Lock(LockType.WRITE)
     @AccessTimeout(value = 20, unit = TimeUnit.SECONDS)
+    @Override
     public Bucket splitAndPut(Bucket localBucket, long timestamp, GenericStat elem) {
         System.err.println("SPLITTING");
         Label localLabel = localBucket.getLeafLabel();
