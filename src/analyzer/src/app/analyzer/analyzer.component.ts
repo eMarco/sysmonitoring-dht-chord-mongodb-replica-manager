@@ -8,8 +8,8 @@ import { GoogleChartComponent }         from 'ng2-google-charts';
 })
 export class AnalyzerComponent implements OnInit {
 
-  @ViewChild(GoogleChartComponent) cchart: GoogleChartComponent;
-  public line_ChartData: any[] = null;
+  @ViewChild('cchart') cchart: GoogleChartComponent;
+  public line_ChartData: boolean = false;
   public line_ChartOptions = {
     chartType: 'LineChart',
     dataTable: null,
@@ -19,6 +19,7 @@ export class AnalyzerComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    this.line_ChartData = true;
 
     this.line_ChartOptions.dataTable = [
       ['Year', 'Sales', 'Expenses'],
@@ -31,11 +32,17 @@ export class AnalyzerComponent implements OnInit {
 	  // this.line_ChartOptions =
   }
 
-  myfunction() {
-    let googleChartWrapper = this.cchart.wrapper;
+  refreshData() {
+    this.line_ChartData = true;
 
-    //force a redraw
-    this.cchart.redraw();
+    try {
+      let googleChartWrapper = this.cchart.wrapper;
+
+      //force a redraw
+      this.cchart.redraw();
+    }
+    catch (Exception) {
+      console.log('scope is ' + Exception);
+    }
   }
-
 }

@@ -1,13 +1,14 @@
 <h2>  Line Chart</h2>
 
-<div *ngIf="line_ChartData">
+<!-- <div *ngIf="line_ChartData"> -->
   <google-chart
+    *ngIf="line_ChartData"
     #cchart
     [data]="line_ChartOptions"
     >
   </google-chart>
-</div>
-<button (click)="myfunction()">
+<!-- </div> -->
+<button (click)="refreshData()">REFRESH!</button>
 <!--
   <googlechart
     loadingDelay="0"
