@@ -12,6 +12,7 @@ import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import org.unict.ing.pds.dhtdb.datamanager.DataManagerChordSessionBeanLocal;
+import org.unict.ing.pds.dhtdb.datamanager.LightSessionBeanLocal;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 import org.unict.ing.pds.light.utils.Bucket;
 import org.unict.ing.pds.light.utils.Label;
@@ -25,12 +26,15 @@ import org.unict.ing.pds.light.utils.Range;
 public class QuerySessionBean implements QuerySessionBeanLocal {
 
     @EJB
+    private LightSessionBeanLocal lightSessionBean;
+
+    @EJB
     private LookupSessionBeanLocal lookupSessionBean;
 
     @EJB
     private DataManagerChordSessionBeanLocal dataManagerChordSessionBean;
 
-    private Set<Bucket> recursiveForward(Range range, Label region, Set<Bucket> subRangesSet) {
+    private Set<Bucket> recursiveForward(Range range, Label region, Set<Bucket> subRangesSet, int maxLength) {
         System.err.println("Starting recursive forwarding");
         List<GenericValue> t = dataManagerChordSessionBean.lookup(region.toKey());
         Bucket bucket = null;
@@ -46,15 +50,15 @@ public class QuerySessionBean implements QuerySessionBeanLocal {
         for (Label branchNode : branchNodes) {
             Range intersection = range.intersect(branchNode.interval());
             System.err.println("ENDING/RECURSION OF RECURSIVE WITH intersection: " + intersection + branchNode + subRangesSet);
-            if (!intersection.isEmpty()) {
-                recursiveForward(intersection, branchNode, subRangesSet);
+            if (!intersection.isEmpty() && branchNode.getLength() < maxLength) {
+                recursiveForward(intersection, branchNode, subRangesSet, maxLength);
             } 
         }
         return subRangesSet;
     }
    
     // Make the query and return the set of the Bucket leaves that reference the datas queried (select buckets where timestamp is between ($range.lower, $range.upper)
-    private Set<Bucket> rangeQuery(Range range) {
+    private Set<Bucket> rangeQuery(Range range, int maxLength) {
         System.err.println("RANGE IS " + range.toString());
         Label lca = lookupSessionBean.lowestCommonAncestor(range);
         System.err.println("FIRST LOOKUP: LCA " + lca.getLabel());
@@ -82,13 +86,14 @@ public class QuerySessionBean implements QuerySessionBeanLocal {
         } 
 
         System.err.println("RECURSIVE FORWARD");
-        return recursiveForward(range, lca, returnedSet); // the range has datas in more than one bucket calling recurse forward
+        return recursiveForward(range, lca, returnedSet, maxLength); // the range has datas in more than one bucket calling recurse forward
     }
 
     // Make the query, get the bucket leaves and get the related datas (select stats where timestamp is between ($range.lower, $range.upper)
     @Override
     public List<GenericValue> getRangeQueryDatas(Range range) {
-        Set<Bucket> references = rangeQuery(range);
+        int maxLength = lightSessionBean.getTreeHeight();
+        Set<Bucket> references = rangeQuery(range, maxLength);
         List<GenericValue> returnDatas = new LinkedList<>();
         references.forEach((leaf) -> {
             returnDatas.addAll(dataManagerChordSessionBean.lookup(leaf.getLeafLabel().toDataKey()));
