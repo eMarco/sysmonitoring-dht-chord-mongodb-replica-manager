@@ -5,4 +5,11 @@ export class UptimeStat extends GenericStat {
   minutes: number;
   hours: number;
   days: number;
+
+  public toArray(): any[] {
+    var arr = super.toArray();
+    arr.push(this.seconds, this.minutes, this.hours, this.days);
+
+    return arr;
+  }
 }
