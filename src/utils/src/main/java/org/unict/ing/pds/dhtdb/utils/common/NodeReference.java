@@ -16,7 +16,10 @@ import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NodeReference implements Comparable<NodeReference>, Serializable {
-    
+    /**
+     * NodeReference.MASTER_NODE is used in this example as the master node known by the peers to join
+     * the Chord Overlay network
+     */
     public static final NodeReference  MASTER_NODE = new NodeReference("distsystems_replicamanager_1");
     private static final String HOSTNAME_PREFIX = "distsystems_replicamanager_";
     private static final String REMOTE_PORT = "8080";
