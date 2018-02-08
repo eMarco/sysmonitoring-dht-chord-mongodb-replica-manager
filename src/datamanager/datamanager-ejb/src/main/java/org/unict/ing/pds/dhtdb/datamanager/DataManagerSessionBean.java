@@ -330,16 +330,16 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         lightPut(x);
         //lightPut(new CPUStat((float)0.5, 1517998350, "1", new Key("")));
         System.err.println("DONE THE PUT");
-        //List<GenericValue> list = lightLookupAndGetDataBucket(System.currentTimeMillis() / 1000l);
-        //System.err.println("DONE THE LOOKUP");
+        List<GenericValue> list = lightLookupAndGetDataBucket(System.currentTimeMillis() / 1000l);
+        System.err.println("DONE THE LOOKUP");
         /*Set<Bucket> buckets = rangeQuery(new Range(1517998266, false, 1518998266, false));
         List<GenericValue> list2 = new LinkedList<GenericValue>();
         buckets.forEach(b -> { 
             list2.addAll(lightLookupAndGetDataBucket(b.getLeafLabel()));
         });
         */
-        //return JsonHelper.writeList(list);
-        return "";
+        return JsonHelper.writeList(list);
+        //return "";
     }
     @Override 
     public String test2(String content) {
