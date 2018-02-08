@@ -15,6 +15,7 @@ services:
             - ../src/message_handler:/code
         depends_on:
             - rabbitmq
+            - datamanager
         links:
             - rabbitmq
             - datamanager
@@ -32,8 +33,10 @@ services:
         volumes:
             - ds_rabbitmq_home:/var/lib/rabbitmq
         ports:
-            - 15672:15672
-            - 5672:5672
+            - 15678:15672
+            - 5678:5672
+        depends_on:
+            - scanner
 
     bastion:
         build: bastion_node/
@@ -52,10 +55,6 @@ services:
         restart: always
         volumes:
             - ../src/scanner:/code
-        depends_on:
-            - rabbitmq
-        links:
-            - rabbitmq
         scale: 3
         # Limit container resources
         cpus: 0.15 # < 5% of host CPU time
@@ -73,6 +72,8 @@ services:
         restart: always
         volumes:
             - ../src/datamanager/datamanager-ear:/code/
+        depends_on:
+            - replicamanager
         ports:
             - 8080:8080
             - 9990:9990
@@ -86,21 +87,9 @@ services:
                 - WILDFLY_PASSWORD=toor
                 # - USER=$USER
         restart: always
-        scale: 2
+        scale: 5
         volumes:
             - ../src/replicamanager/replicamanager-ear:/code
-        #ports:
-        #    - 8081:8080
-        #    - 9991:9990
-        # depends_on:
-        #    - datamanager
-        # links:
-        #    - datamanager
-
-
-###
-
-
 
 ### Volumes and networking
 volumes: ## TODO read about the differences with the other way of volumes definition
