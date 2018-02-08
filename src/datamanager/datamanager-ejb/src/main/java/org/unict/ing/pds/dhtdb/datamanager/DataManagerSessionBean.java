@@ -26,7 +26,7 @@ import org.unict.ing.pds.light.utils.Range;
  */
 @Stateless
 public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
-    private static final int TETA_SPLIT = 5;
+    private static final int TETA_SPLIT = 100;
     
     @EJB
     private LightSessionBeanLocal lightSessionBean;
@@ -45,7 +45,7 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         });
         fromJson.forEach(elem -> {
             elem.setScannerId(scanner);
-            //lightPut(elem);
+            lightPut(elem);
         });
         // Wrong topic in request
     }
