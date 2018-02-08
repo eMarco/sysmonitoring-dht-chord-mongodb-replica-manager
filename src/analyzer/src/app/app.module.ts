@@ -16,6 +16,8 @@ import { NavmenuComponent }     from './navmenu/navmenu.component';
 import { HomeComponent }        from './home/home.component';
 import { AnalyzerComponent }    from './analyzer/analyzer.component';
 
+import { Ng2GoogleChartsModule } from 'ng2-google-charts';
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -28,7 +30,8 @@ import { AnalyzerComponent }    from './analyzer/analyzer.component';
     // Remove it when a real server is ready to receive requests.
     HttpClientInMemoryWebApiModule.forRoot(
       InMemoryDataService, { dataEncapsulation: false }
-    )
+    ),
+    Ng2GoogleChartsModule,
   ],
   declarations: [
     AppComponent,
