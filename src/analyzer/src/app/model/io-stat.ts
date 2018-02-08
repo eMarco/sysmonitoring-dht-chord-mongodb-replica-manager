@@ -6,10 +6,9 @@ export class IOStat extends GenericStat {
   writeKBps: number;
 
 
-  public toArray(): any[] {
-    var arr = super.toArray();
-    arr.push(this.timestadiskmp, this.readKBps, this.writeKBps);
-
-    return arr;
+  static label = ["Timestamp", "Disk", ["ReadkBps", "WritekBps"]];
+  static toArray(stat : IOStat): any {
+    // ["Timestamp", "Usage"]
+    return [stat.timestamp, stat.disk, [stat.readKBps, stat.writeKBps]];
   }
 }

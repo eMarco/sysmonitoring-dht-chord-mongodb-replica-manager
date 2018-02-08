@@ -3,10 +3,11 @@ import { GenericStat } from './generic-stat';
 export class CPUStat extends GenericStat {
   usage: number;
 
-  public toArray(): any[] {
-    var arr = super.toArray();
-    arr.push(this.usage);
+  static label: string[] = ["Timestamp", "Usage"];
+  static toArray(stat : CPUStat): any {
 
-    return arr;
+
+    // ["Timestamp", "Usage"]
+    return [stat.timestamp, stat.usage];
   }
 }

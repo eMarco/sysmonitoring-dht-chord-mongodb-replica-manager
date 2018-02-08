@@ -6,10 +6,9 @@ export class UptimeStat extends GenericStat {
   hours: number;
   days: number;
 
-  public toArray(): any[] {
-    var arr = super.toArray();
-    arr.push(this.seconds, this.minutes, this.hours, this.days);
-
-    return arr;
+  static label: string[] = ["Timestamp", "seconds", "minutes", "hours", "days"];
+  static toArray(stat : UptimeStat): any {
+    // ["Timestamp", "Usage"]
+    return [stat.timestamp, stat.seconds, stat.minutes, stat.hours, stat.days];
   }
 }
