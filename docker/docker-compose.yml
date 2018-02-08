@@ -25,10 +25,8 @@ services:
         build: rabbitmq/
         restart: always
         environment:
-            - RABBITMQ_LOGS=/var/log/init.log
-            - RABBITMQ_SASL_LOGS=/var/log/init.log
-        volumes:
-            - ds_rabbitmq_home:/var/lib/rabbitmq
+            - RABBITMQ_LOGS=/var/log/rabbitmq/rabbit1.log
+            - RABBITMQ_SASL_LOGS=/var/log/rabbit2.log
         ports:
             - 15678:15672
             - 5678:5672
@@ -88,6 +86,4 @@ services:
             - ../src/replicamanager/replicamanager-ear:/code
 
 ### Volumes and networking
-volumes:
-    ds_rabbitmq_home:
 
