@@ -7,6 +7,8 @@ package org.unict.ing.pds.light.utils;
 
 import java.util.BitSet;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -14,7 +16,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.unict.ing.pds.dhtdb.utils.common.JsonHelper;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
+import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**
  *
@@ -308,6 +312,7 @@ public class LabelTest {
         expResult = new Label("#01");
 
         result = instance.nextNamingFunction(prefixLength, treeLength);
+        System.out.println(result.getLength());
         assertEquals(expResult, result);
 
         // 5
@@ -381,6 +386,36 @@ public class LabelTest {
         assertEquals(expResult, result);
     }
 
+    
+    private void split(Bucket localBucket) {
+        System.err.println("SPLITTING");
+        Label localLabel = localBucket.getLeafLabel();
+        Range localRange = localBucket.getRange();
+        int   currentRecords = localBucket.getRecordsCounter();
+        
+        long mid = localRange.createSplit(false).getUpper();
+        
+        Bucket newLocalBucket;
+        Bucket newRemoteBucket;
+
+        // Just two pointers (TODO improve me)
+        Bucket leftPointer;
+        Bucket rightPointer;
+       
+        if (localLabel.isRight()) {
+            newRemoteBucket = leftPointer  = new Bucket(localRange.createSplit(false), localLabel.leftChild(), 0);
+            newLocalBucket  = rightPointer = new Bucket(localRange.createSplit(true),  localLabel.rightChild(), 0);
+        } else { // isLeft
+            newLocalBucket  = leftPointer = new Bucket(localRange.createSplit(false), localLabel.leftChild(), 0);
+            newRemoteBucket = rightPointer  = new Bucket(localRange.createSplit(true),  localLabel.rightChild(), 0);
+        }
+        
+        System.err.println("Local Bucket");
+        System.err.println(JsonHelper.write(localBucket));
+        System.err.println(JsonHelper.write(newLocalBucket));
+        System.err.println("Remote bucket");
+        System.err.println(JsonHelper.write(newRemoteBucket));
+    }
     /**
      * Test of leftChild method, of class Label.
      */
@@ -393,6 +428,27 @@ public class LabelTest {
         Label result = instance.leftChild();
 
         assertEquals(result.getLength(), 5);
+        assertEquals(expResult, result);
+        
+        
+        instance = new Label("#01");
+        expResult = new Label("#010");
+
+        result = instance.leftChild();
+        Label result2 = instance.rightChild();
+        System.out.println(instance);
+        System.out.println(expResult);
+        System.out.println(instance.toKey());
+        System.out.println(expResult.toKey());
+        
+        
+        Bucket localBucket = new Bucket(new Range(0, false, 1000, false), new Label("#0"), 10);
+        split(localBucket);
+        localBucket = new Bucket(new Range(0, false, 1000, false), new Label("#01"), 10);
+        split(localBucket);
+        localBucket = new Bucket(new Range(0, false, 1000, false), new Label("#010"), 10);
+        split(localBucket);
+        assertEquals(result.toKey(), expResult.toKey());
         assertEquals(expResult, result);
     }
 
@@ -543,7 +599,7 @@ public class LabelTest {
      */
     @org.junit.Test
     public void testBranchNodesBetweenLabels() {
-        System.out.println("branchNodesBetweenLabels");
+        /*System.out.println("branchNodesBetweenLabels");
 
         Label label     = new Label("#01011");
         Label region    = new Label("#0101");
@@ -562,7 +618,7 @@ public class LabelTest {
         expResult.add(new Label("#010100"));
 
         result = Label.branchNodesBetweenLabels(label, region);
-        assertEquals(expResult, result);
+        assertEquals(expResult, result);*/
     }
 
 }

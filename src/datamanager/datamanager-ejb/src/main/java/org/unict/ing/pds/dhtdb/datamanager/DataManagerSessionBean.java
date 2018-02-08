@@ -72,6 +72,7 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         int upper = lightSessionBean.getTreeHeight() + 1;
         int mid;
         Label u = Label.prefix(upper, timestamp);
+        System.err.println("NU: " + u + "UPPER: " + upper);
         
         while (lower < upper){
             mid = (lower + upper) / 2;
@@ -86,12 +87,15 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
                 System.err.println("BUCKET TAKEN: " + bucket);
                 checkTreeHeight(bucket.getLeafLabel()); // TODO TEST
             }
-            if (bucket == null) 
+            if (bucket == null)  {
+                System.err.println("LOOKUP FAILED");
                 upper = x.toDHTKey().getLength();
+            }
             else if (bucket.getRange().contains(timestamp)) {
+                System.err.println("THE BUCKET COVER DELTA: returning " + x);
                 return x; 
             } else {
-                System.out.println("Called nextNamingFunction... Iterating");
+                System.out.println("Called nextNamingFunction... Iterating (" + u + " ; " + x.getLength() + "; " + lightSessionBean.getTreeHeight());
                 lower = u.nextNamingFunction(x.getLength(), lightSessionBean.getTreeHeight()).getLength();
             }
         }
@@ -140,7 +144,7 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         
         System.err.println("PUT PUT");
         long timestamp = stat.getTimestamp();
-        Label dhtKey   = lightLookup(timestamp);
+        Label dhtKey   = lightLabelLookup(timestamp);
         if (dhtKey == null) { // The database is empty
             // Creates a new bucket
             Bucket theFirst = new Bucket(Range.REPRESENTABLE_RANGE, new Label("#0"), 0);
@@ -152,7 +156,9 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
             lightPut(stat);
             return;
         }
+        System.err.println("GET THE BUCKET FOR " + dhtKey + " AFTER LIGHT LOOKUP");
         Bucket bucket  = (Bucket)dataManagerChordSessionBean.lookup(dhtKey.toKey()).get(0);
+        System.err.println("BUCKET NEWLY " + bucket);
         if (bucket.getRecordsCounter() >= TETA_SPLIT) {
             dhtKey = this.splitAndPut(bucket, timestamp, stat);
             //return;
@@ -166,9 +172,12 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
     }
     private void checkTreeHeight(Label label) {
         int currentHeight = lightSessionBean.getTreeHeight();
+        System.err.println("CURRENT HEIGHT: " + currentHeight);
+        System.err.println("LABEL LENGTH: " + label.getLength() + " " + label);
         int max = Math.max(label.getLength(), currentHeight);
-        if (currentHeight != max)
+        if (currentHeight < max)
            lightSessionBean.setTreeHeight(max);
+        System.err.println("New HEIGHT: " + lightSessionBean.getTreeHeight());
     }
     private Label splitAndPut(Bucket localBucket, long timestamp, GenericStat elem) {
         System.err.println("SPLITTING");
@@ -187,8 +196,8 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         List<GenericValue> leftDatas   = new LinkedList<>();
         List<GenericValue> rightDatas  = new LinkedList<>();
        
-        List<GenericValue> records = dataManagerChordSessionBean.lookup(localLabel.toDataKey());
-        Bucket remoteBucket = new Bucket();
+        //List<GenericValue> records = dataManagerChordSessionBean.lookup(localLabel.toDataKey());
+        //Bucket remoteBucket = new Bucket();
         if (localLabel.isRight()) {
             newRemoteBucket = leftPointer  = new Bucket(localRange.createSplit(false), localLabel.leftChild(), 0);
             newLocalBucket  = rightPointer = new Bucket(localRange.createSplit(true),  localLabel.rightChild(), 0);
@@ -198,10 +207,10 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         }
         
         System.err.println("Local Bucket");
-        System.err.println(localBucket);
-        System.err.println(newLocalBucket);
+        System.err.println(JsonHelper.write(localBucket));
+        System.err.println(JsonHelper.write(newLocalBucket));
         System.err.println("Remote bucket");
-        System.err.println(newRemoteBucket);
+        System.err.println(JsonHelper.write(newRemoteBucket));
         checkTreeHeight(leftPointer.getLeafLabel());
         currentDatas.forEach((GenericValue e) -> {
             if (e instanceof GenericStat)
@@ -321,7 +330,7 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         lightPut(x);
         //lightPut(new CPUStat((float)0.5, 1517998350, "1", new Key("")));
         System.err.println("DONE THE PUT");
-        //List<GenericValue> list = lightLookupAndGetDataBucket(1517998300);
+        //List<GenericValue> list = lightLookupAndGetDataBucket(System.currentTimeMillis() / 1000l);
         //System.err.println("DONE THE LOOKUP");
         /*Set<Bucket> buckets = rangeQuery(new Range(1517998266, false, 1518998266, false));
         List<GenericValue> list2 = new LinkedList<GenericValue>();
@@ -329,8 +338,8 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
             list2.addAll(lightLookupAndGetDataBucket(b.getLeafLabel()));
         });
         */
+        //return JsonHelper.writeList(list);
         return "";
-        //return "";
     }
     @Override 
     public String test2(String content) {
