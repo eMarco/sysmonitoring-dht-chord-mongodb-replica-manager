@@ -66,7 +66,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     private Storage         storage;
 
-    private NodeReference   joinEntryPoint = new NodeReference("distsystems_replicamanager_1");
+    private NodeReference   joinEntryPoint = NodeReference.MASTER_NODE;
 
 
     @Resource

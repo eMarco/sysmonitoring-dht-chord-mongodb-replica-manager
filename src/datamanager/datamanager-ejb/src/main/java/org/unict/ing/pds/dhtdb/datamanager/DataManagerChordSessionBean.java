@@ -50,7 +50,7 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
     @EJB
     private FingerSessionBeanLocal      fingerSessionBean;
 
-    private static final NodeReference  MASTER_NODE = new NodeReference("distsystems_replicamanager_1");
+    
 
     @Resource
     private SessionContext              context;
@@ -58,7 +58,7 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
     @PostConstruct
     private void init() {
         // Starting chord
-        fingerSessionBean.addNode(MASTER_NODE);
+        fingerSessionBean.addNode(NodeReference.MASTER_NODE);
         
         TimerService timerService = context.getTimerService();
         timerService.getTimers().forEach((Timer t) -> t.cancel());
@@ -144,7 +144,7 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
     private void fixFingers() {
         TreeSet<NodeReference> newFingerTable = new TreeSet<>();
 
-        newFingerTable.add(MASTER_NODE);
+        newFingerTable.add(NodeReference.MASTER_NODE);
         for (int i = 0; i < Key.LENGTH; i++) {
             Key sumPow = newFingerTable.last().getNodeId().sumPowDivided(Key.LENGTH, Key.LENGTH);
             NodeReference succ = findSuccessor(sumPow);
