@@ -79,8 +79,7 @@ public class ScannersResource {
 
         return dataManagerSessionBean.get(scanner, null, RestHelper.ts(tsStart), RestHelper.ts(tsEnd));
     }
-//
-//    
+
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Path(value="/{scanner:[a-zA-Z_]+_[0-9]+}/topics/{topic:[a-zA-Z]+}{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
@@ -102,6 +101,7 @@ public class ScannersResource {
         dataManagerSessionBean.put(scanner, topic, content);
     }
 
+// TODO REMOVE HERE
 //    /**
 //     * Retrieves representation of an instance of org.unict.ing.pds.dhtdb.datamanager.ScannersResource
 //     * @param tsStart
@@ -119,16 +119,16 @@ public class ScannersResource {
 //        //return dataManagerSessionBean.get(null, null, tsStart.substring(1), tsEnd.substring(1));
 //    }
 //    
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    @Path(value="test2")
-    public String test2() {
-        String respo = "CIAO";
-        String content = "overrided";
-        respo += dataManagerSessionBean.test2(content);
-        return respo;
-        //return dataManagerSessionBean.get(null, null, tsStart.substring(1), tsEnd.substring(1));
-    }
+//    @GET
+//    @Produces(MediaType.TEXT_PLAIN)
+//    @Path(value="test2")
+//    public String test2() {
+//        String respo = "CIAO";
+//        String content = "overrided";
+//        respo += dataManagerSessionBean.test2(content);
+//        return respo;
+//        //return dataManagerSessionBean.get(null, null, tsStart.substring(1), tsEnd.substring(1));
+//    }
 
     private DataManagerSessionBeanLocal lookupDataManagerSessionBeanLocal() {
         try {

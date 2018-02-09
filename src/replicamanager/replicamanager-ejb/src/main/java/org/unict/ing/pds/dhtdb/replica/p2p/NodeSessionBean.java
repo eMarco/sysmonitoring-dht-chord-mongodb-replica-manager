@@ -223,9 +223,6 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     private void stabilize() {
         if (!getHasJoined()) return;
 
-        //System.out.println(this.nodeRef.getHostname() + " STABILIZE TRIGGERED. SUCCESSOR NODE " + getSuccessor().getNodeReference());
-        // TODO : Fix NPE
-
         NodeReference successorsPredecessor;
         if (isLocal(getSuccessor())) {
             if (getPredecessor() != null)
@@ -274,11 +271,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
                 if (successorsPredecessor != null && !isLocal(successorsPredecessor)) {
                     // This is not right. Set our new successor
-
-                    // TODO check if legit?
-                    // TODO: notify?
                     setSuccessor(getReference(successorsPredecessor));
-
                     fingerSessionBean.addNode(successorsPredecessor);
                 }
             }
@@ -402,7 +395,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         return elems;
     }
     /***
-     * Acting as a client (TODO move to the right class)
+     * Acting as a client
      * Check if this.nodeRef is responsible for the given k or forward until the
      * proper node is found to return the result
      * @param key
@@ -416,7 +409,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     }
 
     /***
-     * Acting as a client (TODO move to the right class)
+     * Acting as a client
      * Check if this.nodeRef is responsible for the given k or forward until the
      * proper node is found to return the result
      * @param key
@@ -454,7 +447,6 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         // Each key, nodeRef.nodeId (TODO fix), is stored on the first node
         // whose identifier, nodeId, is equal to or follows nodeRef.nodeId
         // in the identifier space; (TODO no equal sign on second (successor) condition? Needed in only one replica scenario)
-        // TODO FIX: THIS IS WRONG!
         NodeReference closestPrecedingNode = fingerSessionBean.getClosestPrecedingNode(key);
 
         if (isPredecessor(closestPrecedingNode)) {

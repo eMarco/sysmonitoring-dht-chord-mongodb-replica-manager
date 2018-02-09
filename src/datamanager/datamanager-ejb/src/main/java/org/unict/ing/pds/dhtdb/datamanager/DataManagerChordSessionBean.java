@@ -74,7 +74,7 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
     /******** DHT/FUNCTIONAL/STORAGE METHODS ********/
 
     /***
-     * Acting as a client (TODO move to the right class)
+     * Acting as a client
      * Check if this.nodeRef is responsible for the given k or forward until the
      * proper node is found to return the result
      * @param key
@@ -88,7 +88,7 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
     }
 
     /***
-     * Acting as a client (TODO move to the right class)
+     * Acting as a client
      * Check if this.nodeRef is responsible for the given k or forward until the
      * proper node is found to return the result
      * @param key

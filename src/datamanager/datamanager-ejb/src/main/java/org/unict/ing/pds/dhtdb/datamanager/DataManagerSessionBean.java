@@ -53,8 +53,6 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
 
     @Override
     public String get(String scanner, String topic, String tsStart, String tsEnd) {
-        // TODO calculate the dht node, based on f([tsStart, tsEnd], scanner)
-        // TODO send the query to the proper nodes
         long upperTs = System.currentTimeMillis() / 1000l;
         long lowerTs = upperTs - 24 * 3600;
         try {
