@@ -10,4 +10,6 @@ RUN npm install -g yarn
 
 RUN yarn global add @angular/cli
 
+COPY default.conf /etc/nginx/conf.d/default.conf
+
 CMD serve.sh
