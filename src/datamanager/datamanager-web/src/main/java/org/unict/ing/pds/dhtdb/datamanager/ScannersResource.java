@@ -23,15 +23,12 @@ import javax.ws.rs.core.MediaType;
 /**
  * REST Web Service
  *
- * @author aleskandro
  */
 @Path("scanners")
 @RequestScoped
 public class ScannersResource {
 
     DataManagerSessionBeanLocal dataManagerSessionBean = lookupDataManagerSessionBeanLocal();
-
-
 
     @Context
     private UriInfo context;
@@ -43,52 +40,73 @@ public class ScannersResource {
     }
 
     /**
-     * Retrieves representation of an instance of org.unict.ing.pds.dhtdb.datamanager.ScannersResource
-     * @param tsStart
-     * @param tsEnd
-     * @return an instance of java.lang.String
+     * scanners/
+     * @return | all the datas in the past 24hours
      */
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    @Path(value="{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
-    public String getAll(
+    @Path(value="/")
+    public String getAll() {
+        return dataManagerSessionBean.get(null, null, null, null);
+    }
+    /**
+     * scanners/tsStart/tsEnd
+     * @param tsStart |
+     * @param tsEnd (optional) |
+     * @return | an instance of java.lang.String
+     */
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path(value="/{tsStart:([0-9]+)?}{tsEnd:(/[0-9]+)?}")
+    public String getBetween(
             @PathParam(value="tsStart") String tsStart,
             @PathParam(value="tsEnd") String tsEnd) {
-        return dataManagerSessionBean.get(null, null, tsStart.substring(1), tsEnd.substring(1));
+        return dataManagerSessionBean.get(null, null, tsStart, RestHelper.ts(tsEnd));
     }
 
-
-     /**
-     *
-     * @param scanner
-     * @param tsStart
-     * @param tsEnd
-     * @return
+    /**
+     * scanners/$scanner_X/$tsStart/$tsEnd (X is [0-9]+)
+     * @param scanner |
+     * @param tsStart timestamp in seconds since Epoch (optional) |
+     * @param tsEnd timestamp in seconds since Epoch(optional) |
+     * @return |
      */
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
-    @Path(value="/{scanner:[0-9]+}{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
+    @Path(value="/{scanner:[a-zA-Z_]+_[0-9]+}{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
     public String getByScannerInterval(
             @PathParam(value="scanner") String scanner,
             @PathParam(value="tsStart") String tsStart,
             @PathParam(value="tsEnd") String tsEnd) {
 
-        return dataManagerSessionBean.get(scanner, null, tsStart.substring(1), tsEnd.substring(1));
+        return dataManagerSessionBean.get(scanner, null, RestHelper.ts(tsStart), RestHelper.ts(tsEnd));
     }
-
-
+    
+    /**
+     * /$scanner_X/topics/$topic/$tsStart/$tsEnd
+     * @param topic the topic to query |
+     * @param tsStart timestamp in seconds since Epoch (optional) |
+     * @param tsEnd timestamp in seconds since Epoch (optional) |
+     * @param scanner |
+     * @return | 
+     */
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
-    @Path(value="/{scanner:[0-9]+}/topics/{topic:[a-zA-Z]+}{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
+    @Path(value="/{scanner:[a-zA-Z_]+_[0-9]+}/topics/{topic:[a-zA-Z]+}{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
     public String getByScannerTopicInterval(
             @PathParam(value="topic")   String topic,
             @PathParam(value="tsStart") String tsStart,
             @PathParam(value="tsEnd")   String tsEnd,
             @PathParam(value="scanner") String scanner) {
 
-        return dataManagerSessionBean.get(scanner, topic, tsStart.substring(1), tsEnd.substring(1));
+        return dataManagerSessionBean.get(scanner, topic, RestHelper.ts(tsStart), RestHelper.ts(tsEnd));
     }
-
+    /**
+     * The handler for the POST requests from the MessageHandler
+     * @param content |
+     * @param topic |
+     * @param scanner  |
+     */
     @POST
     @Consumes(MediaType.WILDCARD)
     @Path(value="/{scanner:[a-zA-Z0-9_]+}/{topic:[a-zA-Z]+}")
@@ -96,34 +114,6 @@ public class ScannersResource {
             @PathParam(value="topic")   String topic,
             @PathParam(value="scanner") String scanner) {
         dataManagerSessionBean.put(scanner, topic, content);
-    }
-
-    /**
-     * Retrieves representation of an instance of org.unict.ing.pds.dhtdb.datamanager.ScannersResource
-     * @param tsStart
-     * @param tsEnd
-     * @return an instance of java.lang.String
-     */
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    @Path(value="test")
-    public String test() {
-        String respo = "CIAO";
-        String content = "overrided";
-        respo += dataManagerSessionBean.test(content);
-        return respo;
-        //return dataManagerSessionBean.get(null, null, tsStart.substring(1), tsEnd.substring(1));
-    }
-    
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    @Path(value="test2")
-    public String test2() {
-        String respo = "CIAO";
-        String content = "overrided";
-        respo += dataManagerSessionBean.test2(content);
-        return respo;
-        //return dataManagerSessionBean.get(null, null, tsStart.substring(1), tsEnd.substring(1));
     }
 
     private DataManagerSessionBeanLocal lookupDataManagerSessionBeanLocal() {

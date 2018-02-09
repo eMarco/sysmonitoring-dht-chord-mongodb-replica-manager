@@ -10,14 +10,14 @@ import java.io.Serializable;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
 /**
- *
- * @author Marco Grassia <marco.grassia@studium.unict.it>
+ * GenericValue has only a Key, extending this class you can creates your model for several kind of Datas
+ * Created to make Chord specific-data-structure agnostic 
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")
 public abstract class GenericValue implements Serializable {
 
     protected Key key;
-
+    
     public GenericValue(Key key) {
         this.key = key;
     }

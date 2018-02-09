@@ -16,7 +16,6 @@ import org.unict.ing.pds.dhtdb.utils.common.NodeReference;
 
 /**
  *
- * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 @Local
 public interface NodeSessionBeanLocal extends DHTNode, ChordNode {
@@ -25,10 +24,6 @@ public interface NodeSessionBeanLocal extends DHTNode, ChordNode {
     public List<GenericValue> lookup(Key k);
 
     public NodeReference getNodeReference();
-
-    public String myTest2();
-    public String myTest();
-
 
     public List<GenericValue> remove(Key key);
 

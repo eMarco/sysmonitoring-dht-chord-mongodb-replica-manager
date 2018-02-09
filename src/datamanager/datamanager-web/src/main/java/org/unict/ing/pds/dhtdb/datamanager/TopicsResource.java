@@ -9,7 +9,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -22,7 +21,6 @@ import javax.ws.rs.core.MediaType;
 /**
  * REST Web Service
  *
- * @author aleskandro
  */
 @Path("topics")
 @RequestScoped
@@ -39,28 +37,13 @@ public class TopicsResource {
      */
     public TopicsResource() {
     }
-
+    
     /**
-     * Retrieves representation of an instance of org.unict.ing.pds.dhtdb.datamanager.TopicsResource
-     * @param tsStart
-     * @param tsEnd
-     * @return an instance of java.lang.String
-     */
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    @Path(value="{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
-    public String getAll(
-            @PathParam(value="tsStart") String tsStart,
-            @PathParam(value="tsEnd") String tsEnd) {
-
-        return dataManagerSessionBean.get(null, null, tsStart, tsEnd);
-    }
-    /**
-     *
-     * @param topic
-     * @param tsStart
-     * @param tsEnd
-     * @return
+     * /topics/$topic/$tsStart/$tsEnd
+     * @param topic  |
+     * @param tsStart timestamp in seconds since Epoch (optional) |
+     * @param tsEnd timestamp in seconds since Epoch (optional) |
+     * @return |
      */
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
@@ -70,20 +53,27 @@ public class TopicsResource {
             @PathParam(value="tsStart") String tsStart,
             @PathParam(value="tsEnd") String tsEnd) {
 
-        return dataManagerSessionBean.get(null, topic, tsStart, tsEnd);
+        return dataManagerSessionBean.get(null, topic,  RestHelper.ts(tsStart), RestHelper.ts(tsEnd));
     }
 
-
+    /**
+     * /topics/$topic/scanners/$scanner/tsStart/tsEnd
+     * @param topic |
+     * @param tsStart timestamp in seconds since Epoch (optional) |
+     * @param tsEnd timestamp in seconds since Epoch (optional) |
+     * @param scanner |
+     * @return | 
+     */
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
-    @Path(value="/{topic:[a-zA-Z]+}/scanners/{scanner:[0-9]+}{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
+    @Path(value="/{topic:[a-zA-Z]+}/scanners/{scanner:[a-zA-Z_]+_[0-9]+}{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
     public String getByTopicsScannerInterval(
             @PathParam(value="topic")   String topic,
             @PathParam(value="tsStart") String tsStart,
             @PathParam(value="tsEnd")   String tsEnd,
             @PathParam(value="scanner") String scanner) {
 
-        return dataManagerSessionBean.get(scanner, topic, tsStart, tsEnd);
+        return dataManagerSessionBean.get(scanner, topic, RestHelper.ts(tsStart), RestHelper.ts(tsEnd));
     }
 
     private DataManagerSessionBeanLocal lookupDataManagerSessionBeanLocal() {

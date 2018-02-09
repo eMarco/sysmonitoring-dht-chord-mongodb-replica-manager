@@ -8,7 +8,9 @@ package org.unict.ing.pds.dhtdb.utils.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
-
+/**
+ * Models a statistic of memory usage
+ */
 public class RAMStat extends GenericStat {
     private final int memFree, memTotal, memAvailable;
 
@@ -20,8 +22,9 @@ public class RAMStat extends GenericStat {
             @JsonProperty("scannerId")    String scannerId,
             @JsonProperty("key")          Key key) {
         super(timestamp, scannerId, key);
-        this.memFree = free;
-        this.memTotal = total;
+        this.topic        = "ramstat";
+        this.memFree      = free;
+        this.memTotal     = total;
         this.memAvailable = available;
     }
 

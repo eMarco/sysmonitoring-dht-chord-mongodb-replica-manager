@@ -9,7 +9,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
-
+/**
+ * Model for the statistics of CPU
+ */
 public class CPUStat extends GenericStat {
     @JsonProperty("usage")
     private final float usage;
@@ -20,6 +22,7 @@ public class CPUStat extends GenericStat {
             @JsonProperty("scannerId")    String scannerId,
             @JsonProperty("key")          Key key) {
         super(timestamp, scannerId, key);
+        this.topic     = "cpustat";
         this.usage = usage;
     }
 

@@ -1,5 +1,6 @@
 package org.unict.ing.pds.dhtdb.utils.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
@@ -10,8 +11,7 @@ import org.unict.ing.pds.dhtdb.utils.dht.Key;
  */
 
 /***
- *
- * @author Marco Grassia <marco.grassia@studium.unict.it>
+ * Class for a GenericStat (extended by the specific stats)
  */
 @JsonSubTypes({
     @JsonSubTypes.Type(value = CPUStat.class),
@@ -23,9 +23,18 @@ public class GenericStat extends GenericValue {
     private long timestamp;
 
     private String scannerId;
-
+    
+    @JsonIgnore
+    protected String topic;
+    
+    @JsonIgnore
+    public String getTopic() {
+        return topic;
+    }
+    
     public GenericStat(long timestamp, String scannerId, Key key) {
         super(key);
+        this.topic     = "generic";
         this.timestamp = timestamp;
         this.scannerId = scannerId;
     }

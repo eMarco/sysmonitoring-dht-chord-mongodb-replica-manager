@@ -12,11 +12,13 @@ import java.io.Serializable;import java.util.Objects;
 ;
 
 /**
- *
- * @author Marco Grassia <marco.grassia@studium.unict.it>
+ * Implementation of a discrete interval with the needed operators
  */
 public class Range implements Serializable {
-    public static Range REPRESENTABLE_RANGE = new Range(0, true, Integer.MAX_VALUE, false);
+    /**
+     * The MAXIMUM RANGE of data-keys for the indexing
+     */
+    public static Range REPRESENTABLE_RANGE = new Range(1517888888L, true, 1540000000L, true);
     public static Range EMPTY_RANGE = new Range(-2, false, -1, false);
     private final Boolean lowerIncluded, upperIncluded;
     private final long lower, upper;
@@ -95,8 +97,8 @@ public class Range implements Serializable {
 
     /**
      * Creates the Range for the left or right child of the Bucket associated with this range
-     * @param second trigger the creation of the range for the right child (if true)
-     * @return a new Range in the interval [lower, lower + (upper - lower) / 2)
+     * @param second trigger the creation of the range for the right child (if true) |
+     * @return | a new Range in the interval [lower, lower + (upper - lower) / 2)
      */
     public Range createSplit(Boolean second) {
         long mid = (lower + upper) / 2;

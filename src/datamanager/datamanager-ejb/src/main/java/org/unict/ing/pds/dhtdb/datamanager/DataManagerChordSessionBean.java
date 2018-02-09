@@ -23,14 +23,12 @@ import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import org.unict.ing.pds.dhtdb.utils.chord.FingerSessionBeanLocal;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
-import org.unict.ing.pds.dhtdb.utils.common.BaseNode;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import org.unict.ing.pds.dhtdb.utils.common.NodeReference;
 import org.unict.ing.pds.dhtdb.utils.common.RemoteNodeProxy;
 
 /**
- *
- * @author aleskandro
+ * The bean responsible of the low-level communication with the Chord Overlay network
  */
 @Singleton
 @Startup
@@ -48,17 +46,15 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
      */
 
     @EJB
-    private FingerSessionBeanLocal      fingerSessionBean;
-
-    private static final NodeReference  MASTER_NODE = new NodeReference("distsystems_replicamanager_1");
+    private FingerSessionBeanLocal fingerSessionBean;
 
     @Resource
-    private SessionContext              context;
+    private SessionContext context;
 
     @PostConstruct
     private void init() {
         // Starting chord
-        fingerSessionBean.addNode(MASTER_NODE);
+        fingerSessionBean.addNode(NodeReference.MASTER_NODE);
         
         TimerService timerService = context.getTimerService();
         timerService.getTimers().forEach((Timer t) -> t.cancel());
@@ -67,7 +63,6 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
 
     @Timeout
     public void timeout(Timer timer) {
-        //System.err.println("TIMEOUT: " + timer.getInfo());
         if (timer.getInfo().equals("FINGERS")) {
             this.fixFingers();
         }
@@ -76,26 +71,21 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
     /******** DHT/FUNCTIONAL/STORAGE METHODS ********/
 
     /***
-     * Acting as a client (TODO move to the right class)
-     * Check if this.nodeRef is responsible for the given k or forward until the
-     * proper node is found to return the result
-     * @param key
-     * @return
+     * Make a lookup on the Chord Network for the value associated with the given Key
+     * @param key |
+     * @return | a List of the values associated with the given Key (see Light for motivations about a List, 
+     * that we considers the real value stored in the Chord Network with a Key)
      */
     @Override
     public List<GenericValue> lookup(Key key) {
-        System.out.println("LOOKUP FOR " + key);
-
         return this.getReference(this.findSuccessor(key)).get(key);
     }
 
     /***
-     * Acting as a client (TODO move to the right class)
-     * Check if this.nodeRef is responsible for the given k or forward until the
-     * proper node is found to return the result
-     * @param key
-     * @param elem
-     * @return
+     * Make a put in the Chord Network for the given elem
+     * @param key |
+     * @param elem |
+     * @return | the result of the put
      */
     @Override
     public Boolean write(Key key, GenericValue elem) {
@@ -103,13 +93,27 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
         System.out.println("Trying to write");
         return this.getReference(this.findSuccessor(key)).put(elem);
     }
-
+    
+    /**
+     * Make a put in the Chord Network for a full value (a List) associated with the Key
+     * @param key |
+     * @param elems |
+     * @return | the result of the put
+     */
     @Override
     public Boolean write(Key key, List<GenericValue> elems) {
         System.out.println("Trying to write");
         return this.getReference(this.findSuccessor(key)).put(elems);
     }
 
+    /**
+     * Make a delete and put in the chord network 
+     * (just for simplicity not in a single call to the proxy)
+     * for a List of elems
+     * @param key |
+     * @param elems |
+     * @return | 
+     */
     @Override
     public Boolean update(Key key, List<GenericValue> elems) {
         System.out.println("Trying to write");
@@ -125,26 +129,33 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
     }
 
     /***
-     *
-     * @param key
-     * @return
+     * implementation of the findSuccessor Chord primitive using the FingerTable
+     * and a RemoteNodeProxy (the DataManager is just a client, not in the ring, as Chord protocol permits)
+     * @param key |
+     * @return |
      */
     public NodeReference findSuccessor(Key key) {
         NodeReference closestPrecedingNode = fingerSessionBean.getClosestPrecedingNode(key);
         return getReference(closestPrecedingNode).findSuccessor(key); // As NodeReference returned
     }
 
+    /**
+     * Get an instance of a RemoteNodeProxy for the NodeReference given
+     * @param nodeReference |
+     * @return | RemoteNodeProxy
+     */
     private RemoteNodeProxy getReference(NodeReference nodeReference) {
         return new RemoteNodeProxy(nodeReference);
     }
 
     /***
-     * Fix fingers.
+     * Fix fingers Chord primitive implementation
+     * 
      */
     private void fixFingers() {
         TreeSet<NodeReference> newFingerTable = new TreeSet<>();
 
-        newFingerTable.add(MASTER_NODE);
+        newFingerTable.add(NodeReference.MASTER_NODE);
         for (int i = 0; i < Key.LENGTH; i++) {
             Key sumPow = newFingerTable.last().getNodeId().sumPowDivided(Key.LENGTH, Key.LENGTH);
             NodeReference succ = findSuccessor(sumPow);

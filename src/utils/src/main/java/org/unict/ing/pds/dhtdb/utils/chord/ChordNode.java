@@ -12,7 +12,6 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**
  *
- * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 public interface ChordNode {
     public void bootstrap(NodeReference nodeRef);
@@ -22,7 +21,7 @@ public interface ChordNode {
     public List<GenericValue> getLessThanAndRemove(Key key);
 
     public NodeReference findSuccessor(Key key);
-    public NodeReference findPredecessor(Key key);
+    //public NodeReference findPredecessor(Key key);
     public NodeReference getPredecessorNodeRef();
 
     public List<GenericValue> delete(Key key);

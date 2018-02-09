@@ -40,3 +40,4 @@ hs_err_pid*
 /src/replicamanager/replicamanager-web/target/
 /src/replicamanager/replicamanager-ejb/target/
 /src/utils/target/
+/src/**/target

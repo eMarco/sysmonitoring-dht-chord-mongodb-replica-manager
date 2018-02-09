@@ -16,8 +16,7 @@ import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**
- *
- * @author Marco Grassia <marco.grassia@studium.unict.it>
+ * A proxy to communicate with remote peers
  */
 public class RemoteNodeProxy extends BaseNode {
     public static final String PATH = "/replicamanager";
@@ -26,6 +25,13 @@ public class RemoteNodeProxy extends BaseNode {
         super(nodeRef);
     }
     
+    /**
+     * Generic method that generate a request
+     * @param uri |
+     * @param method |
+     * @param payload |
+     * @return | 
+     */
     private String request(String uri, String method, String payload) {
         ClientResponse clientResponse;
         if (payload == null)
@@ -44,9 +50,9 @@ public class RemoteNodeProxy extends BaseNode {
     
     /**
      * Make a POST request
-     * @param uri
-     * @param payload
-     * @return 
+     * @param uri |
+     * @param payload |
+     * @return | 
      */    
     private Boolean request(String uri, String payload) {
         return request(uri, "POST", payload) != null;
@@ -54,8 +60,8 @@ public class RemoteNodeProxy extends BaseNode {
 
     /**
      * Make a GET request
-     * @param uri
-     * @return 
+     * @param uri |
+     * @return | 
      */
     private String request(String uri) {
         return request(uri, "GET", null);
@@ -90,17 +96,6 @@ public class RemoteNodeProxy extends BaseNode {
         try {
             return new ObjectMapper().readValue(
                     request("successor/" + key.toString()), NodeReference.class);
-        } catch (IOException ex) {
-            Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    @Override
-    public NodeReference findPredecessor(Key key) {
-        try {
-            return new ObjectMapper().readValue(
-                    request("findPredecessor/" + key.toString()), NodeReference.class);
         } catch (IOException ex) {
             Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
         }

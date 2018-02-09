@@ -9,7 +9,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
-
+/**
+ * Models a statistic of the Input/output (Disks)
+ */
 public class IOStat extends GenericStat {
     private final String disk;
     private final float readKBps, writeKBps;
@@ -22,8 +24,9 @@ public class IOStat extends GenericStat {
             @JsonProperty("scannerId") String scannerId,
             @JsonProperty("key")       Key key) {
         super(timestamp, scannerId, key);
-        this.disk = disk;
-        this.readKBps = readKBps;
+        this.topic     = "iostat";
+        this.disk      = disk;
+        this.readKBps  = readKBps;
         this.writeKBps = writeKBps;
     }
 

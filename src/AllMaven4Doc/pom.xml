@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.unict.ing.pds.dhtdb</groupId>
+    <artifactId>AllMaven4Doc</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>../datamanager</module>
+        <module>../replicamanager</module>
+        <module>../utils</module>
+    </modules>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+             <configuration>
+                <aggregate>true</aggregate>
+                <show>private</show>
+                <doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
+                <docletArtifact>
+                    <groupId>org.umlgraph</groupId>
+                    <artifactId>umlgraph</artifactId>
+                    <version>5.6.6</version>
+                </docletArtifact>
+                <additionalparam>
+                    -inferrel -attributes -types -visibility -inferdep -quiet -hide java.* -collpackages java.util.* -qualify -postfixpackage
+                    -nodefontsize 9
+                    -nodefontpackagesize 7
+                        </additionalparam>
+            </configuration> 
+        </plugin>
+       </plugins>
+    </build>
+    <name>AllMaven4Doc</name>
+</project>

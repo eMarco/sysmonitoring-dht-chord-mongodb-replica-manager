@@ -9,7 +9,6 @@ import javax.ejb.Local;
 
 /**
  *
- * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 @Local
 public interface DataManagerSessionBeanLocal {
@@ -17,8 +16,4 @@ public interface DataManagerSessionBeanLocal {
     void put(String scanner, String topic, String content);
 
     String get(String scanner, String topic, String tsStart, String tsEnd);
-
-    public String test(String content);
-
-    public String test2(String content);
 }

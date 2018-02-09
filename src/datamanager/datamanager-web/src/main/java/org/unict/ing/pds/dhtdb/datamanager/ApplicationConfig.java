@@ -10,7 +10,6 @@ import javax.ws.rs.core.Application;
 
 /**
  *
- * @author aleskandro
  */
 @javax.ws.rs.ApplicationPath("datamanager")
 public class ApplicationConfig extends Application {
@@ -27,11 +26,11 @@ public class ApplicationConfig extends Application {
      * It is automatically populated with
      * all resources defined in the project.
      * If required, comment out calling this method in getClasses().
+     * @param resources
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(org.unict.ing.pds.dhtdb.datamanager.ScannersResource.class);
         resources.add(org.unict.ing.pds.dhtdb.datamanager.TopicsResource.class);
-        resources.add(org.unict.ing.pds.dhtdb.datamanager.GenericResource.class);
     }
 
 }

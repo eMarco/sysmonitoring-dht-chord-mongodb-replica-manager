@@ -1,9 +1,14 @@
 # A basic container for the python message handler
 FROM debian:stretch-slim
 
-RUN apt-get update
-RUN apt-get install -y python3 python3-pip curl
-RUN pip3 install pika requests websockets ArgumentParser
+# Install Python3 and stress from repos
+RUN apt-get update && apt-get install -y python3 python3-pip curl host
+RUN pip3 install pika
+
+# Symbolic linking python3 to python
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
+RUN pip3 install requests websockets ArgumentParser pika
 
 RUN mkdir /code
 WORKDIR /code

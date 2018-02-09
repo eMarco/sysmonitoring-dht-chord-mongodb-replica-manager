@@ -11,7 +11,6 @@ import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
 /**
  *
- * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 public interface Storage {
 

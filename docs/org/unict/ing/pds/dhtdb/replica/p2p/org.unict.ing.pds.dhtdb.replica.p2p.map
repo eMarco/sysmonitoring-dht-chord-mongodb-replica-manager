@@ -1,0 +1,12 @@
+<map id="G" name="G">
+<area shape="rect" id="node1_0" href="./FingerSessionBean.html" title="org.unict.ing.pds.dhtdb.replica.p2p.FingerSessionBean" alt="" coords="16,19,157,45"/>
+<area shape="rect" id="node1" href="./FingerSessionBean.html" title="&lt;TABLE&gt;" alt="" coords="5,8,168,56"/>
+<area shape="rect" id="node2_1" href="./NodeSessionBean.html" title="org.unict.ing.pds.dhtdb.replica.p2p.NodeSessionBean" alt="" coords="220,118,356,143"/>
+<area shape="rect" id="node2" href="./NodeSessionBean.html" title="&lt;TABLE&gt;" alt="" coords="209,107,367,155"/>
+<area shape="rect" id="node3_2" href="./NodeSessionBeanLocal.html" title="org.unict.ing.pds.dhtdb.replica.p2p.NodeSessionBeanLocal" alt="" coords="203,11,373,53"/>
+<area shape="rect" id="node3" href="./NodeSessionBeanLocal.html" title="&lt;TABLE&gt;" alt="" coords="192,5,384,59"/>
+<area shape="rect" id="node4_3" href="./Storage.html" title="org.unict.ing.pds.dhtdb.replica.p2p.Storage" alt="" coords="419,11,512,53"/>
+<area shape="rect" id="node4" href="./Storage.html" title="&lt;TABLE&gt;" alt="" coords="408,5,523,59"/>
+<area shape="rect" id="node5_4" href="./RingSessionBean.html" title="org.unict.ing.pds.dhtdb.replica.p2p.RingSessionBean" alt="" coords="558,19,690,45"/>
+<area shape="rect" id="node5" href="./RingSessionBean.html" title="&lt;TABLE&gt;" alt="" coords="547,8,701,56"/>
+</map>

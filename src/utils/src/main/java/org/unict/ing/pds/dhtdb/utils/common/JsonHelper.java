@@ -11,16 +11,13 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**
- *
- * @author aleskandro
- * @param <GenericValue>
+ * An helper for GenericValue (un)marshalling
  */
 public class JsonHelper {
     private static final ObjectMapper mapper = new ObjectMapper().enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
