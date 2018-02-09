@@ -1,0 +1,6 @@
+<map id="G" name="G">
+<area shape="rect" id="node1_0" href="../p2p/Storage.html" title="org.unict.ing.pds.dhtdb.replica.p2p.Storage" alt="" coords="35,11,129,53"/>
+<area shape="rect" id="node1" href="../p2p/Storage.html" title="&lt;TABLE&gt;" alt="" coords="25,5,139,59"/>
+<area shape="rect" id="node2_1" href="./MongoDBStorage.html" title="org.unict.ing.pds.dhtdb.replica.storage.MongoDBStorage" alt="" coords="16,118,148,143"/>
+<area shape="rect" id="node2" href="./MongoDBStorage.html" title="&lt;TABLE&gt;" alt="" coords="5,107,159,155"/>
+</map>

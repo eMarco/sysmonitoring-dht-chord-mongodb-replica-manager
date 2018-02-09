@@ -1,0 +1,8 @@
+<map id="G" name="G">
+<area shape="rect" id="node1_0" href="./FingerTable.html" title="org.unict.ing.pds.dhtdb.utils.chord.FingerTable" alt="" coords="134,17,226,42"/>
+<area shape="rect" id="node1" href="./FingerTable.html" title="&lt;TABLE&gt;" alt="" coords="123,5,237,53"/>
+<area shape="rect" id="node2_1" href="../../datamanager/FingerSessionBean.html" title="org.unict.ing.pds.dhtdb.datamanager.FingerSessionBean" alt="" coords="16,113,157,138"/>
+<area shape="rect" id="node2" href="../../datamanager/FingerSessionBean.html" title="&lt;TABLE&gt;" alt="" coords="5,101,168,149"/>
+<area shape="rect" id="node3_2" href="../../replica/p2p/FingerSessionBean.html" title="org.unict.ing.pds.dhtdb.replica.p2p.FingerSessionBean" alt="" coords="203,113,344,138"/>
+<area shape="rect" id="node3" href="../../replica/p2p/FingerSessionBean.html" title="&lt;TABLE&gt;" alt="" coords="192,101,355,149"/>
+</map>
