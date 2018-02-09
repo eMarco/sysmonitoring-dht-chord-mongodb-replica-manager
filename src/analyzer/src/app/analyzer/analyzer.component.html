@@ -1,43 +1,56 @@
 <div class="container-fluid">
     <div class='row'>
-      <div class='col-sm-2 body-content'>
-        <div class='affix'>
-          <div class='row'>
-            <div class="col-sm-6">
-              <h3>Scanners</h3>
-                <input type="checkbox" name="scanner_group" value="scanner1" [(ngModel)]="scanner1">Scanner1<br>
-                <input type="checkbox" name="scanner_group" value="scanner2" [(ngModel)]="scanner2">Scanner2<br>
-                <input type="checkbox" name="scanner_group" value="scanner3" [(ngModel)]="scanner3">Scanner3<br>
+        <div class='col-sm-10 col-sm-offset-1 body-content'>
+            <div class="col-sm-6 text-center">
+                <h3>Scanners</h3>
+                    <input class="form-check-input" type="checkbox" id="scanner1" value="scanner1" [(ngModel)]="scanner1">
+                    <label class="form-check-label" for="scanner1">Scanner 1</label>
+                    <input class="form-check-input" type="checkbox" id="scanner2" value="scanner2" [(ngModel)]="scanner2">
+                    <label class="form-check-label" for="scanner2">Scanner 2</label>
+                    <input class="form-check-input" type="checkbox" id="scanner3" value="scanner3" [(ngModel)]="scanner3">
+                    <label class="form-check-label" for="scanner3">Scanner 3</label>
             </div>
-            <div class="col-sm-6">
-              <h3>Measurements</h3>
-              <input type="checkbox" name="measurement_group" value="CPUStat" [(ngModel)]="CPUStat">CPUStat<br>
-              <input type="checkbox" name="measurement_group" value="RAMStat" [(ngModel)]="RAMStat">RAMStat<br>
-              <input type="checkbox" name="measurement_group" value="IOStat" [(ngModel)]="IOStat">IOStat<br>
-              <input type="checkbox" name="measurement_group" value="UptimeStat" [(ngModel)]="UptimeStat">UptimeStat<br>
+            <div class="col-sm-6 text-center">
+                <h3>Measurements</h3>
+                    <input class="form-check-input" type="checkbox" id="cpustat" value="CPUStat" [(ngModel)]="CPUStat">
+                    <label class="form-check-label" for="CPUStat">CPUStat</label>
+                    <input class="form-check-input" type="checkbox" id="ramstat" value="RAMStat" [(ngModel)]="RAMStat">
+                    <label class="form-check-label" for="RAMStat">RAMStat</label>
+                    <input class="form-check-input" type="checkbox" id="iostat" value="IOStat" [(ngModel)]="IOStat">
+                    <label class="form-check-label" for="IOStat">IOStat</label>
+                    <input class="form-check-input" type="checkbox" id="uptimestat" value="UptimeStat" [(ngModel)]="UptimeStat">
+                    <label class="form-check-label" for="UptimeStat">UptimeStat</label>
             </div>
-          </div>
-          <div class='row'>
-            <br>
-            <div class="col-sm-6">
-              <h3>From</h3>
-              <input type="datetime-local" name="fromDate" [(ngModel)]="fromDate">
+
+            <div class='col-sm-12 text-center margin-top'>
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label for="fromDate">From</label>
+                        <input type="datetime-local" class="form-control" name="fromDate" [(ngModel)]="fromDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="toDate">To</label>
+                        <input type="datetime-local" name="toDate" [(ngModel)]="toDate">
+                    </div>
+
+                    <button (click)="refreshData()" type="button" class="btn btn-primary">Update!</button>
+                </form>
             </div>
-            <div class="col-sm-6">
-              <h3>To</h3>
-              <input type="datetime-local" name="toDate" [(ngModel)]="toDate">
-            </div>
-          </div>
-          <div class="col-sm-12">
-            <div class='row text-center'>
-              <br>
-              <button (click)="refreshData()">Update!</button>
-            </div>
-          </div>
         </div>
     </div>
-    <div class="col-sm-10 body-content">
-      <div #dataContainer></div>
+    <div class="row">
+        <div class="col-sm-10 col-sm-offset-1 body-content">
+            <div #dataContainer></div>
+        </div>
     </div>
-  </div>
 </div>
+<style>
+    .margin-top 
+    {
+        margin-top: 40px;
+    }
+    label
+    {
+        padding-right: 20px;
+    }
+</style>
