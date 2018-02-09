@@ -55,7 +55,10 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
                     upperTs = Long.valueOf(tsEnd);
                 }
             }
-            if (upperTs < lowerTs || (upperTs - lowerTs) > 7*86400) {
+            if (upperTs < lowerTs || (upperTs - lowerTs) > 7*86400 ||
+                    !(new Range(lowerTs, true, upperTs, true)
+                            .isContainedIn(Range.REPRESENTABLE_RANGE))
+                    ) {
                 return this.get(scanner, topic, null, null);
             }
         } catch (NumberFormatException e) {
