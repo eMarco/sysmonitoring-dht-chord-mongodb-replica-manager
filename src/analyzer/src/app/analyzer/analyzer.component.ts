@@ -53,7 +53,8 @@ export class AnalyzerComponent implements OnInit {
          x: {
           type: 'timeseries',
           tick: {
-            format: '%Y-%m-%d %H:%M:%S'
+              format: '%Y-%m-%d %H:%M:%S',
+              rotate: 30
           }
         },
         y: {
