@@ -43,7 +43,7 @@ public class ScannersResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path(value="/")
-    public String getAlls() {
+    public String getAll() {
         return dataManagerSessionBean.get(null, null, null, null);
     }
     /**
@@ -55,7 +55,7 @@ public class ScannersResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path(value="/{tsStart:([0-9]+)?}{tsEnd:(/[0-9]+)?}")
-    public String getAll(
+    public String getBetween(
             @PathParam(value="tsStart") String tsStart,
             @PathParam(value="tsEnd") String tsEnd) {
         return dataManagerSessionBean.get(null, null, tsStart, RestHelper.ts(tsEnd));

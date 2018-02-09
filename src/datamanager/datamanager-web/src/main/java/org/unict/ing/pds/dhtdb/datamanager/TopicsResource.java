@@ -39,22 +39,7 @@ public class TopicsResource {
      */
     public TopicsResource() {
     }
-
-    /**
-     * Retrieves representation of an instance of org.unict.ing.pds.dhtdb.datamanager.TopicsResource
-     * @param tsStart
-     * @param tsEnd
-     * @return an instance of java.lang.String
-     */
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    @Path(value="{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
-    public String getAll(
-            @PathParam(value="tsStart") String tsStart,
-            @PathParam(value="tsEnd") String tsEnd) {
-
-        return dataManagerSessionBean.get(null, null, RestHelper.ts(tsStart), RestHelper.ts(tsEnd));
-    }
+    
     /**
      *
      * @param topic
@@ -76,7 +61,7 @@ public class TopicsResource {
 
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
-    @Path(value="/{topic:[a-zA-Z]+}/scanners/{scanner:[0-9]+}{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
+    @Path(value="/{topic:[a-zA-Z]+}/scanners/{scanner:[a-zA-Z_]+_[0-9]+}{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
     public String getByTopicsScannerInterval(
             @PathParam(value="topic")   String topic,
             @PathParam(value="tsStart") String tsStart,
