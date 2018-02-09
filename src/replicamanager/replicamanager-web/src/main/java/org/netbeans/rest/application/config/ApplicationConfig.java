@@ -30,7 +30,6 @@ public class ApplicationConfig extends Application {
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(org.unict.ing.pds.dhtdb.replicamanager.rest.RestAPI.class);
-        resources.add(org.unict.ing.pds.dhtdb.replicamanager.restTest.GenericResource.class);
     }
 
 }
