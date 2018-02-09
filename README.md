@@ -8,6 +8,8 @@
 
 **Read the PDF (leggimi.pdf, currently italian only) for more infos.**
 
+![Screenshot](docs/img.jpg?raw=true)
+
 This is a basic implementation of Chord used to manage a MongoDB database with a single collection.\
 Also, it provides indexing based on timestamps for the scenario of a Cloud Monitoring System for Virtual Nodes.
 
