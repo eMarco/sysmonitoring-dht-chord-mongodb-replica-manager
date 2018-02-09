@@ -36,7 +36,7 @@ public class MongoDBStorage implements Storage {
         // Using a single connection to provide better (query-oriented) scalability
         this.db = dbSessionBean.getDatabase();
         Jongo jongo = new Jongo(db);
-        this.collection = jongo.getCollection("myMonitor5");
+        this.collection = jongo.getCollection("lightMonitor");
     }
 
     @Override
@@ -58,7 +58,6 @@ public class MongoDBStorage implements Storage {
 
     @Override
     public List<GenericValue> find(Key key) {
-        // TODO Validation
         String query = "{ key: { key: '"+ key + "' } }";
         return findBy(query);
     }
