@@ -23,7 +23,6 @@ import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import org.unict.ing.pds.dhtdb.utils.chord.FingerSessionBeanLocal;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
-import org.unict.ing.pds.dhtdb.utils.common.BaseNode;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import org.unict.ing.pds.dhtdb.utils.common.NodeReference;
 import org.unict.ing.pds.dhtdb.utils.common.RemoteNodeProxy;

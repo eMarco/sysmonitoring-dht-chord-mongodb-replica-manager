@@ -26,7 +26,6 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import org.unict.ing.pds.dhtdb.datamanager.DataManagerChordSessionBeanLocal;
-import org.unict.ing.pds.dhtdb.datamanager.lightBeans.LookupSessionBeanLocal;
 import org.unict.ing.pds.dhtdb.utils.common.JsonHelper;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
@@ -42,7 +41,8 @@ import org.unict.ing.pds.light.utils.Range;
 @Singleton
 @Lock(LockType.READ)
 public class LightSessionBean implements LightSessionBeanLocal {
-
+    public static final int TETA_SPLIT = 100;
+    
     @EJB
     private LookupSessionBeanLocal lookupSessionBean;
 
@@ -138,7 +138,7 @@ public class LightSessionBean implements LightSessionBeanLocal {
         int   currentRecords = localBucket.getRecordsCounter();
         List<GenericValue> currentDatas = lookupSessionBean.lightLookupAndGetDataBucket(localLabel);
         // The tree was already splitted
-        if (currentDatas.size() < 100)
+        if (currentDatas.size() < TETA_SPLIT)
             return localBucket;
         long mid = localRange.createSplit(false).getUpper();
         

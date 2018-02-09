@@ -61,8 +61,7 @@ public class ScannersResource {
         return dataManagerSessionBean.get(null, null, tsStart, RestHelper.ts(tsEnd));
     }
 
-//    
-     /**
+    /**
      *
      * @param scanner
      * @param tsStart

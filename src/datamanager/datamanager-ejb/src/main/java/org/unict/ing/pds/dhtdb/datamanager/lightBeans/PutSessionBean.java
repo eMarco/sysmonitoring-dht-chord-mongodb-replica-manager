@@ -5,14 +5,10 @@
  */
 package org.unict.ing.pds.dhtdb.datamanager.lightBeans;
 
-import java.util.LinkedList;
-import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import org.unict.ing.pds.dhtdb.datamanager.DataManagerChordSessionBeanLocal;
-import org.unict.ing.pds.dhtdb.utils.common.JsonHelper;
 import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
-import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 import org.unict.ing.pds.light.utils.Bucket;
 import org.unict.ing.pds.light.utils.Label;
 import org.unict.ing.pds.light.utils.Range;
@@ -23,7 +19,7 @@ import org.unict.ing.pds.light.utils.Range;
  */
 @Stateless
 public class PutSessionBean implements PutSessionBeanLocal {
-    private static final int TETA_SPLIT = 100;
+    
     
     @EJB
     private LightSessionBeanLocal lightSessionBean;
@@ -56,7 +52,7 @@ public class PutSessionBean implements PutSessionBeanLocal {
         System.err.println("GET THE BUCKET FOR " + dhtKey + " AFTER LIGHT LOOKUP");
         Bucket bucket  = dhtKey;
         System.err.println("BUCKET NEWLY " + bucket);
-        if (bucket.getRecordsCounter() >= TETA_SPLIT) {
+        if (bucket.getRecordsCounter() >= LightSessionBean.TETA_SPLIT) {
             dhtKey = lightSessionBean.splitAndPut(bucket, timestamp, stat);
             lightSessionBean.checkTreeHeight(dhtKey.getLeafLabel());
             //return;

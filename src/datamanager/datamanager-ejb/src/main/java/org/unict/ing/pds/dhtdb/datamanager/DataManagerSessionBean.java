@@ -9,12 +9,9 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import org.unict.ing.pds.dhtdb.datamanager.lightBeans.LookupSessionBeanLocal;
 import org.unict.ing.pds.dhtdb.datamanager.lightBeans.PutSessionBeanLocal;
 import org.unict.ing.pds.dhtdb.datamanager.lightBeans.QuerySessionBeanLocal;
 import org.unict.ing.pds.dhtdb.utils.common.JsonHelper;
-import org.unict.ing.pds.dhtdb.utils.dht.Key;
-import org.unict.ing.pds.dhtdb.utils.model.CPUStat;
 import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 import org.unict.ing.pds.light.utils.Range;
@@ -25,9 +22,6 @@ import org.unict.ing.pds.light.utils.Range;
  */
 @Stateless
 public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
-
-    @EJB
-    private LookupSessionBeanLocal lookupSessionBean;
 
     @EJB
     private QuerySessionBeanLocal querySessionBean;
