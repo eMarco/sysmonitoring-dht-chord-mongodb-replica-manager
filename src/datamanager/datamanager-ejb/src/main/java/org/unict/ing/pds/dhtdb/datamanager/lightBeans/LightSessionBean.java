@@ -40,7 +40,7 @@ import org.unict.ing.pds.light.utils.Range;
 @Singleton
 @Lock(LockType.READ)
 public class LightSessionBean implements LightSessionBeanLocal {
-    public static final int TETA_SPLIT = 100;
+    public static final int TETA_SPLIT = 500;
     
     @EJB
     private LookupSessionBeanLocal lookupSessionBean;
