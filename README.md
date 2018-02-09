@@ -6,7 +6,7 @@
 
 #### Alessandro Di Stefano - Marco Grassia
 
-**[leggimi.pdf](Read the PDF) (leggimi.pdf, currently italian only) for more infos.**
+**[Read the .pdf](leggimi.pdf) (leggimi.pdf, currently italian only) for more infos.**
 
 ![Screenshot](docs/img.jpg?raw=true)
 
