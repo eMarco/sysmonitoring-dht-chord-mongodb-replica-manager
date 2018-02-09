@@ -35,6 +35,18 @@ public class UptimeStat extends GenericStat {
     public long getSeconds() {
         return seconds;
     }
+
+    public long getMinutes() {
+        return minutes;
+    }
+
+    public long getHours() {
+        return hours;
+    }
+
+    public long getDays() {
+        return days;
+    }
     
     
 }
