@@ -29,7 +29,14 @@ public class LookupSessionBean implements LookupSessionBeanLocal {
     @EJB
     private DataManagerChordSessionBeanLocal dataManagerChordSessionBean;
 
-    
+    @Override
+    public Bucket lookupBucket(Label l) {
+        List<GenericValue> bucket = dataManagerChordSessionBean.lookup(l.toKey());
+        if (bucket.size() > 0) {
+            return (Bucket)bucket.get(0);
+        }
+        return null;
+    }
     // Algorithm 1
     @Override
     public Bucket lightLabelLookup(long timestamp) {
@@ -84,6 +91,9 @@ public class LookupSessionBean implements LookupSessionBeanLocal {
     public Label lowestCommonAncestor(Range range) {
         System.err.println("LOWEST COMMON ANCESTOR");
         Bucket lower = this.lightLabelLookup(range.getLower());
+        if (lower == null) {
+            return null;
+        }
         System.err.println(lower.toString());
         Bucket upper = this.lightLabelLookup(range.getUpper());
         if (upper == null)

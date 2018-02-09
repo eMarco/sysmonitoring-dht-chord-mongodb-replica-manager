@@ -26,5 +26,7 @@ public interface LookupSessionBeanLocal {
     public List<GenericValue> lightLookupAndGetDataBucket(Label bucketLabel);
 
     public List<GenericValue> lightLookupAndGetDataBucket(long timestamp);
+
+    public Bucket lookupBucket(Label l);
     
 }

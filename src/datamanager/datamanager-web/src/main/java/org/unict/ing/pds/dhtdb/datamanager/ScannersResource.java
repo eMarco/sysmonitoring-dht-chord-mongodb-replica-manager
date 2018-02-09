@@ -61,7 +61,7 @@ public class ScannersResource {
         return dataManagerSessionBean.get(null, null, tsStart, RestHelper.ts(tsEnd));
     }
 
-
+//    
      /**
      *
      * @param scanner
@@ -71,7 +71,7 @@ public class ScannersResource {
      */
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
-    @Path(value="/{scanner:[a-zA-Z]+_[0-9]+}{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
+    @Path(value="/{scanner:[a-zA-Z_]+_[0-9]+}{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
     public String getByScannerInterval(
             @PathParam(value="scanner") String scanner,
             @PathParam(value="tsStart") String tsStart,
@@ -79,11 +79,11 @@ public class ScannersResource {
 
         return dataManagerSessionBean.get(scanner, null, RestHelper.ts(tsStart), RestHelper.ts(tsEnd));
     }
-
-
+//
+//    
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
-    @Path(value="/{scanner:[0-9]+}/topics/{topic:[a-zA-Z]+}{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
+    @Path(value="/{scanner:[a-zA-Z_]+_[0-9]+}/topics/{topic:[a-zA-Z]+}{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
     public String getByScannerTopicInterval(
             @PathParam(value="topic")   String topic,
             @PathParam(value="tsStart") String tsStart,
@@ -102,23 +102,23 @@ public class ScannersResource {
         dataManagerSessionBean.put(scanner, topic, content);
     }
 
-    /**
-     * Retrieves representation of an instance of org.unict.ing.pds.dhtdb.datamanager.ScannersResource
-     * @param tsStart
-     * @param tsEnd
-     * @return an instance of java.lang.String
-     */
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    @Path(value="test")
-    public String test() {
-        String respo = "CIAO";
-        String content = "overrided";
-        respo += dataManagerSessionBean.test(content);
-        return respo;
-        //return dataManagerSessionBean.get(null, null, tsStart.substring(1), tsEnd.substring(1));
-    }
-    
+//    /**
+//     * Retrieves representation of an instance of org.unict.ing.pds.dhtdb.datamanager.ScannersResource
+//     * @param tsStart
+//     * @param tsEnd
+//     * @return an instance of java.lang.String
+//     */
+//    @GET
+//    @Produces(MediaType.TEXT_PLAIN)
+//    @Path(value="test")
+//    public String test() {
+//        String respo = "CIAO";
+//        String content = "overrided";
+//        respo += dataManagerSessionBean.test(content);
+//        return respo;
+//        //return dataManagerSessionBean.get(null, null, tsStart.substring(1), tsEnd.substring(1));
+//    }
+//    
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path(value="test2")

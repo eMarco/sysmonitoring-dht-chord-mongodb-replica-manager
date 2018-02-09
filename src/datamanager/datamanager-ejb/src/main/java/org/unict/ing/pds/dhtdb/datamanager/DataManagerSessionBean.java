@@ -76,13 +76,14 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
             GenericStat stat = (GenericStat)e;
             System.err.println(stat.getScannerId());
             System.err.println(scanner);
-            if (scanner != null && !stat.getScannerId().equals(scanner)) {
+            System.err.println(topic);
+            System.err.println(stat.getTopic());
+            if (scanner != null && !stat.getScannerId().equals(scanner))
                 match = false;
-            }
-            /*
-            if (topic != null && stat.getTopic().equalsIgnoreCase(topic)) {
+            
+            if (topic != null && !stat.getTopic().equalsIgnoreCase(topic)) 
                 match = false;
-            }*/
+            
             if (match)
                 ret.add(e);
         });
@@ -105,7 +106,7 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
     @Override 
     public String test2(String content) {
         //Set<Bucket> buckets = ;
-        List<GenericValue> list = querySessionBean.getRangeQueryDatas(new Range(1517998266, false, 1518998266, false));
+        List<GenericValue> list = querySessionBean.getRangeQueryDatas(new Range(1518155143, false, 1518999266, false));
        
         return JsonHelper.writeList(list);
         //return "";

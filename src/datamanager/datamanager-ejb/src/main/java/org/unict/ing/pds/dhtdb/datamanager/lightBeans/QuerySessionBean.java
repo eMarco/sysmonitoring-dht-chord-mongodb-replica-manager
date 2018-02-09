@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import org.unict.ing.pds.dhtdb.datamanager.DataManagerChordSessionBeanLocal;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 import org.unict.ing.pds.light.utils.Bucket;
 import org.unict.ing.pds.light.utils.Label;
@@ -30,15 +29,9 @@ public class QuerySessionBean implements QuerySessionBeanLocal {
     @EJB
     private LookupSessionBeanLocal lookupSessionBean;
 
-    @EJB
-    private DataManagerChordSessionBeanLocal dataManagerChordSessionBean;
-
     private Set<Bucket> recursiveForward(Range range, Label region, Set<Bucket> subRangesSet, int maxLength) {
         System.err.println("Starting recursive forwarding");
-        List<GenericValue> t = dataManagerChordSessionBean.lookup(region.toKey());
-        Bucket bucket = null;
-        if (t.size() > 0)
-            bucket = (Bucket)t.get(0);
+        Bucket bucket = lookupSessionBean.lookupBucket(region);
         if (bucket == null) {
             return null;
         }
@@ -55,13 +48,13 @@ public class QuerySessionBean implements QuerySessionBeanLocal {
         }
         return subRangesSet;
     }
-   
+
     // Make the query and return the set of the Bucket leaves that reference the datas queried (select buckets where timestamp is between ($range.lower, $range.upper)
     private Set<Bucket> rangeQuery(Range range, int maxLength) {
         System.err.println("RANGE IS " + range.toString());
         Label lca = lookupSessionBean.lowestCommonAncestor(range);
         System.err.println("FIRST LOOKUP: LCA " + lca.getLabel());
-        Bucket bucket = (Bucket)dataManagerChordSessionBean.lookup(lca.toKey()).get(0);
+        Bucket bucket = lookupSessionBean.lookupBucket(lca);
         Set<Bucket> returnedSet = new HashSet<>();
         System.err.println("FIRST LOOKUP RETURNED: " + bucket);
         
@@ -95,7 +88,7 @@ public class QuerySessionBean implements QuerySessionBeanLocal {
         Set<Bucket> references = rangeQuery(range, maxLength);
         List<GenericValue> returnDatas = new LinkedList<>();
         references.forEach((leaf) -> {
-            returnDatas.addAll(dataManagerChordSessionBean.lookup(leaf.getLeafLabel().toDataKey()));
+            returnDatas.addAll(lookupSessionBean.lightLookupAndGetDataBucket(leaf.getLeafLabel()));
         });
         return returnDatas;
     } 

@@ -82,12 +82,17 @@ public class LightSessionBean implements LightSessionBeanLocal {
             // The timestamp of this "special" GenericStat stores the height of the tree
             h = ((GenericStat)heightBucket.get(0)).getTimestamp();
             
+            
         } 
-        if (h > treeHeight || h == 0) {
-            treeHeight = h>treeHeight?(int)h:treeHeight;
+        
+        if (h < treeHeight) {
             dataManagerChordSessionBean.update(TREE_HEIGHT_KEY, new GenericStat(treeHeight, "TREE", TREE_HEIGHT_KEY));
         }
         
+        if (h > treeHeight) {
+            setTreeHeight((int)h);    
+        }
+        System.err.println(h);
     }
     
     @Override
