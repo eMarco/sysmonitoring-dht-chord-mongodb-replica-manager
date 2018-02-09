@@ -2,12 +2,14 @@
     <div class='row'>
       <div class='col-sm-2 body-content'>
         <div class='affix'>
-          <div class='row'>
+          <div class='col-sm-12'>
             <div class="col-sm-6">
               <h3>Scanners</h3>
                 <input type="checkbox" name="scanner_group" value="scanner1" [(ngModel)]="scanner1">Scanner1<br>
                 <input type="checkbox" name="scanner_group" value="scanner2" [(ngModel)]="scanner2">Scanner2<br>
                 <input type="checkbox" name="scanner_group" value="scanner3" [(ngModel)]="scanner3">Scanner3<br>
+                <!-- <input type="checkbox" name="scanner_group" value="scanner4" [(ngModel)]="scanner4">Scanner4<br>
+                <input type="checkbox" name="scanner_group" value="scanner5" [(ngModel)]="scanner5">Scanner5<br> -->
             </div>
             <div class="col-sm-6">
               <h3>Measurements</h3>
@@ -17,7 +19,7 @@
               <input type="checkbox" name="measurement_group" value="UptimeStat" [(ngModel)]="UptimeStat">UptimeStat<br>
             </div>
           </div>
-          <div class='row'>
+          <div class='col-sm-12'>
             <br>
             <div class="col-sm-6">
               <h3>From</h3>
@@ -29,7 +31,7 @@
             </div>
           </div>
           <div class="col-sm-12">
-            <div class='row text-center'>
+            <div class='text-center'>
               <br>
               <button (click)="refreshData()">Update!</button>
             </div>
