@@ -11,14 +11,13 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**
- *
+ * An helper for GenericValue (un)marshalling
  * @author aleskandro
  * @param <GenericValue>
  */

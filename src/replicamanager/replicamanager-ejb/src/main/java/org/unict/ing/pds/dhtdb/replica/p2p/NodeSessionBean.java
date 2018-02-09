@@ -5,12 +5,7 @@
  */
 package org.unict.ing.pds.dhtdb.replica.p2p;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.TreeSet;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -28,7 +23,6 @@ import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import org.unict.ing.pds.dhtdb.replica.storage.MongoDBStorage;
 import org.unict.ing.pds.dhtdb.utils.chord.FingerSessionBeanLocal;
-import org.unict.ing.pds.dhtdb.utils.model.CPUStat;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 import org.unict.ing.pds.dhtdb.utils.common.BaseNode;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
@@ -37,7 +31,7 @@ import org.unict.ing.pds.dhtdb.utils.common.RemoteNodeProxy;
 import org.unict.ing.pds.dhtdb.utils.chord.RingSessionBeanLocal;
 
 /**
- *
+ * Responsible for the Chord primitives
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 @Singleton
@@ -47,7 +41,7 @@ import org.unict.ing.pds.dhtdb.utils.chord.RingSessionBeanLocal;
 public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     /***
-     * CONFIG VARS
+     * CONFIGS for the timers of periodically called methods
      */
     private static final int PERIOD = 5; //seconds
     private static final int JOIN_MULT      = 2;
@@ -119,8 +113,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     /************** RING INIT/CONSISTENCY METHODS *****************/
 
-    /***
-     * Create new Chord Ring
+    /**
+     * Create new Chord Ring with only "myself"
      */
     private void create() {
         setPredecessor(null);
@@ -178,6 +172,11 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         return true;
     }
 
+    /**
+     * Notify primitive of the Chord Protocol
+     * @param nodeRef
+     * @return 
+     */
     @Override
     public NodeReference notify(NodeReference nodeRef) {
         System.out.println(this.nodeRef.getHostname() + " NODE " + nodeRef.getHostname() + " wants to become our predecessor");
@@ -306,14 +305,14 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     /******* FINGERTABLE METHODS ********/
 
     /***
-     *
+     * Fill the fingerTable
      */
     private void fillFingertable() {
         this.fixFingers();
     }
 
     /***
-     * Fix fingers.
+     * Fix fingerTable (recreates and Swap with LockWrite).
      */
     private void fixFingers() {
         if (!getHasJoined()) return;
@@ -342,9 +341,9 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     /******** DHT/FUNCTIONAL/STORAGE METHODS ********/
 
     /***
-     *
+     * Get a List of Values stored in the storage of the node executing this method with the given Key
      * @param key
-     * @return
+     * @return 
      */
     @Override
     public List<GenericValue> get(Key key) {
@@ -354,7 +353,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     }
 
     /***
-     *
+     * Store a value in the storage of the node executing this method
      * @param elem
      * @return
      */
@@ -365,7 +364,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     }
 
     /***
-     *
+     * Sore a list of GenericValue in the storage of the node executing this method
      * @param elems
      * @return
      */
@@ -375,6 +374,11 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         return true;
     }
 
+    /**
+     * Remove from the storage of the node executing this method
+     * @param key
+     * @return 
+     */
     @Override
     public List<GenericValue> delete(Key key) {
         List<GenericValue> elems = this.get(key);
@@ -382,9 +386,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         return elems;
     }
     /***
-     * Acting as a client
-     * Check if this.nodeRef is responsible for the given k or forward until the
-     * proper node is found to return the result
+     * Get a NodeReference to the successor of the given Key and make a Get in the associated peer
      * @param key
      * @return
      */
@@ -394,9 +396,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     }
 
     /***
-     * Acting as a client
-     * Check if this.nodeRef is responsible for the given k or forward until the
-     * proper node is found to return the result
+     * Get a NodeReference to the successor of the given Key and make a put in the associated peer
      * @param key
      * @param elem
      * @return
@@ -408,11 +408,23 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         return getReference(this.findSuccessor(key)).put(elem);
     }
     
+    /**
+     * Remove a Key-Value from the successor associated with the given Key
+     * @param key
+     * @return 
+     */
     @Override
     public List<GenericValue> remove(Key key) {
         return getReference(this.findSuccessor(key)).delete(key);
     }
 
+    /**
+     * Update a Key-Value record from the successor associated with the given key
+     * 
+     * @param key
+     * @param elems
+     * @return 
+     */
     @Override
     public Boolean update(Key key, List<GenericValue> elems) {
         BaseNode proxy = getReference(this.findSuccessor(key));
@@ -423,7 +435,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     /******** CHORD METHODS ********/
 
     /***
-     *
+     * findSuccessor primitive of chord protocol
+     * 
      * @param key
      * @return
      */
@@ -450,33 +463,10 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         return getReference(closestPrecedingNode).findSuccessor(key); // As NodeReference returned
     }
 
-    /***
-     *
-     * @param key
-     * @return
-     */
-    @Override
-    public NodeReference findPredecessor(Key key) {
-        // Actually for join (TODO improve)
-
-        NodeReference closestPrecedingNode;
-
-        closestPrecedingNode = fingerSessionBean.getClosestPrecedingNode(key);
-
-        if (isLocal(closestPrecedingNode)) {
-            // return me
-            return this.nodeRef;
-        }
-        else {
-            // get the closest preceding node and trigger the findSuccessor (remote)
-            return new RemoteNodeProxy(closestPrecedingNode).findPredecessor(key);
-        }
-    }
-
     /****** COMODO METHODS ********/
 
     /***
-     *
+     * get a NodeReference (to himSelf or as a RemoteNodeProxy for another peer)
      * @param nodeReference
      * @return
      */
@@ -489,15 +479,25 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         }
     }
 
-    public boolean isLocal(BaseNode obj) {
+    /**
+     * if the BaseNode given is himself returns true
+     * @param obj
+     * @return 
+     */
+    private boolean isLocal(BaseNode obj) {
         if (obj == null) {
             return false;
         }
 
         return this.nodeRef.equals(obj.getNodeReference());
     }
-
-    public boolean isLocal(NodeReference obj) {
+    
+    /**
+     * if the NodeReference given is himself returns true
+     * @param obj
+     * @return 
+     */
+    private boolean isLocal(NodeReference obj) {
         if (obj == null) {
             return false;
         }
@@ -505,7 +505,12 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         return this.nodeRef.equals(obj);
     }
 
-    public boolean isPredecessor(NodeReference obj) {
+    /**
+     * returns true if the NodeReference given is the predecessor
+     * @param obj
+     * @return 
+     */
+    private boolean isPredecessor(NodeReference obj) {
         if (obj == null || getPredecessor() == null) {
             return false;
         }
@@ -513,18 +518,18 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         return getPredecessor().getNodeReference().equals(obj);
     }
 
-    /***
-     *
+    /**
+     * Ping/Healthcheck of the predecessor
      * @return
      */
-    public boolean checkPredecessor() {
+    private boolean checkPredecessor() {
         return getPredecessor().getNodeReference()
                 .equals(new RemoteNodeProxy(getPredecessor()
                         .getNodeReference()).ping());
     }
 
     /***
-     *
+     * Get the NodeReference of the Predecessor if it is set
      * @return
      */
     @Override
@@ -537,42 +542,42 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     /**
      * @return the successor
      */
-    public BaseNode getSuccessor() {
+    private BaseNode getSuccessor() {
         return ringSessionBean.getSuccessor();
     }
 
     /**
      * @param successor the successor to set
      */
-    public void setSuccessor(BaseNode successor) {
+    private void setSuccessor(BaseNode successor) {
         ringSessionBean.setSuccessor(successor);
     }
 
     /**
      * @return the predecessor
      */
-    public BaseNode getPredecessor() {
+    private BaseNode getPredecessor() {
         return ringSessionBean.getPredecessor();
     }
 
     /**
      * @param predecessor the predecessor to set
      */
-    public void setPredecessor(BaseNode predecessor) {
+    private void setPredecessor(BaseNode predecessor) {
         ringSessionBean.setPredecessor(predecessor);
     }
 
     /**
      * @return the hasJoined
      */
-    public Boolean getHasJoined() {
+    private Boolean getHasJoined() {
         return ringSessionBean.getHasJoined();
     }
 
     /**
      * @param hasJoined the hasJoined to set
      */
-    public void setHasJoined(Boolean hasJoined) {
+    private void setHasJoined(Boolean hasJoined) {
         ringSessionBean.setHasJoined(hasJoined);
     }
 

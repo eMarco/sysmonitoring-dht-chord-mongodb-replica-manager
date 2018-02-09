@@ -12,7 +12,10 @@ import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**
- *
+ * A bucket stores some infos for the distributed tree: 
+ * - the Label to get the hashed key
+ * - the Range to get the interval covered by the leaf
+ * - the records counter to deal with splitAndPut
  * @author aleskandro
  */
 public class Bucket extends GenericValue {

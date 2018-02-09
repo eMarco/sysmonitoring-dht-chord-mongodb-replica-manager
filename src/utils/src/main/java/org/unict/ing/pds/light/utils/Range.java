@@ -12,10 +12,13 @@ import java.io.Serializable;import java.util.Objects;
 ;
 
 /**
- *
+ * Implementation of a discrete interval with the needed operators
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 public class Range implements Serializable {
+    /**
+     * The MAXIMUM RANGE of data-keys for the indexing
+     */
     public static Range REPRESENTABLE_RANGE = new Range(1517888888L, true, 1540000000L, true);
     public static Range EMPTY_RANGE = new Range(-2, false, -1, false);
     private final Boolean lowerIncluded, upperIncluded;

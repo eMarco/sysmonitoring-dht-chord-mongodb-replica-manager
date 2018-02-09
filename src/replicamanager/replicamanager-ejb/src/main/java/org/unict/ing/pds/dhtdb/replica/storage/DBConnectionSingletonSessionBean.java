@@ -11,7 +11,7 @@ import com.mongodb.MongoCredential;
 import javax.ejb.Singleton;
 
 /**
- *
+ * A singleton that is responsible for a single connection to the local mongo database
  * @author aleskandro
  */
 @Singleton

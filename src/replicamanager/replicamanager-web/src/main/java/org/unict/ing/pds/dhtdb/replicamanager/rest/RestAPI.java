@@ -6,8 +6,6 @@
 package org.unict.ing.pds.dhtdb.replicamanager.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.List;
@@ -69,7 +67,7 @@ public class RestAPI {
     }
 
     /**
-     * Put data
+     * Creates data
      * @param k
      * @param u
      * @return an instance of java.lang.String
@@ -85,7 +83,7 @@ public class RestAPI {
         // TODO using responseCodes ?
     }
     /**
-     * Put data
+     * Update data
      * @param k
      * @param u
      * @return an instance of java.lang.String
@@ -100,7 +98,7 @@ public class RestAPI {
     }
 
     /**
-     * Get Data
+     * Delete a key
      * @param k
      * @return an instance of java.lang.String
      */
@@ -126,7 +124,7 @@ public class RestAPI {
     }
 
     /**
-     * Retrieves successor of given Key
+     * Retrieves successor for the given Key (findSuccessor)
      * @param k
      * @return an instance of java.lang.String
      * @throws com.fasterxml.jackson.core.JsonProcessingException
@@ -137,18 +135,6 @@ public class RestAPI {
     public String findSuccessor(@PathParam(value="key") String k) throws JsonProcessingException {
         return 
                 new ObjectMapper().writeValueAsString(nodeSessionBean.findSuccessor(new Key(k)));
-    }
-    /**
-     * Retrieves successor of given Key
-     * @param k
-     * @return an instance of java.lang.String
-     * @throws com.fasterxml.jackson.core.JsonProcessingException
-     */
-    @GET
-    @Path(value="/findPredecessor/{key : ([A-Za-z0-9]+)}")
-    @Consumes(MediaType.TEXT_PLAIN)
-    public String findPredecessor(@PathParam(value="key") String k) throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(nodeSessionBean.findPredecessor(new Key(k)));
     }
 
     /**
@@ -163,7 +149,7 @@ public class RestAPI {
     }
 
     /**
-     *
+     * Call notify
      * @param u
      * @return an instance of java.lang.String
      */

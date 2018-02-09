@@ -8,7 +8,10 @@ package org.unict.ing.pds.dhtdb.utils.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
-
+/**
+ * Models a statistic of the Uptime
+ * @author aleskandro
+ */
 public class UptimeStat extends GenericStat {
     private final long seconds;
     private final long minutes;
@@ -33,4 +36,6 @@ public class UptimeStat extends GenericStat {
     public long getSeconds() {
         return seconds;
     }
+    
+    
 }

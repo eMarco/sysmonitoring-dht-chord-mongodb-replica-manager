@@ -22,7 +22,7 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
 /**
- *
+ * An implementation of the Storage interface for MongoDB
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 public class MongoDBStorage implements Storage {
@@ -36,32 +36,53 @@ public class MongoDBStorage implements Storage {
         // Using a single connection to provide better (query-oriented) scalability
         this.db = dbSessionBean.getDatabase();
         Jongo jongo = new Jongo(db);
-        this.collection = jongo.getCollection("lightMonitor");
+        this.collection = jongo.getCollection("lightMonitor16");
     }
-
+    /**
+     * Insert
+     * @param elem 
+     */
     @Override
     public void insert(GenericValue elem) {
         System.err.println(JsonHelper.write(elem));
         collection.insert(elem);
     }
-
+    
+    /**
+     * 
+     * @param elems 
+     */
     @Override
     public void insertMany(List<GenericValue> elems) {
         collection.insert(elems.toArray());
     }
 
+    /**
+     * 
+     * @param key 
+     */
     @Override
     public void remove(Key key) {
         String query = "{ key: { key: '"+ key + "' } }";
         removeBy(query);
     }
 
+    /**
+     * 
+     * @param key
+     * @return 
+     */
     @Override
     public List<GenericValue> find(Key key) {
         String query = "{ key: { key: '"+ key + "' } }";
         return findBy(query);
     }
 
+    /**
+     * 
+     * @param key
+     * @return 
+     */
     @Override
     public List<GenericValue> lessThanAndRemove(Key key) {
         String query = "{ key: { key: { $lte: '" + key + "' } } }";
@@ -70,15 +91,29 @@ public class MongoDBStorage implements Storage {
         return ret;
     }
 
+    /**
+     * 
+     * @param elem
+     * @param key 
+     */
     @Override
     public void update(GenericValue elem, Key key) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * 
+     * @param query 
+     */
     private void removeBy(String query) {
         collection.remove(query);
     }
 
+    /**
+     * 
+     * @param query
+     * @return 
+     */
     private List<GenericValue> findBy(String query) {
         MongoCursor<GenericValue> iterDoc;
         List<GenericValue> ret = new LinkedList();

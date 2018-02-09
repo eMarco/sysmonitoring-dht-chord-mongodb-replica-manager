@@ -15,7 +15,7 @@ import org.unict.ing.pds.dhtdb.utils.common.BaseNode;
 import org.unict.ing.pds.dhtdb.utils.chord.RingSessionBeanLocal;
 
 /**
- *
+ * Singleton Bean that manages the successor and predecessor fields
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 @Singleton
