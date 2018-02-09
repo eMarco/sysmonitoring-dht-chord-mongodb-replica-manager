@@ -23,8 +23,8 @@ export class AnalyzerComponent implements OnInit {
 
   @ViewChild('dataContainer') private dataContainer: ElementRef;
 
-  fromDate: Date = new Date(0);
-  toDate: Date = new Date();
+  fromDate: Date;
+  toDate: Date;
 
   scanner1: boolean = true;
   scanner2: boolean;
@@ -40,12 +40,12 @@ export class AnalyzerComponent implements OnInit {
   constructor(private http: Http) { }
 
   ngOnInit() {
-    this.fromDate = null;
-    this.toDate = null;
+    // this.fromDate = null;
+    // this.toDate = null;
     this.refreshData();
   }
 
-  public createGraph(chartName : string, columns : any[]) {
+  public createPlot(chartName : string, columns : any[]) {
     return c3.generate({
        bindto: '#' + chartName,
        data: {
@@ -62,7 +62,6 @@ export class AnalyzerComponent implements OnInit {
       }
      });
   }
-
 
   private appendContainer(displayName, chartName) {
       this.dataContainer.nativeElement.innerHTML += '<h3>' + displayName +  '</h3><br><div id="' + chartName + '"></div>';
@@ -81,9 +80,11 @@ export class AnalyzerComponent implements OnInit {
           .get(url)
           .subscribe(
             result => {
-                this.applyData(result.json() as typeof type, type);
+                this.applyData(result.json() as typeof type[], type);
             },
-            error => console.error(error)
+            error => {
+              console.error(error)
+            }
           );
   }
 
@@ -91,12 +92,20 @@ export class AnalyzerComponent implements OnInit {
     var fromDate : number = null;
     var toDate : number = null;
 
-    if (this.fromDate != null) fromDate = Math.round(this.fromDate.getTime()/1000);
-    if (this.toDate != null) toDate = Math.round(this.toDate.getTime()/1000);
+    if (this.fromDate != null) fromDate = Math.round(new Date(this.fromDate).getTime()/1000);
+    if (this.toDate != null) toDate = Math.round(new Date(this.toDate).getTime()/1000);
+
+    console.log(fromDate);
+    console.log(toDate);
 
     var scanners : Set<string> = new Set();
     var topics : Set<any> = new Set();
+
     if (this.scanner1) scanners.add("distsystems_scanner_1");
+    if (this.scanner2) scanners.add("distsystems_scanner_2");
+    if (this.scanner3) scanners.add("distsystems_scanner_3");
+    if (this.scanner4) scanners.add("distsystems_scanner_4");
+    if (this.scanner5) scanners.add("distsystems_scanner_5");
 
     if (this.CPUStat) topics.add(CPUStat);
     if (this.RAMStat) topics.add(RAMStat);
@@ -130,7 +139,6 @@ export class AnalyzerComponent implements OnInit {
         var chartName : string = 'chart_' + scanner;
 
         this.appendContainer("Scanner " + scanner + " - " + type.name, chartName);
-        // this.loadData();
 
         var columns = new Array<Array<any>>();
         for (var label in type.labels) {
@@ -148,12 +156,7 @@ export class AnalyzerComponent implements OnInit {
         console.log("Creating graph " + chartName);
         console.log(columns);
 
-        var buffer = this.createGraph(chartName, columns);
-      });
-
-
-      data.map((value) => {
-        // this.line_ChartOptions.dataTable.push(type.toArray(value));
+        var buffer = this.createPlot(chartName, columns);
       });
     // }
     // catch (Exception) {
