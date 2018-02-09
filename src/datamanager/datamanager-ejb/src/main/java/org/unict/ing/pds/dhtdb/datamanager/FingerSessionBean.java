@@ -16,7 +16,6 @@ import org.unict.ing.pds.dhtdb.utils.chord.FingerTable;
  * of the DataManager, the implementation is the same for DataManager (not in the ring)
  * and any ReplicaManager (in the ring)
  * 
- * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 @Singleton
 @ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)

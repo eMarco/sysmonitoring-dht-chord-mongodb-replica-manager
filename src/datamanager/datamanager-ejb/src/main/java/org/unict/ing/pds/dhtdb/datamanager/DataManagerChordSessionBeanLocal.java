@@ -12,7 +12,6 @@ import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
 /**
  *
- * @author aleskandro
  */
 @Local
 public interface DataManagerChordSessionBeanLocal {

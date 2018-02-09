@@ -12,7 +12,6 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**
  *
- * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 public interface ChordNode {
     public void bootstrap(NodeReference nodeRef);

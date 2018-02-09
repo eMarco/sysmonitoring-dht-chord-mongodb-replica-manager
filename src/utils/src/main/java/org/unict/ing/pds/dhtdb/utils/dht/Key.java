@@ -14,7 +14,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  *
- * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 public final class Key implements Comparable<Key>, Serializable {
     public static final int LENGTH = 160;
@@ -24,7 +23,7 @@ public final class Key implements Comparable<Key>, Serializable {
     /**
      * Overloaded constructor for Key (toHash default to True)
      * the key will be hashed
-     * @param key
+     * @param key |
      */
     @JsonCreator
     public Key(@JsonProperty("key") String key) {
@@ -33,8 +32,8 @@ public final class Key implements Comparable<Key>, Serializable {
 
     /**
      * Constructor for Key
-     * @param key
-     * @param toHash if true the key argument will be passed to the hash function
+     * @param key |
+     * @param toHash if true the key argument will be passed to the hash function |
      */
     public Key(String key, Boolean toHash) {
         if (toHash)
@@ -78,8 +77,8 @@ public final class Key implements Comparable<Key>, Serializable {
 
     /**
      * Returns this.key + 2^pow
-     * @param pow
-     * @return
+     * @param pow |
+     * @return |
      */
     public Key sumPow(int pow) {
         return this.sumPowDivided(pow, 1);
@@ -87,9 +86,9 @@ public final class Key implements Comparable<Key>, Serializable {
 
     /**
      * Returns this.key + 2^pow/divisor
-     * @param pow
-     * @param divisor
-     * @return
+     * @param pow |
+     * @param divisor |
+     * @return |
      */
     public Key sumPowDivided(int pow, int divisor) {
         return this.sum(new BigInteger("2", DEC).pow(pow).divide(new BigInteger(String.valueOf(divisor), DEC)));
@@ -97,8 +96,8 @@ public final class Key implements Comparable<Key>, Serializable {
 
     /**
      * Returns this.key + integer
-     * @param integer
-     * @return
+     * @param integer |
+     * @return |
      */
     public Key sum(BigInteger integer) {
         return sum(this, integer);
@@ -106,8 +105,8 @@ public final class Key implements Comparable<Key>, Serializable {
 
     /**
      * Returns this.key + (Key) b
-     * @param b
-     * @return
+     * @param b |
+     * @return |
      */
     public Key sum(Key b) {
         return sum(this, b);
@@ -115,9 +114,9 @@ public final class Key implements Comparable<Key>, Serializable {
 
     /**
      * Returns (Key) a + (Key) b
-     * @param a
-     * @param b
-     * @return
+     * @param a |
+     * @param b |
+     * @return |
      */
     public static Key sum(Key a, Key b) {
         return Key.sum(a, new BigInteger(b.key, HEX));
@@ -125,9 +124,9 @@ public final class Key implements Comparable<Key>, Serializable {
 
     /**
      * Returns (Key) a + integer
-     * @param a
-     * @param integer
-     * @return
+     * @param a |
+     * @param integer |
+     * @return |
      */
     public static Key sum(Key a, BigInteger integer) {
         return new Key(

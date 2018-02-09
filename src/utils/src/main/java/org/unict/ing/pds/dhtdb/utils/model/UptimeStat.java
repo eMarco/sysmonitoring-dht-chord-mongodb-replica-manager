@@ -10,7 +10,6 @@ import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
 /**
  * Models a statistic of the Uptime
- * @author aleskandro
  */
 public class UptimeStat extends GenericStat {
     private final long seconds;

@@ -10,7 +10,6 @@ import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
 /**
  * Models a statistic of memory usage
- * @author aleskandro
  */
 public class RAMStat extends GenericStat {
     private final int memFree, memTotal, memAvailable;

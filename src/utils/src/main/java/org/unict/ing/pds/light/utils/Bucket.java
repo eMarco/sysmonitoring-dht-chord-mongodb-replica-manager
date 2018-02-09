@@ -16,7 +16,6 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
  * - the Label to get the hashed key
  * - the Range to get the interval covered by the leaf
  * - the records counter to deal with splitAndPut
- * @author aleskandro
  */
 public class Bucket extends GenericValue {
     private int recordsCounter;

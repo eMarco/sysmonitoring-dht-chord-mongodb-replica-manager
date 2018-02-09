@@ -18,7 +18,6 @@ import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
 /**
  * An implementation of the Storage interface for MongoDB
- * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 public class MongoDBStorage implements Storage {
 
@@ -33,7 +32,7 @@ public class MongoDBStorage implements Storage {
     }
     /**
      * Insert
-     * @param elem 
+     * @param elem  |
      */
     @Override
     public void insert(GenericValue elem) {
@@ -43,7 +42,7 @@ public class MongoDBStorage implements Storage {
     
     /**
      * 
-     * @param elems 
+     * @param elems  |
      */
     @Override
     public void insertMany(List<GenericValue> elems) {
@@ -52,7 +51,7 @@ public class MongoDBStorage implements Storage {
 
     /**
      * 
-     * @param key 
+     * @param key  |
      */
     @Override
     public void remove(Key key) {
@@ -62,8 +61,8 @@ public class MongoDBStorage implements Storage {
 
     /**
      * 
-     * @param key
-     * @return 
+     * @param key |
+     * @return | 
      */
     @Override
     public List<GenericValue> find(Key key) {
@@ -73,8 +72,8 @@ public class MongoDBStorage implements Storage {
 
     /**
      * 
-     * @param key
-     * @return 
+     * @param key |
+     * @return | 
      */
     @Override
     public List<GenericValue> lessThanAndRemove(Key key) {
@@ -86,8 +85,8 @@ public class MongoDBStorage implements Storage {
 
     /**
      * 
-     * @param elem
-     * @param key 
+     * @param elem |
+     * @param key  |
      */
     @Override
     public void update(GenericValue elem, Key key) {
@@ -96,7 +95,7 @@ public class MongoDBStorage implements Storage {
 
     /**
      * 
-     * @param query 
+     * @param query  |
      */
     private void removeBy(String query) {
         collection.remove(query);
@@ -104,8 +103,8 @@ public class MongoDBStorage implements Storage {
 
     /**
      * 
-     * @param query
-     * @return 
+     * @param query |
+     * @return | 
      */
     private List<GenericValue> findBy(String query) {
         MongoCursor<GenericValue> iterDoc;

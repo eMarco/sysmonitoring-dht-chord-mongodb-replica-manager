@@ -22,7 +22,6 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**
  *
- * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 public class LabelTest {
 

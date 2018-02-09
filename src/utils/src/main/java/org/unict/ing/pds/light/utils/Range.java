@@ -13,7 +13,6 @@ import java.io.Serializable;import java.util.Objects;
 
 /**
  * Implementation of a discrete interval with the needed operators
- * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 public class Range implements Serializable {
     /**
@@ -98,8 +97,8 @@ public class Range implements Serializable {
 
     /**
      * Creates the Range for the left or right child of the Bucket associated with this range
-     * @param second trigger the creation of the range for the right child (if true)
-     * @return a new Range in the interval [lower, lower + (upper - lower) / 2)
+     * @param second trigger the creation of the range for the right child (if true) |
+     * @return | a new Range in the interval [lower, lower + (upper - lower) / 2)
      */
     public Range createSplit(Boolean second) {
         long mid = (lower + upper) / 2;

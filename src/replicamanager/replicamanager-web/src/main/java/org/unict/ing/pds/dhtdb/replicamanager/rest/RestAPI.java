@@ -34,7 +34,6 @@ import org.unict.ing.pds.dhtdb.utils.common.RemoteNodeProxy;
 /**
  * REST Web Service
  *
- * @author aleskandro
  */
 @Path(RemoteNodeProxy.PATH)
 @RequestScoped
@@ -54,8 +53,8 @@ public class RestAPI {
 
     /**
      * Get Data
-     * @param k
-     * @return an instance of java.lang.String
+     * @param k |
+     * @return | an instance of java.lang.String
      */
     @GET
     @Path(value="{key : ([A-Za-z0-9]+)}")
@@ -68,9 +67,9 @@ public class RestAPI {
 
     /**
      * Creates data
-     * @param k
-     * @param u
-     * @return an instance of java.lang.String
+     * @param k |
+     * @param u |
+     * @return | an instance of java.lang.String
      */
     @POST
     @Path(value="{key : ([A-Za-z0-9]+)}")
@@ -84,9 +83,9 @@ public class RestAPI {
     }
     /**
      * Update data
-     * @param k
-     * @param u
-     * @return an instance of java.lang.String
+     * @param k |
+     * @param u |
+     * @return | an instance of java.lang.String
      */
     @PUT
     @Path(value="{key : ([A-Za-z0-9]+)}")
@@ -99,8 +98,8 @@ public class RestAPI {
 
     /**
      * Delete a key
-     * @param k
-     * @return an instance of java.lang.String
+     * @param k |
+     * @return | an instance of java.lang.String
      */
     @DELETE
     @Path(value="{key : ([A-Za-z0-9]+)}")
@@ -112,9 +111,9 @@ public class RestAPI {
 
     /**
      * Get Data
-     * @param k
-     * @return an instance of java.lang.String
-     * @throws com.fasterxml.jackson.core.JsonProcessingException
+     * @param k |
+     * @return | an instance of java.lang.String
+     * @throws com.fasterxml.jackson.core.JsonProcessingException | 
      */
     @GET
     @Path(value="/moving/{key : ([A-Za-z0-9]+)}")
@@ -125,9 +124,9 @@ public class RestAPI {
 
     /**
      * Retrieves successor for the given Key (findSuccessor)
-     * @param k
-     * @return an instance of java.lang.String
-     * @throws com.fasterxml.jackson.core.JsonProcessingException
+     * @param k |
+     * @return | an instance of java.lang.String
+     * @throws com.fasterxml.jackson.core.JsonProcessingException |
      */
     @GET
     @Path(value="/successor/{key : ([A-Za-z0-9]+)}")
@@ -139,7 +138,8 @@ public class RestAPI {
 
     /**
      * Retrieves node's predecessor
-     * @return an instance of java.lang.String
+     * @return | an instance of java.lang.String
+     * @throws com.fasterxml.jackson.core.JsonProcessingException |
      */
     @GET
     @Path(value="/predecessor")
@@ -150,8 +150,8 @@ public class RestAPI {
 
     /**
      * Call notify
-     * @param u
-     * @return an instance of java.lang.String
+     * @param u |
+     * @return | an instance of java.lang.String
      */
     @POST
     @Path(value="/notify")
@@ -164,7 +164,7 @@ public class RestAPI {
 
     /**
      *
-     * @return
+     * @return |
      */
     @GET
     @Path(value="/ping")

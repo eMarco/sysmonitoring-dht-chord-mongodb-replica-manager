@@ -23,7 +23,6 @@ import javax.ws.rs.core.MediaType;
 /**
  * REST Web Service
  *
- * @author aleskandro
  */
 @Path("scanners")
 @RequestScoped
@@ -42,7 +41,7 @@ public class ScannersResource {
 
     /**
      * scanners/
-     * @return all the datas in the past 24hours
+     * @return | all the datas in the past 24hours
      */
     @GET
     @Produces(MediaType.TEXT_PLAIN)
@@ -52,9 +51,9 @@ public class ScannersResource {
     }
     /**
      * scanners/tsStart/tsEnd
-     * @param tsStart
-     * @param tsEnd (optional)
-     * @return an instance of java.lang.String
+     * @param tsStart |
+     * @param tsEnd (optional) |
+     * @return | an instance of java.lang.String
      */
     @GET
     @Produces(MediaType.TEXT_PLAIN)
@@ -67,10 +66,10 @@ public class ScannersResource {
 
     /**
      * scanners/$scanner_X/$tsStart/$tsEnd (X is [0-9]+)
-     * @param scanner
-     * @param tsStart timestamp in seconds since Epoch (optional)
-     * @param tsEnd timestamp in seconds since Epoch(optional)
-     * @return
+     * @param scanner |
+     * @param tsStart timestamp in seconds since Epoch (optional) |
+     * @param tsEnd timestamp in seconds since Epoch(optional) |
+     * @return |
      */
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
@@ -85,11 +84,11 @@ public class ScannersResource {
     
     /**
      * /$scanner_X/topics/$topic/$tsStart/$tsEnd
-     * @param topic the topic to query
-     * @param tsStart timestamp in seconds since Epoch (optional)
-     * @param tsEnd timestamp in seconds since Epoch (optional)
-     * @param scanner
-     * @return 
+     * @param topic the topic to query |
+     * @param tsStart timestamp in seconds since Epoch (optional) |
+     * @param tsEnd timestamp in seconds since Epoch (optional) |
+     * @param scanner |
+     * @return | 
      */
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
@@ -104,9 +103,9 @@ public class ScannersResource {
     }
     /**
      * The handler for the POST requests from the MessageHandler
-     * @param content
-     * @param topic
-     * @param scanner 
+     * @param content |
+     * @param topic |
+     * @param scanner  |
      */
     @POST
     @Consumes(MediaType.WILDCARD)

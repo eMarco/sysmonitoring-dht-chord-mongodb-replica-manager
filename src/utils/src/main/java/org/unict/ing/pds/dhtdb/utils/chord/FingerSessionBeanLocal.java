@@ -13,21 +13,20 @@ import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
 /**
  *
- * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 @Local
 public interface FingerSessionBeanLocal {
 
     /**
      *
-     * @param node
+     * @param node |
      */
     void addNode(NodeReference node);
 
     /**
      *
-     * @param key
-     * @return
+     * @param key |
+     * @return |
      */
     NodeReference getClosestPrecedingNode(Key key);
 
@@ -35,25 +34,25 @@ public interface FingerSessionBeanLocal {
 
     /**
      *
-     * @return
+     * @return |
      */
     NodeReference getFirst();
 
     /**
      *
-     * @return
+     * @return |
      */
     NodeReference getLast();
 
     /**
      *
-     * @param tableElements
+     * @param tableElements |
      */
     void setTable(Collection<NodeReference> tableElements);
 
     /**
      *
-     * @param newTable
+     * @param newTable |
      */
     void swapTable(TreeSet<NodeReference> newTable);
 

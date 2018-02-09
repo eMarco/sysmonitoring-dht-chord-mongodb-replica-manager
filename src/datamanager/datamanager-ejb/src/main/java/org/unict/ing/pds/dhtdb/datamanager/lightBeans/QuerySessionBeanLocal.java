@@ -12,7 +12,6 @@ import org.unict.ing.pds.light.utils.Range;
 
 /**
  *
- * @author aleskandro
  */
 @Local
 public interface QuerySessionBeanLocal {

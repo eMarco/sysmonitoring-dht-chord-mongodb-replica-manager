@@ -12,7 +12,6 @@ import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
 /***
  * Class for a GenericStat (extended by the specific stats)
- * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 @JsonSubTypes({
     @JsonSubTypes.Type(value = CPUStat.class),

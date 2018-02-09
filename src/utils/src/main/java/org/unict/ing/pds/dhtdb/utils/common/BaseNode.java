@@ -11,7 +11,6 @@ import org.unict.ing.pds.dhtdb.utils.dht.DHTNode;
 
 /**
  *
- * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 @Remote
 public abstract class BaseNode implements DHTNode, ChordNode {

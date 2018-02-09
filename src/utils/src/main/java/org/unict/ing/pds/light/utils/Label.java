@@ -15,7 +15,6 @@ import java.util.Set;
 
 /**
  * Represents a Label and all the methods to manage it
- * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 public class Label {
     private final BitSet label;
@@ -23,7 +22,7 @@ public class Label {
 
     /**
      * Returns the corresponding label given the "binary" label.
-     * @param label
+     * @param label |
      */
     public Label(String label) {
         if (label.charAt(0) != '#') throw new IllegalArgumentException("Input label malformed: no # found at the beginning of the input.");
@@ -70,9 +69,9 @@ public class Label {
      * Given the value, returns the prefix label with the specified length.
      * The label is obtained by iteratively dividing the subranges of the narrowest representable range
      * in two and appending the 0 bit if the value is lower than mid, 1 otherwise.
-     * @param length
-     * @param value
-     * @return
+     * @param length |
+     * @param value |
+     * @return |
      */
     public static Label prefix(int length, long value) {
         // '#' is not a bit!
@@ -114,7 +113,7 @@ public class Label {
 
     /**
      * Get a binary-readable string of the Label
-     * @return
+     * @return |
      */
     @Override
     public String toString() {
@@ -133,7 +132,7 @@ public class Label {
     /**
      * get the associated Label for the bucket corresponding with this label
      * it is the Label of an internal node
-     * @return 
+     * @return | 
      */
     public Label toDHTKey() {
         // TODO add #??
@@ -143,7 +142,7 @@ public class Label {
     /**
      * get the Key for the internal node associated with the Label, this is the 
      * Hashed key to make lookups in the chord overlay network
-     * @return 
+     * @return | 
      */
     public Key toKey() {
         return new Key(toDHTKey().getLabel(), true);
@@ -151,7 +150,7 @@ public class Label {
 
     /** get the hashed key for the data referenced by this Label
      * 
-     * @return 
+     * @return | 
      */
     public Key toDataKey() {
         return new Key(toDHTKey().getLabel() + "DATA", true);
@@ -161,7 +160,7 @@ public class Label {
      * Apply the naming function to calculate the internal node where the Label 
      * (Leaf) is mapped.
      * See the references to LIGHT
-     * @return 
+     * @return | 
      */
     public Label namingFunction() {
         return Label.namingFunction(this, 1);
@@ -170,9 +169,9 @@ public class Label {
     /**
      * NextNamingFunction is used to optimize the increments in the Lookup. 
      * See the references to LIGHT
-     * @param treeLength
-     * @param prefixLength
-     * @return
+     * @param treeLength |
+     * @param prefixLength |
+     * @return |
      */
     public Label nextNamingFunction(int prefixLength, int treeLength) {
         return Label.nextNamingFunction(this, prefixLength, treeLength);
@@ -184,7 +183,7 @@ public class Label {
 
     /**
      * Returns true if label ends by 1 bit, which means this is the child node on the right
-     * @return boolean
+     * @return | boolean
      */
     @JsonIgnore
     public boolean isRight() {
@@ -193,7 +192,7 @@ public class Label {
 
     /**
      * Returns true if label ends by 0 bit, which means this is the child node on the left
-     * @return boolean
+     * @return | boolean
      */
     @JsonIgnore
     public boolean isLeft(){
@@ -202,7 +201,7 @@ public class Label {
 
     /**
      * Creates a Label that could be mapped as a Left Child in the tree
-     * @return 
+     * @return | 
      */
     public Label leftChild() {
         BitSet labelBits = this.getBitSet();
@@ -219,7 +218,7 @@ public class Label {
 
     /**
      * Creates a Label that could be mapped as a Right Child in the tree
-     * @return 
+     * @return | 
      */
     public Label rightChild(){
         BitSet labelBits = this.getBitSet();
@@ -240,8 +239,8 @@ public class Label {
 
     /**
      * Dual of prefix. Given a label, this function returns the range it represents.
-     * @param label
-     * @return
+     * @param label |
+     * @return |
      */
     public static Range interval(Label label) {
         BitSet labelBits = label.getBitSet();
@@ -275,8 +274,8 @@ public class Label {
 
     /**
      * The static implementation of the NamingFunction for 1D-LIGHT
-     * @param label
-     * @return
+     * @param label |
+     * @return |
      */
     public static Label namingFunction(Label label) {
         return Label.namingFunction(label, 1);
@@ -284,9 +283,9 @@ public class Label {
 
     /**
      * The static implementation of the NamingFunction for MD-LIGHT
-     * @param label
-     * @param dimentions
-     * @return
+     * @param label |
+     * @param dimentions |
+     * @return |
      */
     public static Label namingFunction(Label label, int dimentions) {
         BitSet bits = label.getBitSet();
@@ -297,10 +296,10 @@ public class Label {
 
     /**
      * the real static implementation of the NamingFunction
-     * @param bits
-     * @param dimentions
-     * @param len
-     * @return 
+     * @param bits |
+     * @param dimentions |
+     * @param len |
+     * @return | 
      */
     private static Label namingFunction(BitSet bits, int dimentions, int len) {
         if (len <= dimentions) {
@@ -330,10 +329,10 @@ public class Label {
      *
      * Intuitively, fnn locates the first bit in the suffix of μ (with respect to x) that differs from x’s ending bit;
      * the value nextNamingFunction(μ, x) is then the prefix of μ, which ends up with this located bit.
-     * @param label
-     * @param prefixLength
-     * @param treeLength
-     * @return
+     * @param label |
+     * @param prefixLength |
+     * @param treeLength |
+     * @return |
      */
     public static Label nextNamingFunction(Label label, int prefixLength, int treeLength) {
         BitSet labelBits = label.getBitSet();
@@ -364,8 +363,8 @@ public class Label {
 
     /**
      * Calculates the lowestCommonAncestor between a list of Label
-     * @param labels
-     * @return
+     * @param labels |
+     * @return |
      */
     public static Label lowestCommonAncestor(Label... labels) {
         if (labels.length < 2) return labels[0];
@@ -383,9 +382,9 @@ public class Label {
 
     /**
      * Calculates the lowestCommonAncestor between two of Label
-     * @param label1
-     * @param label2
-     * @return
+     * @param label1 |
+     * @param label2 |
+     * @return |
      */
     public static int _lowestCommonAncestor(Label label1, Label label2) {
         BitSet xor = label1.getBitSet();
@@ -409,9 +408,9 @@ public class Label {
     /**
      * Among all branch nodes (i.e., the second children of the ancestors) in the local tree, there exist one or more whose
      * regions overlap the query range. This function returns all those nodes.
-     * @param label
-     * @param region
-     * @return
+     * @param label |
+     * @param region |
+     * @return |
      */
     public static Set<Label> branchNodesBetweenLabels(Label label, Label region) {
         int lcaLength = lowestCommonAncestor(label, region).length;

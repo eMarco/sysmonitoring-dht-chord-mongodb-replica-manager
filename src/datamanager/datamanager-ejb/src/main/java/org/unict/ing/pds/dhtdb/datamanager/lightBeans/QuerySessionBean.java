@@ -19,7 +19,6 @@ import org.unict.ing.pds.light.utils.Range;
 
 /**
  * This is responsible for the Query on the distributed database over LIGHT indexing
- * @author aleskandro
  */
 @Stateless
 public class QuerySessionBean implements QuerySessionBeanLocal {
@@ -32,12 +31,12 @@ public class QuerySessionBean implements QuerySessionBeanLocal {
     /**
      * Recursive function that search the neighbours Bucket leaves that match with the Range of the query running
      * 
-     * @param initialRange the initial range of the query
-     * @param range the range after intersection with a neighbour's one, the methods exits when this range is empty
-     * @param region the first the lowest common ancestor, after the branchNode of a neighbour
-     * @param subRangesSet a reference to the Set to be returned, filled across the recursions
-     * @param maxLength a safety parameter to avoid infinite recursion: the methods will not use a label with length greater than maxLength (the tree height)
-     * @return a Set of Bucket that could store the associated datas
+     * @param initialRange the initial range of the query |
+     * @param range the range after intersection with a neighbour's one, the methods exits when this range is empty |
+     * @param region the first the lowest common ancestor, after the branchNode of a neighbour |
+     * @param subRangesSet a reference to the Set to be returned, filled across the recursions |
+     * @param maxLength a safety parameter to avoid infinite recursion: the methods will not use a label with length greater than maxLength (the tree height) |
+     * @return | a Set of Bucket that could store the associated datas
      */
     private Set<Bucket> recursiveForward(Range initialRange, Range range, Label region, Set<Bucket> subRangesSet, int maxLength) {
         Bucket bucket = lookupSessionBean.lookupBucket(region);
@@ -61,9 +60,9 @@ public class QuerySessionBean implements QuerySessionBeanLocal {
 
     /**
      * Creates the Set of Bucket that could store the Records associated with the Range given (the query)
-     * @param range
-     * @param maxLength
-     * @return 
+     * @param range |
+     * @param maxLength |
+     * @return | 
      */
     private Set<Bucket> rangeQuery(Range range, int maxLength) {
         System.err.println("RANGE IS " + range.toString());
@@ -96,8 +95,8 @@ public class QuerySessionBean implements QuerySessionBeanLocal {
 
     /**
      * This method can be called outside the Bean to make the query and get the Datas associated
-     * @param range
-     * @return the result datas of the query given
+     * @param range |
+     * @return | the result datas of the query given
      */
     @Override
     public List<GenericValue> getRangeQueryDatas(Range range) {

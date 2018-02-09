@@ -16,7 +16,6 @@ import org.unict.ing.pds.dhtdb.utils.common.NodeReference;
 
 /**
  *
- * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 @Local
 public interface NodeSessionBeanLocal extends DHTNode, ChordNode {

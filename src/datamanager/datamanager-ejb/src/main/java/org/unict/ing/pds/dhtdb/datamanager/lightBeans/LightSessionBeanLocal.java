@@ -12,7 +12,6 @@ import org.unict.ing.pds.light.utils.Label;
 
 /**
  *
- * @author aleskandro
  */
 @Local
 public interface LightSessionBeanLocal {

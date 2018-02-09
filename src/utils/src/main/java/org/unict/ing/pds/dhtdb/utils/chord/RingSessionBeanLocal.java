@@ -10,38 +10,37 @@ import org.unict.ing.pds.dhtdb.utils.common.BaseNode;
 
 /**
  *
- * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 @Local
 public interface RingSessionBeanLocal {
 
     /**
-     * @return the predecessor
+     * @return | the predecessor
      */
     BaseNode getPredecessor();
 
     /**
-     * @return the successor
+     * @return | the successor
      */
     BaseNode getSuccessor();
 
     /**
-     * @param predecessor the predecessor to set
+     * @param predecessor the predecessor to set |
      */
     void setPredecessor(BaseNode predecessor);
 
     /**
-     * @param successor the successor to set
+     * @param successor the successor to set |
      */
     void setSuccessor(BaseNode successor);
 
     /**
-     * @return the hasJoined
+     * @return | the hasJoined
      */
     Boolean getHasJoined();
 
     /**
-     * @param hasJoined the hasJoined to set
+     * @param hasJoined the hasJoined to set |
      */
     void setHasJoined(Boolean hasJoined);
 

@@ -32,7 +32,6 @@ import org.unict.ing.pds.dhtdb.utils.chord.RingSessionBeanLocal;
 
 /**
  * Responsible for the Chord primitives
- * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 @Singleton
 @Startup
@@ -125,8 +124,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     /***
      * Join a ring using an entry point
-     * @param entryPoint
-     * @return
+     * @param entryPoint |
+     * @return |
      */
     private Boolean join(NodeReference entryPoint) {
         setHasJoined((Boolean) false);
@@ -176,8 +175,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     /**
      * Notify primitive of the Chord Protocol
-     * @param nodeRef
-     * @return 
+     * @param nodeRef |
+     * @return | 
      */
     @Override
     public NodeReference notify(NodeReference nodeRef) {
@@ -279,7 +278,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     /***
      * TODO
-     * @param nodeRef
+     * @param nodeRef |
      */
     @Override
     public void bootstrap(NodeReference nodeRef) {
@@ -296,8 +295,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     /***
      *
-     * @param key
-     * @return
+     * @param key |
+     * @return |
      */
     @Override
     public List<GenericValue> getLessThanAndRemove(Key key) {
@@ -344,8 +343,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     /***
      * Get a List of Values stored in the storage of the node executing this method with the given Key
-     * @param key
-     * @return 
+     * @param key |
+     * @return | 
      */
     @Override
     public List<GenericValue> get(Key key) {
@@ -356,8 +355,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     /***
      * Store a value in the storage of the node executing this method
-     * @param elem
-     * @return
+     * @param elem |
+     * @return |
      */
     @Override
     public Boolean put(GenericValue elem) {
@@ -367,8 +366,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     /***
      * Sore a list of GenericValue in the storage of the node executing this method
-     * @param elems
-     * @return
+     * @param elems |
+     * @return |
      */
     @Override
     public Boolean put(List<GenericValue> elems) {
@@ -378,8 +377,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     /**
      * Remove from the storage of the node executing this method
-     * @param key
-     * @return 
+     * @param key |
+     * @return | 
      */
     @Override
     public List<GenericValue> delete(Key key) {
@@ -389,8 +388,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     }
     /***
      * Get a NodeReference to the successor of the given Key and make a Get in the associated peer
-     * @param key
-     * @return
+     * @param key |
+     * @return |
      */
     @Override
     public List<GenericValue> lookup(Key key) {
@@ -399,9 +398,9 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     /***
      * Get a NodeReference to the successor of the given Key and make a put in the associated peer
-     * @param key
-     * @param elem
-     * @return
+     * @param key |
+     * @param elem |
+     * @return |
      */
     @Override
     public Boolean write(Key key, GenericValue elem) {
@@ -412,8 +411,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     
     /**
      * Remove a Key-Value from the successor associated with the given Key
-     * @param key
-     * @return 
+     * @param key |
+     * @return | 
      */
     @Override
     public List<GenericValue> remove(Key key) {
@@ -423,9 +422,9 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     /**
      * Update a Key-Value record from the successor associated with the given key
      * 
-     * @param key
-     * @param elems
-     * @return 
+     * @param key |
+     * @param elems |
+     * @return | 
      */
     @Override
     public Boolean update(Key key, List<GenericValue> elems) {
@@ -439,8 +438,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     /***
      * findSuccessor primitive of chord protocol
      * 
-     * @param key
-     * @return
+     * @param key |
+     * @return |
      */
     @Override
     public NodeReference findSuccessor(Key key) {
@@ -469,8 +468,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     /***
      * get a NodeReference (to himSelf or as a RemoteNodeProxy for another peer)
-     * @param nodeReference
-     * @return
+     * @param nodeReference |
+     * @return |
      */
     private BaseNode getReference(NodeReference nodeReference) {
         if (isLocal(nodeReference)) {
@@ -483,8 +482,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     /**
      * if the BaseNode given is himself returns true
-     * @param obj
-     * @return 
+     * @param obj |
+     * @return | 
      */
     private boolean isLocal(BaseNode obj) {
         if (obj == null) {
@@ -496,8 +495,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     
     /**
      * if the NodeReference given is himself returns true
-     * @param obj
-     * @return 
+     * @param obj |
+     * @return | 
      */
     private boolean isLocal(NodeReference obj) {
         if (obj == null) {
@@ -509,8 +508,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     /**
      * returns true if the NodeReference given is the predecessor
-     * @param obj
-     * @return 
+     * @param obj |
+     * @return | 
      */
     private boolean isPredecessor(NodeReference obj) {
         if (obj == null || getPredecessor() == null) {
@@ -522,7 +521,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     /**
      * Ping/Healthcheck of the predecessor
-     * @return
+     * @return |
      */
     private boolean checkPredecessor() {
         return getPredecessor().getNodeReference()
@@ -532,7 +531,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     /***
      * Get the NodeReference of the Predecessor if it is set
-     * @return
+     * @return |
      */
     @Override
     public NodeReference getPredecessorNodeRef() {
@@ -542,42 +541,42 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     /*** GETTERS AND SETTERS ****/
 
     /**
-     * @return the successor
+     * @return | the successor
      */
     private BaseNode getSuccessor() {
         return ringSessionBean.getSuccessor();
     }
 
     /**
-     * @param successor the successor to set
+     * @param successor the successor to set |
      */
     private void setSuccessor(BaseNode successor) {
         ringSessionBean.setSuccessor(successor);
     }
 
     /**
-     * @return the predecessor
+     * @return | the predecessor
      */
     private BaseNode getPredecessor() {
         return ringSessionBean.getPredecessor();
     }
 
     /**
-     * @param predecessor the predecessor to set
+     * @param predecessor the predecessor to set |
      */
     private void setPredecessor(BaseNode predecessor) {
         ringSessionBean.setPredecessor(predecessor);
     }
 
     /**
-     * @return the hasJoined
+     * @return | the hasJoined
      */
     private Boolean getHasJoined() {
         return ringSessionBean.getHasJoined();
     }
 
     /**
-     * @param hasJoined the hasJoined to set
+     * @param hasJoined the hasJoined to set |
      */
     private void setHasJoined(Boolean hasJoined) {
         ringSessionBean.setHasJoined(hasJoined);

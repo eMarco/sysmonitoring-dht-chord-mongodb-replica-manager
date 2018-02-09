@@ -11,7 +11,6 @@ import org.unict.ing.pds.dhtdb.replica.p2p.Storage;
 
 /**
  *
- * @author aleskandro
  */
 @Local
 public interface DBConnectionSingletonSessionBeanLocal {

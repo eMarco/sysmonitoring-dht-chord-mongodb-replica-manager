@@ -17,7 +17,6 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**
  * A proxy to communicate with remote peers
- * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 public class RemoteNodeProxy extends BaseNode {
     public static final String PATH = "/replicamanager";
@@ -28,10 +27,10 @@ public class RemoteNodeProxy extends BaseNode {
     
     /**
      * Generic method that generate a request
-     * @param uri
-     * @param method
-     * @param payload
-     * @return 
+     * @param uri |
+     * @param method |
+     * @param payload |
+     * @return | 
      */
     private String request(String uri, String method, String payload) {
         ClientResponse clientResponse;
@@ -51,9 +50,9 @@ public class RemoteNodeProxy extends BaseNode {
     
     /**
      * Make a POST request
-     * @param uri
-     * @param payload
-     * @return 
+     * @param uri |
+     * @param payload |
+     * @return | 
      */    
     private Boolean request(String uri, String payload) {
         return request(uri, "POST", payload) != null;
@@ -61,8 +60,8 @@ public class RemoteNodeProxy extends BaseNode {
 
     /**
      * Make a GET request
-     * @param uri
-     * @return 
+     * @param uri |
+     * @return | 
      */
     private String request(String uri) {
         return request(uri, "GET", null);

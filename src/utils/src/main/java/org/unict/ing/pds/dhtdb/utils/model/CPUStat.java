@@ -11,7 +11,6 @@ import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
 /**
  * Model for the statistics of CPU
- * @author aleskandro
  */
 public class CPUStat extends GenericStat {
     @JsonProperty("usage")

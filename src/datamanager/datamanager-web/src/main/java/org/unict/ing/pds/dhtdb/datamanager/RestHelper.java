@@ -7,7 +7,6 @@ package org.unict.ing.pds.dhtdb.datamanager;
 
 /**
  *
- * @author aleskandro
  */
 public final class RestHelper {
     public final static String ts(String ts) {

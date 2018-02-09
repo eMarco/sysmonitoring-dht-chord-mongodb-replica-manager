@@ -10,22 +10,20 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**
  *
- * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 public interface DHTNode {
 
      /**
      *
-     * @param k
-     * @return
+     * @param k |
+     * @return |
      */
     public List<GenericValue> get(Key k);
 
     /**
      *
-     * @param k
-     * @param elem
-     * @return
+     * @param elem |
+     * @return |
      */
     public Boolean put(GenericValue elem);
 

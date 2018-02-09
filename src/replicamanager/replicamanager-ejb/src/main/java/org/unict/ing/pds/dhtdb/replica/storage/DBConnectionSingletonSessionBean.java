@@ -13,7 +13,6 @@ import org.unict.ing.pds.dhtdb.replica.p2p.Storage;
 
 /**
  * A singleton that is responsible for a single connection to the local mongo database
- * @author aleskandro
  */
 @Singleton
 public class DBConnectionSingletonSessionBean implements DBConnectionSingletonSessionBeanLocal {

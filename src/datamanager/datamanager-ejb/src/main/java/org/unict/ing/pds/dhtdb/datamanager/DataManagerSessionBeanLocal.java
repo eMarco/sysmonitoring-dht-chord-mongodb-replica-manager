@@ -9,7 +9,6 @@ import javax.ejb.Local;
 
 /**
  *
- * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 @Local
 public interface DataManagerSessionBeanLocal {

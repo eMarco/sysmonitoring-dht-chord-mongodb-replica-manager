@@ -21,7 +21,6 @@ import javax.ws.rs.core.MediaType;
 /**
  * REST Web Service
  *
- * @author aleskandro
  */
 @Path("topics")
 @RequestScoped
@@ -41,10 +40,10 @@ public class TopicsResource {
     
     /**
      * /topics/$topic/$tsStart/$tsEnd
-     * @param topic 
-     * @param tsStart timestamp in seconds since Epoch (optional)
-     * @param tsEnd timestamp in seconds since Epoch (optional)
-     * @return
+     * @param topic  |
+     * @param tsStart timestamp in seconds since Epoch (optional) |
+     * @param tsEnd timestamp in seconds since Epoch (optional) |
+     * @return |
      */
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
@@ -59,11 +58,11 @@ public class TopicsResource {
 
     /**
      * /topics/$topic/scanners/$scanner/tsStart/tsEnd
-     * @param topic
-     * @param tsStart timestamp in seconds since Epoch (optional)
-     * @param tsEnd timestamp in seconds since Epoch (optional)
-     * @param scanner
-     * @return 
+     * @param topic |
+     * @param tsStart timestamp in seconds since Epoch (optional) |
+     * @param tsEnd timestamp in seconds since Epoch (optional) |
+     * @param scanner |
+     * @return | 
      */
     @GET
     @Consumes(MediaType.TEXT_PLAIN)

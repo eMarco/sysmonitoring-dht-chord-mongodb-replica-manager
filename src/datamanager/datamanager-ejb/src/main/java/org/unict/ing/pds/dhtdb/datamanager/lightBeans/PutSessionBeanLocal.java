@@ -10,7 +10,6 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
 
 /**
  *
- * @author aleskandro
  */
 @Local
 public interface PutSessionBeanLocal {

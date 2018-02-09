@@ -44,7 +44,6 @@ import org.unict.ing.pds.light.utils.Range;
  * Still, this singleton is responsible for the operations of tree splitting. These are done
  * in LockWrite so that concurrent put doesn't make the distributed database inconsistent
  * 
- * @author aleskandro
  */
 @Singleton
 @Lock(LockType.READ)
@@ -112,7 +111,7 @@ public class LightSessionBean implements LightSessionBeanLocal {
     /**
      * Called to check, in run-time, the height of the tree using the length of
      * a Label
-     * @param label 
+     * @param label  |
      */
     @Override
     public void checkTreeHeight(Label label) {
@@ -128,7 +127,7 @@ public class LightSessionBean implements LightSessionBeanLocal {
     }
     /**
      * Updates the treeHeight with the given argument
-     * @param treeHeight 
+     * @param treeHeight  |
      */
     @Lock(LockType.WRITE)
     @Override
@@ -139,10 +138,10 @@ public class LightSessionBean implements LightSessionBeanLocal {
 
     /**
      * Split the distributed tree and migrates the datas in the new Bucket (s)
-     * @param localBucket
-     * @param timestamp
-     * @param elem
-     * @return 
+     * @param localBucket |
+     * @param timestamp |
+     * @param elem |
+     * @return | 
      */
     @Lock(LockType.WRITE)
     @AccessTimeout(value = 20, unit = TimeUnit.SECONDS)

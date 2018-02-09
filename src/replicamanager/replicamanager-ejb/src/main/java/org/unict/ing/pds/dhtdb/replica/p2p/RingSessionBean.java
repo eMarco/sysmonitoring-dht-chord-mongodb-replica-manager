@@ -16,7 +16,6 @@ import org.unict.ing.pds.dhtdb.utils.chord.RingSessionBeanLocal;
 
 /**
  * Singleton Bean that manages the successor and predecessor fields
- * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 @Singleton
 @ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
@@ -34,7 +33,7 @@ public class RingSessionBean implements RingSessionBeanLocal {
     }
 
     /**
-     * @return the successor
+     * @return | the successor
      */
     @Override
     public BaseNode getSuccessor() {
@@ -42,7 +41,7 @@ public class RingSessionBean implements RingSessionBeanLocal {
     }
 
     /**
-     * @param successor the successor to set
+     * @param successor the successor to set |
      */
     @Lock(LockType.WRITE)
     @Override
@@ -51,7 +50,7 @@ public class RingSessionBean implements RingSessionBeanLocal {
     }
 
     /**
-     * @return the predecessor
+     * @return | the predecessor
      */
     @Override
     public BaseNode getPredecessor() {
@@ -59,7 +58,7 @@ public class RingSessionBean implements RingSessionBeanLocal {
     }
 
     /**
-     * @param predecessor the predecessor to set
+     * @param predecessor the predecessor to set |
      */
     @Lock(LockType.WRITE)
     @Override
@@ -68,7 +67,7 @@ public class RingSessionBean implements RingSessionBeanLocal {
     }
 
     /**
-     * @return the hasJoined
+     * @return | the hasJoined
      */
     @Override
     public Boolean getHasJoined() {
@@ -76,7 +75,7 @@ public class RingSessionBean implements RingSessionBeanLocal {
     }
 
     /**
-     * @param hasJoined the hasJoined to set
+     * @param hasJoined the hasJoined to set |
      */
     @Lock(LockType.WRITE)
     @Override

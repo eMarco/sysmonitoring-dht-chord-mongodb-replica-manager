@@ -29,7 +29,6 @@ import org.unict.ing.pds.dhtdb.utils.common.RemoteNodeProxy;
 
 /**
  * The bean responsible of the low-level communication with the Chord Overlay network
- * @author aleskandro
  */
 @Singleton
 @Startup
@@ -73,8 +72,8 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
 
     /***
      * Make a lookup on the Chord Network for the value associated with the given Key
-     * @param key
-     * @return a List of the values associated with the given Key (see Light for motivations about a List, 
+     * @param key |
+     * @return | a List of the values associated with the given Key (see Light for motivations about a List, 
      * that we considers the real value stored in the Chord Network with a Key)
      */
     @Override
@@ -84,9 +83,9 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
 
     /***
      * Make a put in the Chord Network for the given elem
-     * @param key
-     * @param elem
-     * @return the result of the put
+     * @param key |
+     * @param elem |
+     * @return | the result of the put
      */
     @Override
     public Boolean write(Key key, GenericValue elem) {
@@ -97,9 +96,9 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
     
     /**
      * Make a put in the Chord Network for a full value (a List) associated with the Key
-     * @param key
-     * @param elems
-     * @return the result of the put
+     * @param key |
+     * @param elems |
+     * @return | the result of the put
      */
     @Override
     public Boolean write(Key key, List<GenericValue> elems) {
@@ -111,9 +110,9 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
      * Make a delete and put in the chord network 
      * (just for simplicity not in a single call to the proxy)
      * for a List of elems
-     * @param key
-     * @param elems
-     * @return 
+     * @param key |
+     * @param elems |
+     * @return | 
      */
     @Override
     public Boolean update(Key key, List<GenericValue> elems) {
@@ -132,8 +131,8 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
     /***
      * implementation of the findSuccessor Chord primitive using the FingerTable
      * and a RemoteNodeProxy (the DataManager is just a client, not in the ring, as Chord protocol permits)
-     * @param key
-     * @return
+     * @param key |
+     * @return |
      */
     public NodeReference findSuccessor(Key key) {
         NodeReference closestPrecedingNode = fingerSessionBean.getClosestPrecedingNode(key);
@@ -142,8 +141,8 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
 
     /**
      * Get an instance of a RemoteNodeProxy for the NodeReference given
-     * @param nodeReference
-     * @return RemoteNodeProxy
+     * @param nodeReference |
+     * @return | RemoteNodeProxy
      */
     private RemoteNodeProxy getReference(NodeReference nodeReference) {
         return new RemoteNodeProxy(nodeReference);

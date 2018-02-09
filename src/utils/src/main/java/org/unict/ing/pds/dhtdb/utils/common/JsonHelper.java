@@ -18,8 +18,6 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**
  * An helper for GenericValue (un)marshalling
- * @author aleskandro
- * @param <GenericValue>
  */
 public class JsonHelper {
     private static final ObjectMapper mapper = new ObjectMapper().enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);

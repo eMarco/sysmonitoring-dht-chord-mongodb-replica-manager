@@ -14,7 +14,6 @@ import org.unict.ing.pds.dhtdb.utils.dht.Key;
 
 /**
  *
- * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 @Lock(LockType.READ)
 public class FingerTable {
@@ -22,7 +21,7 @@ public class FingerTable {
 
     /**
      *
-     * @return
+     * @return |
      */
     public TreeSet<NodeReference> getTable() {
         return table;
@@ -30,7 +29,7 @@ public class FingerTable {
 
     /**
      *
-     * @param tableElements
+     * @param tableElements |
      */
     @Lock(LockType.WRITE)
     public void setTable(Collection<NodeReference> tableElements) {
@@ -45,8 +44,8 @@ public class FingerTable {
 
     /**
      *
-     * @param key
-     * @return
+     * @param key |
+     * @return |
      */
     public NodeReference getClosestPrecedingNode(Key key) {
         return getClosestPrecedingNode(new NodeReference(key, ""));
@@ -54,8 +53,8 @@ public class FingerTable {
 
     /**
      *
-     * @param node
-     * @return
+     * @param node |
+     * @return |
      */
     public NodeReference getClosestPrecedingNode(NodeReference node) {
         NodeReference lower = table.lower(node);
@@ -66,7 +65,7 @@ public class FingerTable {
 
     /**
      *
-     * @param node
+     * @param node |
      */
     @Lock(LockType.WRITE)
     public void addNode(NodeReference node) {
@@ -75,7 +74,7 @@ public class FingerTable {
 
     /**
      *
-     * @return
+     * @return |
      */
     public NodeReference getFirst() {
         return table.first();
@@ -83,7 +82,7 @@ public class FingerTable {
 
     /**
      *
-     * @return
+     * @return |
      */
     public NodeReference getLast() {
         return table.last();

@@ -18,6 +18,21 @@
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
+             <configuration>
+                <aggregate>true</aggregate>
+                <show>private</show>
+                <doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
+                <docletArtifact>
+                    <groupId>org.umlgraph</groupId>
+                    <artifactId>umlgraph</artifactId>
+                    <version>5.6.6</version>
+                </docletArtifact>
+                <additionalparam>
+                    -inferrel -attributes -types -visibility -inferdep -quiet -hide java.* -collpackages java.util.* -qualify -postfixpackage
+                    -nodefontsize 9
+                    -nodefontpackagesize 7
+                        </additionalparam>
+            </configuration> 
         </plugin>
        </plugins>
     </build>
