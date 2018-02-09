@@ -7,6 +7,7 @@ package org.unict.ing.pds.dhtdb.replica.storage;
 
 import com.mongodb.DB;
 import javax.ejb.Local;
+import org.unict.ing.pds.dhtdb.replica.p2p.Storage;
 
 /**
  *
@@ -15,4 +16,6 @@ import javax.ejb.Local;
 @Local
 public interface DBConnectionSingletonSessionBeanLocal {
     public DB getDatabase();
+
+    public Storage getStorage();
 }

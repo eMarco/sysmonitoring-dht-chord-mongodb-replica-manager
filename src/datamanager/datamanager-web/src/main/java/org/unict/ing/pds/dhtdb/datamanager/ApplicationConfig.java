@@ -31,7 +31,6 @@ public class ApplicationConfig extends Application {
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(org.unict.ing.pds.dhtdb.datamanager.ScannersResource.class);
         resources.add(org.unict.ing.pds.dhtdb.datamanager.TopicsResource.class);
-        resources.add(org.unict.ing.pds.dhtdb.datamanager.GenericResource.class);
     }
 
 }

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- *
+ * Represents a Label and all the methods to manage it
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 public class Label {
@@ -91,9 +91,7 @@ public class Label {
         labelBits.clear(0);
 
         for (int i = 1; i < length; i++) {
-            mid = lower + (upper - lower) / 2;
-
-            System.out.println("MID: " + mid);
+            mid = (lower + upper) / 2;
 
             if (value < mid) {
                 labelBits.clear(i);
@@ -115,7 +113,7 @@ public class Label {
     }
 
     /**
-     *
+     * Get a binary-readable string of the Label
      * @return
      */
     @Override
@@ -132,25 +130,46 @@ public class Label {
         return ret.toString();
     }
 
+    /**
+     * get the associated Label for the bucket corresponding with this label
+     * it is the Label of an internal node
+     * @return 
+     */
     public Label toDHTKey() {
         // TODO add #??
         return Label.namingFunction(this, 1);
     }
 
+    /**
+     * get the Key for the internal node associated with the Label, this is the 
+     * Hashed key to make lookups in the chord overlay network
+     * @return 
+     */
     public Key toKey() {
         return new Key(toDHTKey().getLabel(), true);
     }
 
+    /** get the hashed key for the data referenced by this Label
+     * 
+     * @return 
+     */
     public Key toDataKey() {
         return new Key(toDHTKey().getLabel() + "DATA", true);
     }
 
+    /**
+     * Apply the naming function to calculate the internal node where the Label 
+     * (Leaf) is mapped.
+     * See the references to LIGHT
+     * @return 
+     */
     public Label namingFunction() {
         return Label.namingFunction(this, 1);
     }
 
     /**
-     *
+     * NextNamingFunction is used to optimize the increments in the Lookup. 
+     * See the references to LIGHT
      * @param treeLength
      * @param prefixLength
      * @return
@@ -181,6 +200,10 @@ public class Label {
         return (this.label.get(this.length-1) == false);
     }
 
+    /**
+     * Creates a Label that could be mapped as a Left Child in the tree
+     * @return 
+     */
     public Label leftChild() {
         BitSet labelBits = this.getBitSet();
         int newLength = this.length + 1;
@@ -194,6 +217,10 @@ public class Label {
         return new Label(newLabelBits, newLength);
     }
 
+    /**
+     * Creates a Label that could be mapped as a Right Child in the tree
+     * @return 
+     */
     public Label rightChild(){
         BitSet labelBits = this.getBitSet();
         int newLength = this.length + 1;
@@ -247,7 +274,7 @@ public class Label {
     }
 
     /**
-     *
+     * The static implementation of the NamingFunction for 1D-LIGHT
      * @param label
      * @return
      */
@@ -256,7 +283,7 @@ public class Label {
     }
 
     /**
-     *
+     * The static implementation of the NamingFunction for MD-LIGHT
      * @param label
      * @param dimentions
      * @return
@@ -268,6 +295,13 @@ public class Label {
         return namingFunction(bits, dimentions, label.length);
     }
 
+    /**
+     * the real static implementation of the NamingFunction
+     * @param bits
+     * @param dimentions
+     * @param len
+     * @return 
+     */
     private static Label namingFunction(BitSet bits, int dimentions, int len) {
         if (len <= dimentions) {
             return new Label("#");
@@ -329,7 +363,7 @@ public class Label {
     }
 
     /**
-     *
+     * Calculates the lowestCommonAncestor between a list of Label
      * @param labels
      * @return
      */
@@ -348,7 +382,7 @@ public class Label {
     }
 
     /**
-     *
+     * Calculates the lowestCommonAncestor between two of Label
      * @param label1
      * @param label2
      * @return

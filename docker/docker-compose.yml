@@ -1,11 +1,10 @@
 version: '2.2'
 services:
-###
     web_analyzer:
-        image: nginx
+        build: analyzer/
         restart: always
         volumes:
-            - ../src/analyzer:/usr/share/nginx/html
+            - ../src/analyzer/:/code/
         ports:
             - 80:80
     msg_handler:
@@ -18,7 +17,6 @@ services:
             - datamanager
         links:
             - rabbitmq
-            - datamanager
         environment: # TODO groups of environment vars if possible
             - RABBIT_USER=message_handler
             - RABBIT_PASS=somepass
@@ -26,18 +24,11 @@ services:
         build: rabbitmq/
         restart: always
         environment:
-            - RABBITMQ_DEFAULT_USER=root
-            - RABBITMQ_DEFAULT_PASS=toor
-            - RABBITMQ_LOGS=/var/log/rabbit.log
-            - RABBITMQ_SASL_LOGS=/var/log/rabbit.log
-        volumes:
-            - ds_rabbitmq_home:/var/lib/rabbitmq
+            - RABBITMQ_LOGS=/var/log/rabbitmq/rabbit1.log
+            - RABBITMQ_SASL_LOGS=/var/log/rabbit2.log
         ports:
             - 15678:15672
             - 5678:5672
-        depends_on:
-            - scanner
-
     bastion:
         build: bastion_node/
         volumes:
@@ -46,6 +37,9 @@ services:
             - rabbitmq
             - msg_handler
             - web_analyzer
+        depends_on:
+            - msg_handler
+            - scanner
         environment:
             - RABBIT_USER=root
             - RABBIT_PASS=toor
@@ -60,6 +54,8 @@ services:
         cpus: 0.15 # < 5% of host CPU time
         mem_limit: 128m # < 128MB of host RAM
         memswap_limit: 128m # do not allow swap (https://docs.docker.com/engine/admin/resource_constraints/#--memory-swap-details)
+        depends_on: 
+            - msg_handler
 
     datamanager:
         build:
@@ -72,8 +68,6 @@ services:
         restart: always
         volumes:
             - ../src/datamanager/datamanager-ear:/code/
-        depends_on:
-            - replicamanager
         ports:
             - 8080:8080
             - 9990:9990
@@ -85,12 +79,12 @@ services:
             args:
                 - WILDFLY_ADMIN=root
                 - WILDFLY_PASSWORD=toor
-                # - USER=$USER
         restart: always
+        depends_on: 
+                - datamanager
         scale: 5
         volumes:
             - ../src/replicamanager/replicamanager-ear:/code
 
 ### Volumes and networking
-volumes: ## TODO read about the differences with the other way of volumes definition
-    ds_rabbitmq_home:
+

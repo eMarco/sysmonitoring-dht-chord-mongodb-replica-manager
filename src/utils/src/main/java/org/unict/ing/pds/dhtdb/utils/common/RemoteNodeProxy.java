@@ -16,7 +16,7 @@ import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
 /**
- *
+ * A proxy to communicate with remote peers
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 public class RemoteNodeProxy extends BaseNode {
@@ -26,6 +26,13 @@ public class RemoteNodeProxy extends BaseNode {
         super(nodeRef);
     }
     
+    /**
+     * Generic method that generate a request
+     * @param uri
+     * @param method
+     * @param payload
+     * @return 
+     */
     private String request(String uri, String method, String payload) {
         ClientResponse clientResponse;
         if (payload == null)
@@ -90,17 +97,6 @@ public class RemoteNodeProxy extends BaseNode {
         try {
             return new ObjectMapper().readValue(
                     request("successor/" + key.toString()), NodeReference.class);
-        } catch (IOException ex) {
-            Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    @Override
-    public NodeReference findPredecessor(Key key) {
-        try {
-            return new ObjectMapper().readValue(
-                    request("findPredecessor/" + key.toString()), NodeReference.class);
         } catch (IOException ex) {
             Logger.getLogger(RemoteNodeProxy.class.getName()).log(Level.SEVERE, null, ex);
         }

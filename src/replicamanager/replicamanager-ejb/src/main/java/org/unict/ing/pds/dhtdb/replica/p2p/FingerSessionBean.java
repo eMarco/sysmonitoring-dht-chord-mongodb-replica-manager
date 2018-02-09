@@ -12,7 +12,10 @@ import org.unict.ing.pds.dhtdb.utils.chord.FingerSessionBeanLocal;
 import org.unict.ing.pds.dhtdb.utils.chord.FingerTable;
 
 /**
- *
+ * See FingerTable class, this Bean is a Singleton the is responsible for the FingerTable
+ * of the DataManager, the implementation is the same for DataManager (not in the ring)
+ * and any ReplicaManager (in the ring)
+ * 
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 @Singleton

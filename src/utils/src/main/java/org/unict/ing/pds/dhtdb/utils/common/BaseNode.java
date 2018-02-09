@@ -15,6 +15,7 @@ import org.unict.ing.pds.dhtdb.utils.dht.DHTNode;
  */
 @Remote
 public abstract class BaseNode implements DHTNode, ChordNode {
+    private static final String MASTER_NODE = "distsystems_replicamanager_1";
     protected NodeReference   nodeRef;
     public BaseNode() {
     }
