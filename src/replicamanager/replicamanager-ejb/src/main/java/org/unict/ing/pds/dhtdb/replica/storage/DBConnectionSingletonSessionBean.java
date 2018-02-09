@@ -9,6 +9,7 @@ import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import javax.ejb.Singleton;
+import org.unict.ing.pds.dhtdb.replica.p2p.Storage;
 
 /**
  * A singleton that is responsible for a single connection to the local mongo database
@@ -21,6 +22,8 @@ public class DBConnectionSingletonSessionBean implements DBConnectionSingletonSe
     private MongoCredential credential;
     private DB   database;
 
+    private Storage storage;
+    
     @Override
     public DB getDatabase () {
         if (database == null) {
@@ -32,7 +35,15 @@ public class DBConnectionSingletonSessionBean implements DBConnectionSingletonSe
             System.out.println("Connected to the database successfully");
             // Accessing the database
             database = mongo.getDB("myDb");
+            storage = new MongoDBStorage(database);
+                    
         }
         return database;
+    }
+    
+    @Override
+    public Storage getStorage() {
+        getDatabase();
+        return storage;
     }
 }

@@ -8,11 +8,6 @@ package org.unict.ing.pds.dhtdb.replica.storage;
 import com.mongodb.DB;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import org.jongo.Jongo;
 import org.jongo.MongoCollection;
 import org.jongo.MongoCursor;
@@ -27,16 +22,14 @@ import org.unict.ing.pds.dhtdb.utils.dht.Key;
  */
 public class MongoDBStorage implements Storage {
 
-    DBConnectionSingletonSessionBeanLocal dbSessionBean = lookupDBConnectionSingletonSessionBeanLocal();
-
     private final DB db;
     private final MongoCollection collection;
 
-    public MongoDBStorage() {
+    public MongoDBStorage(DB db) {
         // Using a single connection to provide better (query-oriented) scalability
-        this.db = dbSessionBean.getDatabase();
+        this.db = db;
         Jongo jongo = new Jongo(db);
-        this.collection = jongo.getCollection("lightMonitor16");
+        this.collection = jongo.getCollection("lightMonitor45");
     }
     /**
      * Insert
@@ -127,15 +120,5 @@ public class MongoDBStorage implements Storage {
 
         iterDoc.forEach(v -> ret.add(v));
         return ret;
-    }
-
-    private DBConnectionSingletonSessionBeanLocal lookupDBConnectionSingletonSessionBeanLocal() {
-        try {
-            Context c = new InitialContext();
-            return (DBConnectionSingletonSessionBeanLocal) c.lookup("java:global/replicamanager-ear-1.0-SNAPSHOT/replicamanager-ejb-1.0-SNAPSHOT/DBConnectionSingletonSessionBean!org.unict.ing.pds.dhtdb.replica.storage.DBConnectionSingletonSessionBeanLocal");
-        } catch (NamingException ne) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
-            throw new RuntimeException(ne);
-        }
     }
 }

@@ -21,7 +21,7 @@ import javax.ejb.Timeout;
 import javax.ejb.Timer;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
-import org.unict.ing.pds.dhtdb.replica.storage.MongoDBStorage;
+import org.unict.ing.pds.dhtdb.replica.storage.DBConnectionSingletonSessionBeanLocal;
 import org.unict.ing.pds.dhtdb.utils.chord.FingerSessionBeanLocal;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 import org.unict.ing.pds.dhtdb.utils.common.BaseNode;
@@ -39,7 +39,6 @@ import org.unict.ing.pds.dhtdb.utils.chord.RingSessionBeanLocal;
 @ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
 @Lock(LockType.READ)
 public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
-
     /***
      * CONFIGS for the timers of periodically called methods
      */
@@ -51,7 +50,10 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     /***
      * CONFIG VARS END
      */
-
+    
+    @EJB
+    private DBConnectionSingletonSessionBeanLocal dBConnectionSingletonSessionBean;
+    
     @EJB
     private FingerSessionBeanLocal  fingerSessionBean;
 
@@ -71,8 +73,8 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
     @PostConstruct
     private void init() {
-        this.storage = new MongoDBStorage();
-
+        this.storage = dBConnectionSingletonSessionBean.getStorage();
+        
         // Starting chord
         this.nodeRef     = NodeReference.getLocal();
 
@@ -155,7 +157,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
             // Retry joining using the new successorsPredecessor
             if (!entryPoint.equals(successorsPredecessor)) {
                 this.joinEntryPoint = !isLocal(successorsPredecessor) ? successorsPredecessor : fingerSessionBean.getLast();
-//                this.joinEntryPoint = successorsPredecessor;
+                // this.joinEntryPoint = successorsPredecessor;
             }
             else {
                 this.joinEntryPoint = !isLocal(fingerSessionBean.getLast()) ? fingerSessionBean.getLast() : fingerSessionBean.getFirst();
