@@ -2,6 +2,8 @@
 
 ### Università degli Studi di Catania - LM Ingegneria informatica
 
+#### Corso di sistemi distribuiti
+
 #### Alessandro Di Stefano - Marco Grassia
 
 **Read the PDF (leggimi.pdf, currently italian only) for more infos.**
