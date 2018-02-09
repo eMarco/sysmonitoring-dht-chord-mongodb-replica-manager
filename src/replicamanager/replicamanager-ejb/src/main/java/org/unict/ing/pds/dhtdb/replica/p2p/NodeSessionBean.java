@@ -558,39 +558,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         return (getPredecessor()!= null) ? getPredecessor().getNodeReference() : null;
     }
 
-    /*** TESTING/DEVELOPMENT METHODS ****/
-
-    // triggered by http://localhost:8081/replicamanager-web/webresources/generic
-    @Override
-    public String myTest() {
-        return "";
-    }
-
-    // triggered by http://localhost:8081/replicamanager-web/webresources/generic/test2
-    @Override
-    public String myTest2() {
-        String ret = "";//String.valueOf(this.checkPredecessor());
-        int id = 1;
-        if (this.nodeRef.getHostname().contains("1"))
-            id = 2;
-        Key myKey = new Key(String.valueOf(new Random().nextInt()), true);
-        Key myKey2= new Key(String.valueOf(new Random().nextInt()), true);
-        CPUStat x = new CPUStat((float)0.5, 4, "asd", myKey);
-        CPUStat y = new CPUStat((float)0.8, 4, "asd", myKey);
-        write(myKey, x);
-        try {
-            //write(myKey2, y);
-            ret += new ObjectMapper().writeValueAsString(lookup(myKey));
-        } catch (JsonProcessingException ex) {
-            Logger.getLogger(NodeSessionBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return ret;
-    }
-
-
     /*** GETTERS AND SETTERS ****/
-
 
     /**
      * @return the successor
