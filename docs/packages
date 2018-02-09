@@ -1,0 +1,11 @@
+org.unict.ing.pds.light.utils
+org.unict.ing.pds.dhtdb.utils.dht
+org.unict.ing.pds.dhtdb.utils.model
+org.unict.ing.pds.dhtdb.utils.chord
+org.unict.ing.pds.dhtdb.utils.common
+org.unict.ing.pds.dhtdb.datamanager
+org.unict.ing.pds.dhtdb.datamanager.lightBeans
+org.unict.ing.pds.dhtdb.replica.p2p
+org.unict.ing.pds.dhtdb.replica.storage
+org.netbeans.rest.application.config
+org.unict.ing.pds.dhtdb.replicamanager.rest
