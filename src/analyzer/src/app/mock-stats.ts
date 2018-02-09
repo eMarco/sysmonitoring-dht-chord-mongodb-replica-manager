@@ -4,7 +4,8 @@ import { UptimeStat } from './model/uptime-stat';
 
 export const CPUSTATS: CPUStat[] = [
   { usage: 0.5, timestamp: 6, scannerId: "asd", key: { key:"1699d6b5508374cf2becc8778548b263271da293"} },
-  { usage: 0.5, timestamp: 4, scannerId: "asd", key: { key:"1699d6b5508374cf2becc8778548b263271da293"} },
+  { usage: 0.2, timestamp: 4, scannerId: "asd", key: { key:"1699d6b5508374cf2becc8778548b263271da293"} },
+  { usage: 0.1, timestamp: 3, scannerId: "asd", key: { key:"1699d6b5508374cf2becc8778548b263271da293"} }
 ]
 
 export const MEMSTATS: RAMStat[] = [
