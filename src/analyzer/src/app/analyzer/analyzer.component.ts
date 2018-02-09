@@ -18,7 +18,7 @@ import {CPUSTATS}                                   from "../mock-stats";
   styleUrls: ['./analyzer.component.css']
 })
 export class AnalyzerComponent implements OnInit {
-  private static baseUrl = "http://localhost:8080/datamanager-web/datamanager";
+  private static baseUrl = "http://localhost/rest/datamanager-web/datamanager";
 
   @ViewChild('dataContainer') private dataContainer: ElementRef;
 
@@ -39,12 +39,10 @@ export class AnalyzerComponent implements OnInit {
   constructor(private http: Http) { }
 
   ngOnInit() {
-    // this.fromDate = null;
-    // this.toDate = null;
     this.refreshData();
   }
 
-  public createPlot(chartName : string, columns : any[]) {
+  public createPlot(chartName : string, columns : any[], y_label: string) {
     return c3.generate({
        bindto: '#' + chartName,
        data: {
@@ -55,9 +53,12 @@ export class AnalyzerComponent implements OnInit {
          x: {
           type: 'timeseries',
           tick: {
-            format: '%Y-%m-%d'
+            format: '%Y-%m-%d %H:%M:%S'
           }
-        }
+        },
+        y: {
+            label: y_label
+        },
       }
      });
   }
@@ -71,7 +72,7 @@ export class AnalyzerComponent implements OnInit {
   }
 
   private retrieveData(scanner : string, type : any, from? : number, to?: number) {
-    var url : string = AnalyzerComponent.baseUrl + '/topics/' + type.name + '/scanners/' + scanner;
+    var url : string = AnalyzerComponent.baseUrl + '/topics/' + type.name.toLowerCase() + '/scanners/' + scanner;
     if (from != null && to != null ) url += '/' + from + '/' + to;
     console.log(url);
     // baseUrl + /topics/cpustat/scanners/distsystems_scanner_1/1518155143/151899143
@@ -93,9 +94,6 @@ export class AnalyzerComponent implements OnInit {
 
     if (this.fromDate != null) fromDate = Math.round(new Date(this.fromDate).getTime()/1000);
     if (this.toDate != null) toDate = Math.round(new Date(this.toDate).getTime()/1000);
-
-    console.log(fromDate);
-    console.log(toDate);
 
     var scanners : Set<string> = new Set();
     var topics : Set<any> = new Set();
@@ -133,11 +131,8 @@ export class AnalyzerComponent implements OnInit {
       var scanners : Set<String> = new Set();
       data.filter((elem) => scanners.add(elem.scannerId));
 
-
       scanners.forEach((scanner) => {
-        var chartName : string = 'chart_' + scanner;
-
-        this.appendContainer("Scanner " + scanner + " - " + type.name, chartName);
+        var chartName : string = 'chart_' + scanner + '_' + type.name;
 
         var columns = new Array<Array<any>>();
         for (var label in type.labels) {
@@ -155,7 +150,8 @@ export class AnalyzerComponent implements OnInit {
         console.log("Creating graph " + chartName);
         console.log(columns);
 
-        var buffer = this.createPlot(chartName, columns);
+        this.appendContainer("Scanner " + scanner + " - " + type.name, chartName);
+        var buffer = this.createPlot(chartName, columns, type.y_label);
       });
     // }
     // catch (Exception) {

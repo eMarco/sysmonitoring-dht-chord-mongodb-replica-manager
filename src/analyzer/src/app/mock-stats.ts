@@ -9,7 +9,7 @@ export const CPUSTATS: CPUStat[] = [
 ]
 
 export const MEMSTATS: RAMStat[] = [
-  { MemTotal: 12126164, MemFree:230924, MemAvailable:838236, timestamp: 1517777828, className: "org.unict.ing.pds.dhtdb.utils.model.RAMStat", scannerId: "1" }
+  { memTotal: 12126164, memFree:230924, memAvailable:838236, timestamp: 1517777828, className: "org.unict.ing.pds.dhtdb.utils.model.RAMStat", scannerId: "1" }
 ]
 
 export const UPTIMESTATS: UptimeStat[] = [

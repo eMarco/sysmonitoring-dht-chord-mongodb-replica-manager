@@ -1,13 +1,14 @@
 import { GenericStat } from './generic-stat';
 
 export class RAMStat extends GenericStat {
-  MemFree: number
-  MemTotal: number
-  MemAvailable: number
+  memFree: number
+  memTotal: number
+  memAvailable: number
 
   static labels: string[] = ["Timestamp", "MemFree", "MemTotal", "MemAvailable"];
+  static y_label: string = "MB";
   static toArray(stat : RAMStat): any {
     // ["Timestamp", "Usage"]
-    return [new Date(stat.timestamp), stat.MemFree, stat.MemTotal, stat.MemAvailable];
+    return [new Date(stat.timestamp*1000), stat.memFree/1024^2, stat.memTotal/1024^2, stat.memAvailable/1024^2];
   }
 }
