@@ -6,5 +6,8 @@ RUN apt-get update && apt-get install -y nodejs
 
 COPY serve.sh /usr/local/bin/serve.sh
 RUN chmod +x /usr/local/bin/serve.sh
+RUN npm install -g yarn
+
+RUN yarn global add @angular/cli
 
 CMD serve.sh
