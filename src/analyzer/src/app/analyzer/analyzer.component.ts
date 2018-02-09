@@ -1,11 +1,16 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { GoogleChartComponent }         from 'ng2-google-charts';
-import * as c3 from "c3";
+import { Component, OnInit, ViewChild, ElementRef, Inject } from '@angular/core';
+import { GoogleChartComponent }                     from 'ng2-google-charts';
+import * as c3                                      from "c3";
 
-import { CPUStat }                      from '../model/cpu-stat';
-import { GenericStat } from "../model/generic-stat";
+import { Headers, Http }                            from '@angular/http';
 
-import {CPUSTATS} from "../mock-stats";
+import { CPUStat }                                  from '../model/cpu-stat';
+import { RAMStat }                                  from '../model/ram-stat';
+import { IOStat }                                   from '../model/io-stat';
+import { UptimeStat }                               from '../model/uptime-stat';
+import { GenericStat }                              from "../model/generic-stat";
+
+import {CPUSTATS}                                   from "../mock-stats";
 
 
 @Component({
@@ -14,17 +19,29 @@ import {CPUSTATS} from "../mock-stats";
   styleUrls: ['./analyzer.component.css']
 })
 export class AnalyzerComponent implements OnInit {
+  private static baseUrl = "http://localhost:8080/datamanager-web/datamanager";
 
-  // @ViewChild('cchart') cchart: GoogleChartComponent;
-  // public line_ChartData: boolean = false;
-  // public line_ChartOptions = {
-  //   chartType: 'LineChart',
-  //   dataTable: null,
-  //   options: {'title': 'CPUStats'},
-  // };
-  constructor() { }
+  @ViewChild('dataContainer') private dataContainer: ElementRef;
+
+  fromDate: Date = new Date(0);
+  toDate: Date = new Date();
+
+  scanner1: boolean = true;
+  scanner2: boolean;
+  scanner3: boolean;
+  scanner4: boolean;
+  scanner5: boolean;
+
+  CPUStat: boolean = true;
+  RAMStat: boolean;
+  IOStat: boolean;
+  UptimeStat: boolean;
+
+  constructor(private http: Http) { }
 
   ngOnInit() {
+    this.fromDate = null;
+    this.toDate = null;
     this.refreshData();
   }
 
@@ -35,28 +52,66 @@ export class AnalyzerComponent implements OnInit {
          x: 'Timestamp',
          columns: columns,
        },
-      //  axis: {
-      //    x: {
-      //     type: 'timeseries',
-      //     tick: {
-      //       format: '%Y-%m-%d'
-      //     }
-      //   }
-      // }
+       axis: {
+         x: {
+          type: 'timeseries',
+          tick: {
+            format: '%Y-%m-%d'
+          }
+        }
+      }
      });
   }
-  @ViewChild('dataContainer') private dataContainer: ElementRef;
 
-  private appendContainer(chartName) {
-      this.dataContainer.nativeElement.innerHTML += '<div id="' + chartName + '"></div>';
+
+  private appendContainer(displayName, chartName) {
+      this.dataContainer.nativeElement.innerHTML += '<h3>' + displayName +  '</h3><br><div id="' + chartName + '"></div>';
   }
 
   private clearContainer() {
       this.dataContainer.nativeElement.innerHTML = "";
   }
 
+  private retrieveData(scanner : string, type : any, from? : number, to?: number) {
+    var url : string = AnalyzerComponent.baseUrl + '/topics/' + type.name + '/scanners/' + scanner;
+    if (from != null && to != null ) url += '/' + from + '/' + to;
+    console.log(url);
+    // baseUrl + /topics/cpustat/scanners/distsystems_scanner_1/1518155143/151899143
+    this.http
+          .get(url)
+          .subscribe(
+            result => {
+                this.applyData(result.json() as typeof type, type);
+            },
+            error => console.error(error)
+          );
+  }
+
   refreshData() {
-    this.applyData(CPUSTATS, CPUStat);
+    var fromDate : number = null;
+    var toDate : number = null;
+
+    if (this.fromDate != null) fromDate = Math.round(this.fromDate.getTime()/1000);
+    if (this.toDate != null) toDate = Math.round(this.toDate.getTime()/1000);
+
+    var scanners : Set<string> = new Set();
+    var topics : Set<any> = new Set();
+    if (this.scanner1) scanners.add("distsystems_scanner_1");
+
+    if (this.CPUStat) topics.add(CPUStat);
+    if (this.RAMStat) topics.add(RAMStat);
+    if (this.IOStat) topics.add(IOStat);
+    if (this.UptimeStat) topics.add(UptimeStat);
+
+    this.clearContainer();
+
+    scanners.forEach((scanner) => {
+      topics.forEach((topic) => {
+        this.retrieveData(scanner, topic, fromDate, toDate);
+      });
+    });
+
+    // this.applyData(CPUSTATS, CPUStat);
   }
 
   private mergeAll(values : any[], value: any[]) {
@@ -67,17 +122,14 @@ export class AnalyzerComponent implements OnInit {
 
   applyData(data : any[], type : any) {
     // try {
-      this.clearContainer();
-
       var scanners : Set<String> = new Set();
       data.filter((elem) => scanners.add(elem.scannerId));
 
 
       scanners.forEach((scanner) => {
         var chartName : string = 'chart_' + scanner;
-        console.log("Creating graph " + chartName );
 
-        this.appendContainer(chartName);
+        this.appendContainer("Scanner " + scanner + " - " + type.name, chartName);
         // this.loadData();
 
         var columns = new Array<Array<any>>();

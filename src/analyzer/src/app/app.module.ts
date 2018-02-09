@@ -2,6 +2,7 @@ import { NgModule }       from '@angular/core';
 import { BrowserModule }  from '@angular/platform-browser';
 import { FormsModule }    from '@angular/forms';
 import { HttpClientModule }    from '@angular/common/http';
+import { HttpModule }                            from '@angular/http';
 
 import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService }  from './in-memory-data.service';
@@ -16,7 +17,7 @@ import { NavmenuComponent }     from './navmenu/navmenu.component';
 import { HomeComponent }        from './home/home.component';
 import { AnalyzerComponent }    from './analyzer/analyzer.component';
 
-import { Ng2GoogleChartsModule } from 'ng2-google-charts';
+// import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 
 @NgModule({
   imports: [
@@ -31,7 +32,8 @@ import { Ng2GoogleChartsModule } from 'ng2-google-charts';
     // HttpClientInMemoryWebApiModule.forRoot(
     //   InMemoryDataService, { dataEncapsulation: false }
     // ),
-    Ng2GoogleChartsModule,
+    // Ng2GoogleChartsModule,
+    HttpModule
   ],
   declarations: [
     AppComponent,
