@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { GoogleChartComponent }         from 'ng2-google-charts';
-import { CPUStat }                      from '../model/cpu-stat';
+import * as c3 from "c3";
 
-// import * as Plotly                      from 'plotly.js';
-// import {Config, Data, Layout}           from 'plotly.js';
+import { CPUStat }                      from '../model/cpu-stat';
+import { GenericStat } from "../model/generic-stat";
 
 import {CPUSTATS} from "../mock-stats";
-import { GenericStat } from "../model/generic-stat";
+
 
 @Component({
   selector: 'app-analyzer',
@@ -15,19 +15,29 @@ import { GenericStat } from "../model/generic-stat";
 })
 export class AnalyzerComponent implements OnInit {
 
-  @ViewChild('cchart') cchart: GoogleChartComponent;
-  public line_ChartData: boolean = false;
-  public line_ChartOptions = {
-    chartType: 'LineChart',
-    dataTable: null,
-    options: {'title': 'CPUStats'},
-  };
-  public test = "ASD";
+  // @ViewChild('cchart') cchart: GoogleChartComponent;
+  // public line_ChartData: boolean = false;
+  // public line_ChartOptions = {
+  //   chartType: 'LineChart',
+  //   dataTable: null,
+  //   options: {'title': 'CPUStats'},
+  // };
 
   constructor() { }
 
   ngOnInit() {
-    this.line_ChartData = true;
+    var chart = c3.generate({
+       bindto: '#chart',
+       data: {
+         columns: [
+           ['data1', 30, 200, 100, 400, 150, 250],
+           ['data2', 50, 20, 10, 40, 15, 25]
+         ]
+       }
+     });
+    // Plotly.newPlot('test', asd);
+
+    // this.line_ChartData = true;
 
     var test = [{ usage: 0.5, timestamp: 4, scannerId: "asd", key: { key:"1699d6b5508374cf2becc8778548b263271da293"} }]
 
@@ -42,18 +52,6 @@ export class AnalyzerComponent implements OnInit {
     //   ['2006', 660, 1120],
     //   ['2007', 1030, 540]
     // ];
-    //
-	  // this.line_ChartOptions =
-
-    // const data: Plotly.BarData[] = [
-    //   {
-    //     x: ['giraffes', 'orangutans', 'monkeys'],
-    //     y: [20, 14, 23],
-    //     type: 'bar'
-    //   }
-    // ];
-    //
-    // test = Plotly.newPlot('test', data);
   }
   refreshData() {
     this.applyData(CPUSTATS as CPUStat[], CPUStat);
@@ -61,19 +59,20 @@ export class AnalyzerComponent implements OnInit {
 
   applyData(data : any[], type : any) {
     try {
-      this.line_ChartData = true;
+      // this.line_ChartData = true;
+      //
+      // this.line_ChartOptions.dataTable = [ type.label ];
 
-      this.line_ChartOptions.dataTable = [ type.label ];
 
       data.map((value) => {
-        this.line_ChartOptions.dataTable.push(type.toArray(value));
+        // this.line_ChartOptions.dataTable.push(type.toArray(value));
       });
 
-      let googleChartWrapper = this.cchart.wrapper;
-
-
-      //force a redraw
-      this.cchart.redraw();
+      // let googleChartWrapper = this.cchart.wrapper;
+      //
+      //
+      // //force a redraw
+      // this.cchart.redraw();
     }
     catch (Exception) {
       console.log('scope is ' + Exception);

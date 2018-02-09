@@ -1,21 +1,13 @@
 <script src="plotly-latest.min.js"></script>
 
-<h2>  Line Chart</h2>
-{{test}}
-<!-- <div *ngIf="line_ChartData"> -->
-  <google-chart
+<h2>Line Chart</h2>
+<div id="chart"></div>
+
+  <!-- <google-chart
     *ngIf="line_ChartData"
     #cchart
     [data]="line_ChartOptions"
     >
-  </google-chart>
-<!-- </div> -->
+  </google-chart> -->
+
 <button (click)="refreshData()">REFRESH!</button>
-<!--
-  <googlechart
-    loadingDelay="0"
-    chartData="line_ChartData"
-    chartOptions="line_ChartOptions"
-    chartType="LineChart"
-    >
-  </googlechart> -->

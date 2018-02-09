@@ -5,8 +5,6 @@ export class CPUStat extends GenericStat {
 
   static label: string[] = ["Timestamp", "Usage"];
   static toArray(stat : CPUStat): any {
-
-
     // ["Timestamp", "Usage"]
     return [stat.timestamp, stat.usage];
   }
