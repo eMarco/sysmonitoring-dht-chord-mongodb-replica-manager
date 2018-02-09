@@ -69,7 +69,7 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
             if (scanner != null && !stat.getScannerId().equals(scanner))
                 match = false;
             
-            if (topic != null && !stat.getTopic().equalsIgnoreCase(topic)) 
+           if (topic != null && !stat.getTopic().equalsIgnoreCase(topic)) 
                 match = false;
             
             if (match)
