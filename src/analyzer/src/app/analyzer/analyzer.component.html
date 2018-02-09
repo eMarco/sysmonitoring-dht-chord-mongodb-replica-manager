@@ -21,11 +21,11 @@
             <br>
             <div class="col-sm-6">
               <h3>From</h3>
-              <input type="datetime-local" name="fromDate" [ngModel]="fromDate | date:'yyyy-MM-ddThh:mm:ss'">
+              <input type="datetime-local" name="fromDate" [(ngModel)]="fromDate">
             </div>
             <div class="col-sm-6">
               <h3>To</h3>
-              <input type="datetime-local" name="toDate" [ngModel]="toDate | date:'yyyy-MM-ddThh:mm:ss'">
+              <input type="datetime-local" name="toDate" [(ngModel)]="toDate">
             </div>
           </div>
           <div class="col-sm-12">
