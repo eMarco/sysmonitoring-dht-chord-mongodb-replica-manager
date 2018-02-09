@@ -34,7 +34,16 @@ import org.unict.ing.pds.light.utils.Label;
 import org.unict.ing.pds.light.utils.Range;
 
 /**
- *
+ * This beans is a singleton. It stores the height of the tree in runtime. 
+ * The height is also stored in the MASTER_NODE to provide a "safe" boot
+ * (This is just a workaround, there are several ways to estimate in a distributed
+ * way the height of this kind of tree, see PHT).
+ * The MASTER_NODE could be replicated, the fault tolerance about its datas is provided
+ * by the overlay network.
+ * 
+ * Still, this singleton is responsible for the operations of tree splitting. These are done
+ * in LockWrite so that concurrent put doesn't make the distributed database inconsistent
+ * 
  * @author aleskandro
  */
 @Singleton
@@ -46,11 +55,20 @@ public class LightSessionBean implements LightSessionBeanLocal {
     private LookupSessionBeanLocal lookupSessionBean;
 
     /**
-     * CONFIG VARS
+     * The period to update the tree height in the master node
      */
     private static final int PERIOD = 30; //seconds
+    
     DataManagerChordSessionBeanLocal dataManagerChordSessionBean = lookupDataManagerChordSessionBeanLocal();
+    
+    /** We know the key of the MASTER NODE, just for simplicity we are using a Key that is just 1_16 less than
+     * MASTER_NODE key
+     */
     private static final Key TREE_HEIGHT_KEY = new Key("66c00da7ad20fdea56d2879af8a8ea43890c390c");
+    
+    /**
+     * Initial tree height
+     */
     private int treeHeight = 2;
     
     @Resource
@@ -58,7 +76,6 @@ public class LightSessionBean implements LightSessionBeanLocal {
     
     @PostConstruct  
     public void init () {
-        
         setRemoteTreeHeight();
         TimerService timerService = context.getTimerService();
         timerService.getTimers().forEach((Timer t) -> t.cancel());
@@ -72,6 +89,9 @@ public class LightSessionBean implements LightSessionBeanLocal {
         }
     }
 
+    /**
+     * This is called periodically, it sets the treeHeight consistent between the DataManager and the distributed DB
+     */
     private void setRemoteTreeHeight() {
         // This is a very bad workaround but it works and to find a good solution is beyond the purposes of this work
         List<GenericValue> heightBucket = dataManagerChordSessionBean.lookup(TREE_HEIGHT_KEY);
@@ -79,10 +99,7 @@ public class LightSessionBean implements LightSessionBeanLocal {
         if (heightBucket.size() > 0) {
             // The timestamp of this "special" GenericStat stores the height of the tree
             h = ((GenericStat)heightBucket.get(0)).getTimestamp();
-            
-            
         } 
-        
         if (h < treeHeight) {
             dataManagerChordSessionBean.update(TREE_HEIGHT_KEY, new GenericStat(treeHeight, "TREE", TREE_HEIGHT_KEY));
         }
@@ -92,6 +109,11 @@ public class LightSessionBean implements LightSessionBeanLocal {
         }
     }
     
+    /**
+     * Called to check, in run-time, the height of the tree using the length of
+     * a Label
+     * @param label 
+     */
     @Override
     public void checkTreeHeight(Label label) {
         int currentHeight = getTreeHeight();
@@ -104,24 +126,24 @@ public class LightSessionBean implements LightSessionBeanLocal {
     public int getTreeHeight() {
         return treeHeight;
     }
-
+    /**
+     * Updates the treeHeight with the given argument
+     * @param treeHeight 
+     */
     @Lock(LockType.WRITE)
     @Override
     public void setTreeHeight(int treeHeight) {
         this.treeHeight = treeHeight;
     }
 
-    private DataManagerChordSessionBeanLocal lookupDataManagerChordSessionBeanLocal() {
-        try {
-            Context c = new InitialContext();
-            return (DataManagerChordSessionBeanLocal) c.lookup("java:global/datamanager-ear-1.0-SNAPSHOT/datamanager-ejb-1.0-SNAPSHOT/DataManagerChordSessionBean!org.unict.ing.pds.dhtdb.datamanager.DataManagerChordSessionBeanLocal");
-        } catch (NamingException ne) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
-            throw new RuntimeException(ne);
-        }
-    }
 
-    
+    /**
+     * Split the distributed tree and migrates the datas in the new Bucket (s)
+     * @param localBucket
+     * @param timestamp
+     * @param elem
+     * @return 
+     */
     @Lock(LockType.WRITE)
     @AccessTimeout(value = 20, unit = TimeUnit.SECONDS)
     @Override
@@ -186,4 +208,15 @@ public class LightSessionBean implements LightSessionBeanLocal {
         } 
         return leftPointer; 
     }
+    
+    private DataManagerChordSessionBeanLocal lookupDataManagerChordSessionBeanLocal() {
+        try {
+            Context c = new InitialContext();
+            return (DataManagerChordSessionBeanLocal) c.lookup("java:global/datamanager-ear-1.0-SNAPSHOT/datamanager-ejb-1.0-SNAPSHOT/DataManagerChordSessionBean!org.unict.ing.pds.dhtdb.datamanager.DataManagerChordSessionBeanLocal");
+        } catch (NamingException ne) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
+            throw new RuntimeException(ne);
+        }
+    }
+
 }

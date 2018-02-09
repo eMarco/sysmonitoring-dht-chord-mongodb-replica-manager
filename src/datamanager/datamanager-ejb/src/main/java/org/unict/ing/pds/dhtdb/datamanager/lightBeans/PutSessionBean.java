@@ -14,7 +14,7 @@ import org.unict.ing.pds.light.utils.Label;
 import org.unict.ing.pds.light.utils.Range;
 
 /**
- *
+ * This Bean is responsible for the PUT operations over LIGHT
  * @author aleskandro
  */
 @Stateless
@@ -30,8 +30,12 @@ public class PutSessionBean implements PutSessionBeanLocal {
     @EJB
     private DataManagerChordSessionBeanLocal dataManagerChordSessionBean;
 
-
-    // Put a new GenericStat in the Database
+    /**
+     * Put a new GenericStat in the Distributed Database
+     * Eventually it calls LightSessionBean.splitAndPut to split the tree if the
+     * Bucket has a recordsCounter greater or equal to LightSessionBean.TETA_SPLIT
+     * @param stat 
+     */
     @Override
     public void lightPut(GenericStat stat) {
         System.err.println("PUT!");

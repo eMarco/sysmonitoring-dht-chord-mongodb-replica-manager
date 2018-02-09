@@ -17,7 +17,7 @@ import org.unict.ing.pds.light.utils.Label;
 import org.unict.ing.pds.light.utils.Range;
 
 /**
- *
+ * This Bean is responsible for the Lookup operations over LIGHT
  * @author aleskandro
  */
 @Stateless
@@ -28,7 +28,12 @@ public class LookupSessionBean implements LookupSessionBeanLocal {
 
     @EJB
     private DataManagerChordSessionBeanLocal dataManagerChordSessionBean;
-
+    
+    /**
+     * Get a Bucket in the Chord network and return that one if it exists
+     * @param l
+     * @return 
+     */
     @Override
     public Bucket lookupBucket(Label l) {
         List<GenericValue> bucket = dataManagerChordSessionBean.lookup(l.toKey());
@@ -37,7 +42,14 @@ public class LookupSessionBean implements LookupSessionBeanLocal {
         }
         return null;
     }
-    // Algorithm 1
+    
+    /**
+     * An implementation of the Algorithm 1 provided in LIGHT paper
+     * It takes a timestamp and return the associated Bucket, if it exists,
+     * or null
+     * @param timestamp
+     * @return 
+     */
     @Override
     public Bucket lightLabelLookup(long timestamp) {
         int lower = 2;
@@ -67,20 +79,36 @@ public class LookupSessionBean implements LookupSessionBeanLocal {
         }
         return null;
     }
-
-    // Lookup the entire bucket leaf and return the list of referenced datas that could contain a subSet with the timestamp 
-    // given (select stats where `timestamp` "contains" $timestamp)
+    /**
+     * Useful method to get all the datas referenced by the Bucket that has a Range
+     * containing the timestamp given
+     * 
+     * @param timestamp
+     * @return the datas referenced by the Bucket associated with the timestamp given
+     */
     @Override
     public List<GenericValue> lightLookupAndGetDataBucket(long timestamp) {
         return dataManagerChordSessionBean.lookup(lightLabelLookup(timestamp)
                 .getLeafLabel().toDataKey());
     }   
  
+    /**
+     * Useful method to get all the datas referenced by the Bucket with
+     * label bucketLabel
+     * @param bucketLabel
+     * @return the List of GenericValue referenced by the bucket
+     */
     @Override
     public List<GenericValue> lightLookupAndGetDataBucket(Label bucketLabel) {
         return dataManagerChordSessionBean.lookup(bucketLabel.toDataKey());
     }   
 
+    /**
+     * Get the lowest common ancestor between the Label (s) associated with
+     * the upperBound and the lowerBound of the Range given
+     * @param range
+     * @return a Label corresponding to the lowest common ancestor
+     */
     @Override
     public Label lowestCommonAncestor(Range range) {
         Bucket lower = this.lightLabelLookup(range.getLower());
@@ -94,11 +122,11 @@ public class LookupSessionBean implements LookupSessionBeanLocal {
     }
     
     // Exact match (Get the data) (select stats where `timestamp` is exactly $timestamp
-    private List<GenericValue> lightLookupAndGetValue(long timestamp) {
+    /*private List<GenericValue> lightLookupAndGetValue(long timestamp) {
         List<GenericValue> l = lightLookupAndGetDataBucket(timestamp);
         List<GenericStat> filter = new LinkedList<>();
         filter.add(new GenericStat(timestamp));
         l.retainAll(filter);
         return l;
-    }
+    }*/
 }

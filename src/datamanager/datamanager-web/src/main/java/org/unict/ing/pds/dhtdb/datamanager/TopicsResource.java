@@ -40,10 +40,10 @@ public class TopicsResource {
     }
     
     /**
-     *
-     * @param topic
-     * @param tsStart
-     * @param tsEnd
+     * /topics/$topic/$tsStart/$tsEnd
+     * @param topic 
+     * @param tsStart timestamp in seconds since Epoch (optional)
+     * @param tsEnd timestamp in seconds since Epoch (optional)
      * @return
      */
     @GET
@@ -57,7 +57,14 @@ public class TopicsResource {
         return dataManagerSessionBean.get(null, topic,  RestHelper.ts(tsStart), RestHelper.ts(tsEnd));
     }
 
-
+    /**
+     * /topics/$topic/scanners/$scanner/tsStart/tsEnd
+     * @param topic
+     * @param tsStart timestamp in seconds since Epoch (optional)
+     * @param tsEnd timestamp in seconds since Epoch (optional)
+     * @param scanner
+     * @return 
+     */
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Path(value="/{topic:[a-zA-Z]+}/scanners/{scanner:[a-zA-Z_]+_[0-9]+}{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")

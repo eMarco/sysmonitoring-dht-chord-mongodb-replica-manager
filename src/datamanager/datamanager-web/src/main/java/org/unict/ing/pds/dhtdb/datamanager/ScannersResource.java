@@ -40,6 +40,10 @@ public class ScannersResource {
     public ScannersResource() {
     }
 
+    /**
+     * scanners/
+     * @return all the datas in the past 24hours
+     */
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path(value="/")
@@ -47,9 +51,9 @@ public class ScannersResource {
         return dataManagerSessionBean.get(null, null, null, null);
     }
     /**
-     * Retrieves representation of an instance of org.unict.ing.pds.dhtdb.datamanager.ScannersResource
+     * scanners/tsStart/tsEnd
      * @param tsStart
-     * @param tsEnd
+     * @param tsEnd (optional)
      * @return an instance of java.lang.String
      */
     @GET
@@ -62,10 +66,10 @@ public class ScannersResource {
     }
 
     /**
-     *
+     * scanners/$scanner_X/$tsStart/$tsEnd (X is [0-9]+)
      * @param scanner
-     * @param tsStart
-     * @param tsEnd
+     * @param tsStart timestamp in seconds since Epoch (optional)
+     * @param tsEnd timestamp in seconds since Epoch(optional)
      * @return
      */
     @GET
@@ -78,7 +82,15 @@ public class ScannersResource {
 
         return dataManagerSessionBean.get(scanner, null, RestHelper.ts(tsStart), RestHelper.ts(tsEnd));
     }
-
+    
+    /**
+     * /$scanner_X/topics/$topic/$tsStart/$tsEnd
+     * @param topic the topic to query
+     * @param tsStart timestamp in seconds since Epoch (optional)
+     * @param tsEnd timestamp in seconds since Epoch (optional)
+     * @param scanner
+     * @return 
+     */
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Path(value="/{scanner:[a-zA-Z_]+_[0-9]+}/topics/{topic:[a-zA-Z]+}{tsStart : (/[0-9]+)?}{tsEnd : (/[0-9]+)?}")
@@ -90,7 +102,12 @@ public class ScannersResource {
 
         return dataManagerSessionBean.get(scanner, topic, RestHelper.ts(tsStart), RestHelper.ts(tsEnd));
     }
-
+    /**
+     * The handler for the POST requests from the MessageHandler
+     * @param content
+     * @param topic
+     * @param scanner 
+     */
     @POST
     @Consumes(MediaType.WILDCARD)
     @Path(value="/{scanner:[a-zA-Z0-9_]+}/{topic:[a-zA-Z]+}")

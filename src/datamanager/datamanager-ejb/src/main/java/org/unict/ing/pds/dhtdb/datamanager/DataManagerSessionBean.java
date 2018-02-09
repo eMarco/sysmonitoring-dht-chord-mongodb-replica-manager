@@ -17,7 +17,7 @@ import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 import org.unict.ing.pds.light.utils.Range;
 
 /**
- *
+ * The bean responsible for the requests from the FrontEnd REST APIs
  * @author Marco Grassia <marco.grassia@studium.unict.it>
  */
 @Stateless
