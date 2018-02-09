@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, ElementRef, Inject } from '@angular/core';
-import { GoogleChartComponent }                     from 'ng2-google-charts';
 import * as c3                                      from "c3";
 
 import { Headers, Http }                            from '@angular/http';
