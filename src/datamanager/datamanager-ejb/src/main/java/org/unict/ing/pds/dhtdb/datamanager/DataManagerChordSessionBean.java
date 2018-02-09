@@ -64,7 +64,6 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
 
     @Timeout
     public void timeout(Timer timer) {
-        //System.err.println("TIMEOUT: " + timer.getInfo());
         if (timer.getInfo().equals("FINGERS")) {
             this.fixFingers();
         }
@@ -81,8 +80,6 @@ public class DataManagerChordSessionBean implements DataManagerChordSessionBeanL
      */
     @Override
     public List<GenericValue> lookup(Key key) {
-        System.out.println("LOOKUP FOR " + key);
-
         return this.getReference(this.findSuccessor(key)).get(key);
     }
 

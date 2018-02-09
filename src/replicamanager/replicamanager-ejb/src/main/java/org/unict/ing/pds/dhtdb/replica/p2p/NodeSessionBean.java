@@ -101,11 +101,9 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     @Timeout
     public void timeout(Timer timer) {
         if (timer.getInfo().equals("STABILIZE")) {
-            //System.err.println("STABILIZE CALLING");
             stabilize();
         }
         if (timer.getInfo().equals("FIXFINGERS")) {
-            //System.err.println("FIXFINGERS CALLING");
             fixFingers();
         }
 
@@ -228,7 +226,6 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
             if (getPredecessor() != null)
                 successorsPredecessor = getPredecessor().getNodeReference();
             else {
-                //System.out.println("SUCCESSORS PREDECESSOR IS NULL");
                 return;
             }
         }
@@ -238,7 +235,6 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
 
         if (successorsPredecessor != null && !isLocal(successorsPredecessor)) {
-            //System.out.println(this.nodeRef.getHostname() + " SUCCESSORS PREDECESSOR : " + successorsPredecessor.getHostname() + " " + this.getNodeReference().compareTo(successorsPredecessor) + " " + successorsPredecessor.compareTo(getSuccessor().getNodeReference()));
             // if (this.successor == this
             if (isLocal(getSuccessor())
                     // OR if successorsPredecessor ∈ (this, successor))
@@ -255,20 +251,15 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
                             )
                         )
                     ) {
-                //System.out.println(this.nodeRef.getHostname() + " UPDATED SUCCESSOR TO " + successorsPredecessor.getHostname());
                 // Set the new successor and notify it about its new predecessor
                 setSuccessor(getReference(successorsPredecessor));
 
                 // Add successor to FingerTable
                 fingerSessionBean.addNode(successorsPredecessor);
             }
-            else {
-                //System.out.println(this.nodeRef.getHostname() + " SUCCESSOR STILL " + getSuccessor().getNodeReference().getHostname());
-            }
 
             if (!isLocal(getSuccessor())) {
                 successorsPredecessor = getSuccessor().notify(this.nodeRef);
-
                 if (successorsPredecessor != null && !isLocal(successorsPredecessor)) {
                     // This is not right. Set our new successor
                     setSuccessor(getReference(successorsPredecessor));
@@ -276,12 +267,13 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
                 }
             }
         }
-        //else System.out.println("SUCCESSORS PREDECESSOR LOCAL OR NULL");
-
-        //if (getPredecessor() != null) System.out.println(this.nodeRef.getHostname() + " CURRENT PREDECESSOR: " + getPredecessor().getNodeReference().getHostname());
-  //      if (getSuccessor() != null) System.out.println(this.nodeRef.getHostname() + " CURRENT SUCCESSOR " + getSuccessor().getNodeReference().getHostname());
-
-        //System.out.println("STABILIZE ENDED");
+        
+        /*System.out.println(this.nodeRef.getHostname() + " CURRENT PREDECESSOR: " + getPredecessor() == null ?
+                "NULL" : getPredecessor().getNodeReference().getHostname());
+        
+        System.out.println(this.nodeRef.getHostname() + " CURRENT SUCCESSOR " + getSuccessor() == null ? 
+                "NULL" : getSuccessor().getNodeReference().getHostname());
+        */
     }
 
     /***
@@ -326,8 +318,6 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     private void fixFingers() {
         if (!getHasJoined()) return;
 
-        // System.out.println("FIXING FINGERS");
-
         TreeSet<NodeReference> newFingerTable = new TreeSet<>();
 
         // Add this node...
@@ -358,9 +348,7 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
      */
     @Override
     public List<GenericValue> get(Key key) {
-        System.out.println("SEARCHING DB FOR KEY: " + key + " ON NODE " + this.nodeRef);
-        List<GenericValue> foundValues = this.storage.find(key);
-        System.out.println("FOUND " + foundValues.toString());
+        List<GenericValue> foundValues = this.storage.find(key);       
         // The returned list has length 0 or more
         return foundValues;
     }
@@ -372,7 +360,6 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
      */
     @Override
     public Boolean put(GenericValue elem) {
-        System.out.println("PUT FOR KEY " + elem.getKey() + "TRIGGERED ON NODE " + this.nodeRef);
         this.storage.insert(elem);
         return true;
     }
@@ -403,8 +390,6 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
      */
     @Override
     public List<GenericValue> lookup(Key key) {
-        System.out.println("LOOKUP FOR " + key);
-
         return getReference(this.findSuccessor(key)).get(key);
     }
 
@@ -450,24 +435,18 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
         NodeReference closestPrecedingNode = fingerSessionBean.getClosestPrecedingNode(key);
 
         if (isPredecessor(closestPrecedingNode)) {
-            // System.out.println("The closestPrecedingNode is my predecessor; I'm the owner for the key " + key);
             return this.nodeRef;
         }
 
         if (isLocal(closestPrecedingNode)) {
             // return (successor)
-//            System.out.println("I am the the closestPrecedingNode; My successor the owner for the key " + key);
             if (getSuccessor() == null || isLocal(getSuccessor())) {
-//                System.out.println("GETTING THE FIRST FROM THE FINGERTABLE");
                 return fingerSessionBean.getFirst();
             }
 
             return getSuccessor().getNodeReference();
         }
-
         // get the closest preceding node and trigger the findSuccessor (remote)
-        // System.out.println("Looking for a candidate remote node as successor for the given key (" + key +") : " + nodeRef);
-
         return getReference(closestPrecedingNode).findSuccessor(key); // As NodeReference returned
     }
 
@@ -486,15 +465,10 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
 
         if (isLocal(closestPrecedingNode)) {
             // return me
-
-            System.out.println("I am the owner of this key's interval");
-
             return this.nodeRef;
         }
         else {
             // get the closest preceding node and trigger the findSuccessor (remote)
-            System.out.println("Looking for a candidate remote node as successor for the given key (" + key +") : " + closestPrecedingNode);
-
             return new RemoteNodeProxy(closestPrecedingNode).findPredecessor(key);
         }
     }
@@ -601,6 +575,5 @@ public class NodeSessionBean extends BaseNode implements NodeSessionBeanLocal {
     public void setHasJoined(Boolean hasJoined) {
         ringSessionBean.setHasJoined(hasJoined);
     }
-
 
 }

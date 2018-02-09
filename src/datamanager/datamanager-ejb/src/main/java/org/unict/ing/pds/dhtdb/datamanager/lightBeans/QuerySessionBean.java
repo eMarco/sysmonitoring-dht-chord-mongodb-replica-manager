@@ -30,7 +30,6 @@ public class QuerySessionBean implements QuerySessionBeanLocal {
     private LookupSessionBeanLocal lookupSessionBean;
 
     private Set<Bucket> recursiveForward(Range range, Label region, Set<Bucket> subRangesSet, int maxLength) {
-        System.err.println("Starting recursive forwarding");
         Bucket bucket = lookupSessionBean.lookupBucket(region);
         if (bucket == null) {
             return null;
@@ -41,8 +40,8 @@ public class QuerySessionBean implements QuerySessionBeanLocal {
         System.err.println(branchNodes);
         for (Label branchNode : branchNodes) {
             Range intersection = range.intersect(branchNode.interval());
-            System.err.println("ENDING/RECURSION OF RECURSIVE WITH intersection: " + intersection + branchNode + subRangesSet);
             if (!intersection.isEmpty() && branchNode.getLength() < maxLength) {
+                System.err.println("STILL RECURSIVE FORWARD: " + intersection + branchNode);
                 recursiveForward(intersection, branchNode, subRangesSet, maxLength);
             } 
         }
@@ -53,16 +52,14 @@ public class QuerySessionBean implements QuerySessionBeanLocal {
     private Set<Bucket> rangeQuery(Range range, int maxLength) {
         System.err.println("RANGE IS " + range.toString());
         Label lca = lookupSessionBean.lowestCommonAncestor(range);
-        System.err.println("FIRST LOOKUP: LCA " + lca.getLabel());
         Bucket bucket = lookupSessionBean.lookupBucket(lca);
         Set<Bucket> returnedSet = new HashSet<>();
-        System.err.println("FIRST LOOKUP RETURNED: " + bucket);
         
         if (bucket == null) { // the range is too small, just a lookup is going to return the only one bucket that references the datas
-            System.err.println("BUCKET NULL");
+            System.err.println("BUCKET NULL: The range is too small, using a lookup");
             returnedSet.add((Bucket)lookupSessionBean.lightLabelLookup(range.getLower()));
             return returnedSet;
-        } 
+        }
         
         System.err.println("Range Query");
         System.err.println(range);

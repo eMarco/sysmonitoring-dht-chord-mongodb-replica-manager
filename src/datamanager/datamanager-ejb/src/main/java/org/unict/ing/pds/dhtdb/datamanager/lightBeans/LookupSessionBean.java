@@ -44,31 +44,25 @@ public class LookupSessionBean implements LookupSessionBeanLocal {
         int upper = lightSessionBean.getTreeHeight() + 1;
         int mid;
         Label u = Label.prefix(upper, timestamp);
-        System.err.println("NU: " + u + "UPPER: " + upper);
+        System.out.println("NU: " + u);
         
         while (lower < upper){
             mid = (lower + upper) / 2;
-            System.err.println("LightLookup: MID: " + mid + " \t TIMESTAMP: " + timestamp);
             Label x = Label.prefix(mid, timestamp);
-            System.err.println("TRYING PREFIX: " + x);
-            List<GenericValue> t = dataManagerChordSessionBean.lookup(x.toKey());
-            Bucket bucket = null;
-            if (t.size() > 0) {
-                System.err.println("THE LABEL " + x.toString() + " HAS BEEN FOUND, GETTING...");
-                bucket = (Bucket)t.get(0);
-                System.err.println("BUCKET TAKEN: " + bucket);
-                lightSessionBean.checkTreeHeight(bucket.getLeafLabel()); 
-            }
+            System.out.println("MID: " + mid + " \t TIMESTAMP: " + timestamp + " \t PREFIX: " + x);
+            Bucket bucket = lookupBucket(x);    
             if (bucket == null)  {
                 System.err.println("LOOKUP FAILED");
                 upper = x.toDHTKey().getLength();
-            }
-            else if (bucket.getRange().contains(timestamp)) {
-                System.err.println("THE BUCKET COVER DELTA: returning " + x);
-                return bucket; 
             } else {
-                System.out.println("Called nextNamingFunction... Iterating (" + u + " ; " + x.getLength() + "; " + lightSessionBean.getTreeHeight());
-                lower = u.nextNamingFunction(x.getLength(), lightSessionBean.getTreeHeight()).getLength();
+                lightSessionBean.checkTreeHeight(bucket.getLeafLabel());  
+                if (bucket.getRange().contains(timestamp)) {
+                    System.err.println("THE BUCKET COVER DELTA: returning " + x);
+                    return bucket; 
+                } else {
+                    System.err.println("INCREMENT LOWER: nextNamingFunction...");
+                    lower = u.nextNamingFunction(x.getLength(), lightSessionBean.getTreeHeight()).getLength();
+                }
             }
         }
         return null;
@@ -89,17 +83,13 @@ public class LookupSessionBean implements LookupSessionBeanLocal {
 
     @Override
     public Label lowestCommonAncestor(Range range) {
-        System.err.println("LOWEST COMMON ANCESTOR");
         Bucket lower = this.lightLabelLookup(range.getLower());
         if (lower == null) {
             return null;
         }
-        System.err.println(lower.toString());
         Bucket upper = this.lightLabelLookup(range.getUpper());
         if (upper == null)
             return lower.getLeafLabel();
-        
-        System.err.println(upper.toString());
         return Label.lowestCommonAncestor(lower.getLeafLabel(), upper.getLeafLabel());
     }
     

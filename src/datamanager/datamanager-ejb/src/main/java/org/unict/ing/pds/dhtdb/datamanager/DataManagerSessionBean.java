@@ -66,10 +66,6 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         querySessionBean.getRangeQueryDatas(new Range(lowerTs, true, upperTs, true)).forEach((e) -> {
             boolean match = true;
             GenericStat stat = (GenericStat)e;
-            System.err.println(stat.getScannerId());
-            System.err.println(scanner);
-            System.err.println(topic);
-            System.err.println(stat.getTopic());
             if (scanner != null && !stat.getScannerId().equals(scanner))
                 match = false;
             

@@ -26,7 +26,6 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import org.unict.ing.pds.dhtdb.datamanager.DataManagerChordSessionBeanLocal;
-import org.unict.ing.pds.dhtdb.utils.common.JsonHelper;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import org.unict.ing.pds.dhtdb.utils.model.GenericStat;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
@@ -68,7 +67,6 @@ public class LightSessionBean implements LightSessionBeanLocal {
     
     @Timeout
     public void timeout(Timer timer) {
-        //System.err.println("TIMEOUT: " + timer.getInfo());
         if (timer.getInfo().equals("TREEHEIGHT")) {
             setRemoteTreeHeight();
         }
@@ -92,18 +90,14 @@ public class LightSessionBean implements LightSessionBeanLocal {
         if (h > treeHeight) {
             setTreeHeight((int)h);    
         }
-        System.err.println(h);
     }
     
     @Override
     public void checkTreeHeight(Label label) {
         int currentHeight = getTreeHeight();
-        System.err.println("CURRENT HEIGHT: " + currentHeight);
-        System.err.println("LABEL LENGTH: " + label.getLength() + " " + label);
         int max = Math.max(label.getLength(), currentHeight);
         if (currentHeight < max)
            setTreeHeight(max);
-        System.err.println("New HEIGHT: " + getTreeHeight());
     }
     
     @Override
@@ -160,12 +154,6 @@ public class LightSessionBean implements LightSessionBeanLocal {
             newLocalBucket  = leftPointer = new Bucket(localRange.createSplit(false), localLabel.leftChild(), 0);
             newRemoteBucket = rightPointer  = new Bucket(localRange.createSplit(true),  localLabel.rightChild(), 0);
         }
-        
-        System.err.println("Local Bucket");
-        System.err.println(JsonHelper.write(localBucket));
-        System.err.println(JsonHelper.write(newLocalBucket));
-        System.err.println("Remote bucket");
-        System.err.println(JsonHelper.write(newRemoteBucket));
         //lightSessionBean.checkTreeHeight(leftPointer.getLeafLabel());
         currentDatas.forEach((GenericValue e) -> {
             if (e instanceof GenericStat)
@@ -180,11 +168,6 @@ public class LightSessionBean implements LightSessionBeanLocal {
         
         leftPointer.setRecordsCounter(leftDatas.size());
         rightPointer.setRecordsCounter(rightDatas.size());
-        
-        System.err.println("Left Datas");
-        System.err.println(leftDatas);
-        System.err.println("Right Datas");
-        System.err.println(rightDatas);
         // update localBucket
         dataManagerChordSessionBean.update(newLocalBucket.getKey(), newLocalBucket);
         

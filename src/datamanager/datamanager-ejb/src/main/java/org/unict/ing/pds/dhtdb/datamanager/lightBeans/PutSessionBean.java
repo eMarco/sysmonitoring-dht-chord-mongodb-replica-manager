@@ -34,28 +34,20 @@ public class PutSessionBean implements PutSessionBeanLocal {
     // Put a new GenericStat in the Database
     @Override
     public void lightPut(GenericStat stat) {
-        
-        System.err.println("PUT PUT");
+        System.err.println("PUT!");
         long timestamp = stat.getTimestamp();
         Bucket dhtKey   = lookupSessionBean.lightLabelLookup(timestamp);
         if (dhtKey == null) { // The database is empty
             // Creates a new bucket
             Bucket theFirst = new Bucket(Range.REPRESENTABLE_RANGE, new Label("#0"), 0);
-            System.err.println("#0");
-            System.err.println(new Label("#0").toKey());
-            System.err.println(new Label("#0").toDHTKey().toKey());
-            System.err.println(theFirst.getKey());
             dataManagerChordSessionBean.write(theFirst.getKey(), theFirst);
             lightPut(stat);
             return;
         }
-        System.err.println("GET THE BUCKET FOR " + dhtKey + " AFTER LIGHT LOOKUP");
         Bucket bucket  = dhtKey;
-        System.err.println("BUCKET NEWLY " + bucket);
         if (bucket.getRecordsCounter() >= LightSessionBean.TETA_SPLIT) {
             dhtKey = lightSessionBean.splitAndPut(bucket, timestamp, stat);
             lightSessionBean.checkTreeHeight(dhtKey.getLeafLabel());
-            //return;
         } else {
             bucket.incrementRecordsCounter();
             dataManagerChordSessionBean.update(bucket.getKey(), bucket);
