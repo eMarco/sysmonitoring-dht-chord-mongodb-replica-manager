@@ -1,0 +1,8 @@
+<map id="G" name="G">
+<area shape="rect" id="node1_0" href="../../utils/common/BaseNode.html" title="org.unict.ing.pds.dhtdb.utils.common.BaseNode" alt="" coords="16,19,101,45"/>
+<area shape="rect" id="node1" href="../../utils/common/BaseNode.html" title="&lt;TABLE&gt;" alt="" coords="5,8,112,56"/>
+<area shape="rect" id="node2_1" href="./NodeSessionBean.html" title="org.unict.ing.pds.dhtdb.replica.p2p.NodeSessionBean" alt="" coords="77,118,213,143"/>
+<area shape="rect" id="node2" href="./NodeSessionBean.html" title="&lt;TABLE&gt;" alt="" coords="67,107,224,155"/>
+<area shape="rect" id="node3_2" href="./NodeSessionBeanLocal.html" title="org.unict.ing.pds.dhtdb.replica.p2p.NodeSessionBeanLocal" alt="" coords="147,11,317,53"/>
+<area shape="rect" id="node3" href="./NodeSessionBeanLocal.html" title="&lt;TABLE&gt;" alt="" coords="136,5,328,59"/>
+</map>

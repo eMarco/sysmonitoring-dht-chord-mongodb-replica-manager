@@ -1,0 +1,8 @@
+<map id="G" name="G">
+<area shape="rect" id="node1_0" href="./MongoDBStorage.html" title="org.unict.ing.pds.dhtdb.replica.storage.MongoDBStorage" alt="" coords="16,19,148,45"/>
+<area shape="rect" id="node1" href="./MongoDBStorage.html" title="&lt;TABLE&gt;" alt="" coords="5,8,159,56"/>
+<area shape="rect" id="node2_1" href="./DBConnectionSingletonSessionBeanLocal.html" title="org.unict.ing.pds.dhtdb.replica.storage.DBConnectionSingletonSessionBeanLocal" alt="" coords="193,11,483,53"/>
+<area shape="rect" id="node2" href="./DBConnectionSingletonSessionBeanLocal.html" title="&lt;TABLE&gt;" alt="" coords="183,5,493,59"/>
+<area shape="rect" id="node3_2" href="./DBConnectionSingletonSessionBean.html" title="org.unict.ing.pds.dhtdb.replica.storage.DBConnectionSingletonSessionBean" alt="" coords="210,118,466,143"/>
+<area shape="rect" id="node3" href="./DBConnectionSingletonSessionBean.html" title="&lt;TABLE&gt;" alt="" coords="199,107,477,155"/>
+</map>
