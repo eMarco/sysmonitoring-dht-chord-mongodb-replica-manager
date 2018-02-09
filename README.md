@@ -1,16 +1,19 @@
 ## An implementation of a Cloud monitor using LIGHT (Lightweight Index for complex queries over DHTs) for a distributed MongoDB on Chord overlay network
 
-### Universita' degli studi di Catania
+### Università degli Studi di Catania - LM Ingegneria informatica
 
-#### LM Ingegneria informatica 
+#### Alessandro Di Stefano - Marco Grassia
 
-##### Alessandro Di Stefano - Marco Grassia
+**Read the PDF (leggimi.pdf, currently italian only) for more infos.**
 
-**Read the PDF (currently italian, leggimi.pdf) for more infos.**
+This is a basic implementation of Chord used to manage a MongoDB database with a single collection.\
+Also, it provides indexing based on timestamps for the scenario of a Cloud Monitoring System for Virtual Nodes.
 
-This is a basic implementation of Chord to manage a MongoDB database with a single collection, providing indexing based on timestamps for the scenario of a Cloud Monitoring System for Virtual Nodes.
+We simulated a scenario consisting of virtual machines on a data center. In short:\
+The VMs are monitored by "scanners", which send the collected data to a RabbitMQ queue.\
+A component, called Message Handler, receives the readings from the shared queue and forwards them to the Datamanager, which is a client for the distributed DB.
 
-The scenario was "virtualized" for the demo through docker-compose. The datamanager is responsible of receiving statistics about the virtual machines (scanner) by the Message Handler: it put the statistics in the distributed MongoDB under Chord indexing with LIGHT by timestamp.
+For the demo, the scenario was run in Dcoker through docker-compose.
 
 #### References
 
