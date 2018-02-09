@@ -101,35 +101,6 @@ public class ScannersResource {
         dataManagerSessionBean.put(scanner, topic, content);
     }
 
-// TODO REMOVE HERE
-//    /**
-//     * Retrieves representation of an instance of org.unict.ing.pds.dhtdb.datamanager.ScannersResource
-//     * @param tsStart
-//     * @param tsEnd
-//     * @return an instance of java.lang.String
-//     */
-//    @GET
-//    @Produces(MediaType.TEXT_PLAIN)
-//    @Path(value="test")
-//    public String test() {
-//        String respo = "CIAO";
-//        String content = "overrided";
-//        respo += dataManagerSessionBean.test(content);
-//        return respo;
-//        //return dataManagerSessionBean.get(null, null, tsStart.substring(1), tsEnd.substring(1));
-//    }
-//    
-//    @GET
-//    @Produces(MediaType.TEXT_PLAIN)
-//    @Path(value="test2")
-//    public String test2() {
-//        String respo = "CIAO";
-//        String content = "overrided";
-//        respo += dataManagerSessionBean.test2(content);
-//        return respo;
-//        //return dataManagerSessionBean.get(null, null, tsStart.substring(1), tsEnd.substring(1));
-//    }
-
     private DataManagerSessionBeanLocal lookupDataManagerSessionBeanLocal() {
         try {
             javax.naming.Context c = new InitialContext();

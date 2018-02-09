@@ -88,26 +88,4 @@ public class DataManagerSessionBean implements DataManagerSessionBeanLocal {
         return(JsonHelper.writeList(ret));
     }
 
-
-    @Override public String test(String content) {
-        CPUStat x = new CPUStat((float)0.5, System.currentTimeMillis() / 1000l, "1", new Key(""));
-        System.out.println("Making a put for:");
-        System.out.println(JsonHelper.write(x));
-        putSessionBean.lightPut(x);
-        System.err.println("DONE THE PUT");
-        List<GenericValue> list = lookupSessionBean.lightLookupAndGetDataBucket(System.currentTimeMillis() / 1000l);
-        System.err.println("DONE THE LOOKUP");
-        return JsonHelper.writeList(list);
-        //return "";
-    }
-    
-    @Override 
-    public String test2(String content) {
-        //Set<Bucket> buckets = ;
-        List<GenericValue> list = querySessionBean.getRangeQueryDatas(new Range(1518155143, false, 1518999266, false));
-       
-        return JsonHelper.writeList(list);
-        //return "";
-    }
-
 }
