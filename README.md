@@ -17,7 +17,7 @@ We simulated a scenario consisting of virtual machines in a data center. In shor
 The VMs are monitored by "scanners", which send the collected data to a RabbitMQ queue.\
 A component, called Message Handler, receives the readings from the shared queue and forwards them to the Datamanager, which is a client for the distributed DB.
 
-For the demo, the scenario was run in Dcoker through docker-compose.
+For the demo, the scenario was run in Docker through docker-compose.
 
 ### How to run the demo:
 1. Clone this repository
@@ -26,7 +26,7 @@ For the demo, the scenario was run in Dcoker through docker-compose.
    1. *-ejb
    1. *-war
    1. *-ear
-1. Cd to the docker directory
+1. Cd to the Docker directory
    > cd docker/
 1. Run the replicamanagers
    > docker-compose up replicamanager
