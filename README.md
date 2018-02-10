@@ -8,6 +8,8 @@
 
 **[Read the .pdf](leggimi.pdf) (leggimi.pdf, currently italian only) for more infos.**
 
+**[The Java Docs and some UML is available here.](https://emarco.github.io/sysmonitoring-dht-db-replica-manager/)**
+
 ![Screenshot](docs/img.jpg?raw=true)
 
 This is a basic implementation of Chord used to manage a MongoDB database with a single collection.\
