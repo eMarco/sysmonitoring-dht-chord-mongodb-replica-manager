@@ -12,7 +12,7 @@
 
 ![Screenshot](docs/img.jpg?raw=true)
 ![Screenshot](docs/img2.jpeg?raw=true)
-![Screenshot](docs/img3.jpg?raw=true)
+
 
 This is a basic implementation of Chord used to manage a MongoDB database with a single collection.\
 Also, it provides indexing based on timestamps for the scenario of a Cloud Monitoring System for Virtual Nodes.
@@ -34,6 +34,8 @@ For the demo, the scenario was run in Docker through docker-compose.
 ```
 
 You need to have the rights to bind port 80, and look at your SELinux policies if you use it.
+
+![Screenshot](docs/img3.jpg?raw=true)
 
 ### References
 
