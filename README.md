@@ -25,9 +25,11 @@ For the demo, the scenario was run in Docker through docker-compose.
 1. In a shell:
 
 ```   
-   > cd docker/
-   > docker-compose up
+   $ cd docker/
+   $ docker-compose up
 ```
+
+You need to have the rights to bind port 80, and look at your SELinux policies if you use it.
 
 ### References
 
