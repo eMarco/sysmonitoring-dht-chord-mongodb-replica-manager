@@ -1,8 +1,8 @@
 ## An implementation of a Cloud monitor using LIGHT (Lightweight Index for complex queries over DHTs) for a distributed MongoDB on Chord overlay network
 
-### Università degli Studi di Catania - LM Ingegneria informatica
+## Università degli Studi di Catania - LM Ingegneria informatica
 
-#### Corso di sistemi distribuiti
+### Corso di sistemi distribuiti
 
 #### Alessandro Di Stefano - Marco Grassia
 
@@ -13,13 +13,27 @@
 This is a basic implementation of Chord used to manage a MongoDB database with a single collection.\
 Also, it provides indexing based on timestamps for the scenario of a Cloud Monitoring System for Virtual Nodes.
 
-We simulated a scenario consisting of virtual machines on a data center. In short:\
+We simulated a scenario consisting of virtual machines in a data center. In short:\
 The VMs are monitored by "scanners", which send the collected data to a RabbitMQ queue.\
 A component, called Message Handler, receives the readings from the shared queue and forwards them to the Datamanager, which is a client for the distributed DB.
 
 For the demo, the scenario was run in Dcoker through docker-compose.
 
-#### References
+### How to run the demo:
+1. Clone this repository
+1. Build the NetBeans projects in the following order:
+   1. utils
+   1. *-ejb
+   1. *-war
+   1. *-ear
+1. Cd to the docker directory
+   > cd docker/
+1. Run the replicamanagers
+   > docker-compose up replicamanager
+1. Wait for the ring to stabilize and then run the other VMs
+   > docker-compose up
+
+### References
 
 - Distributed Segment Tree: Support of Range query and cover  query over DHT (Zheng et al.) [https://tinyurl.com/yd8declm]
 - m-LIGHT: A LIGhtweight multidimensional index for Complex Queries over DHTs (Tang et al.) [https://tinyurl.com/y7tdgcag]
