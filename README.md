@@ -8,7 +8,7 @@
 
 **[Read the .pdf](leggimi.pdf) (leggimi.pdf, currently italian only) for more infos.**
 
-**[The Java Doc and some UML is available here.](https://emarco.github.io/sysmonitoring-dht-db-replica-manager/)**
+**[The Java Doc and some UML is available here.](https://emarco.github.io/sysmonitoring-dht-chord-mongodb-replica-manager/)**
 
 ![Screenshot](docs/img.jpg?raw=true)
 
