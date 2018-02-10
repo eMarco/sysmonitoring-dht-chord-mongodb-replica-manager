@@ -21,17 +21,13 @@ For the demo, the scenario was run in Docker through docker-compose.
 
 ### How to run the demo:
 1. Clone this repository
-1. Build the NetBeans projects in the following order:
-   1. utils
-   1. *-ejb
-   1. *-war
-   1. *-ear
-1. Cd to the Docker directory
+1. Build the Maven project `allMaven`
+1. In a shell:
+
+```   
    > cd docker/
-1. Run the replicamanagers
-   > docker-compose up replicamanager
-1. Wait for the ring to stabilize and then run the other VMs
    > docker-compose up
+```
 
 ### References
 
