@@ -61,7 +61,7 @@ public class QuerySessionBean implements QuerySessionBeanLocal {
         System.err.println(branchNodes);
         for (Label branchNode : branchNodes) {
             Range intersection = range.intersect(branchNode.interval());
-            if (!intersection.isEmpty() && branchNode.getLength() < maxLength) {
+            if (!intersection.isEmpty() && branchNode.getLength() <= maxLength) {
                 System.err.println("STILL RECURSIVE FORWARD: " + intersection + branchNode);
                 recursiveForward(initialRange, intersection, branchNode, subRangesSet, maxLength);
             } 
