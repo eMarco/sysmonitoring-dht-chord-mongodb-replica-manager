@@ -53,9 +53,11 @@ public class PutSessionBean implements PutSessionBeanLocal {
         Bucket dhtKey   = lookupSessionBean.lightLabelLookup(timestamp);
         if (dhtKey == null) { // The database is empty
             // Creates a new bucket
-            Bucket theFirst = new Bucket(Range.REPRESENTABLE_RANGE, new Label("#0"), 0);
-            dataManagerChordSessionBean.write(theFirst.getKey(), theFirst);
-            lightPut(stat);
+            if (lightSessionBean.getTreeHeight() <= 2) {
+                Bucket theFirst = new Bucket(Range.REPRESENTABLE_RANGE, new Label("#0"), 0);
+                dataManagerChordSessionBean.write(theFirst.getKey(), theFirst);
+                lightPut(stat);
+            }
             return;
         }
         Bucket bucket  = dhtKey;

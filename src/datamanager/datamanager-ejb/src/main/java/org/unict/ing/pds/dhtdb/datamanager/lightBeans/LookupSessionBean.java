@@ -67,14 +67,13 @@ public class LookupSessionBean implements LookupSessionBeanLocal {
         int mid;
         Label u = Label.prefix(upper, timestamp);
         System.out.println("NU: " + u);
-        
-        while (lower < upper){
+        while (lower <= upper){
             mid = (lower + upper) / 2;
             Label x = Label.prefix(mid, timestamp);
             System.out.println("MID: " + mid + " \t TIMESTAMP: " + timestamp + " \t PREFIX: " + x);
             Bucket bucket = lookupBucket(x);    
             if (bucket == null)  {
-                System.err.println("LOOKUP FAILED");
+                System.err.println("LOOKUP FAILED, DECREASING UPPER TO: " + x.toDHTKey().getLength());
                 upper = x.toDHTKey().getLength();
             } else {
                 lightSessionBean.checkTreeHeight(bucket.getLeafLabel());  
