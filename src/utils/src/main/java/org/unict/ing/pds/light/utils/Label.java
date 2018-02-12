@@ -22,6 +22,7 @@ import java.util.BitSet;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -383,6 +384,7 @@ public class Label {
         int prefixLength = _lowestCommonAncestor(labels[0], labels[1]);
 
         // TODO optimize this loop!
+        // TODO FIX ME! This loop doesn't always work as expected and is needed for the multidimensional indexing.
         for (int i = 2; i < labels.length; i++) {
             prefixLength = _lowestCommonAncestor(labels[0], labels[i]);
             if (prefixLength == 0) return new Label("#");
@@ -444,6 +446,7 @@ public class Label {
             lBits = l.getBitSet();
             i = l.length - 1;
 
+//            if (lBits.get(lcaLength, i) != labelBits.get(lcaLength, i))  {
             if (lBits.get(i) != labelBits.get(i))  {
                 ret.add(l);
             }
@@ -455,6 +458,13 @@ public class Label {
         }
 
         return ret;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 61 * hash + Objects.hashCode(this.toKey());
+        return hash;
     }
 
     @Override
@@ -470,6 +480,6 @@ public class Label {
         }
 
         final Label other = (Label) obj;
-        return this.label.get(0, this.length).equals(other.label.get(0, other.length));
+        return Objects.equals(this.toKey(), other.toKey());
     }
 }

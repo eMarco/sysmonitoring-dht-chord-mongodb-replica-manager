@@ -58,6 +58,13 @@ public final class Key implements Comparable<Key>, Serializable {
     }
 
     @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + Objects.hashCode(this.key);
+        return hash;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
