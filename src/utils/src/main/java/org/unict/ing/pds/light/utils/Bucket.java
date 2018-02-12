@@ -19,6 +19,7 @@ package org.unict.ing.pds.light.utils;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Objects;
 import org.unict.ing.pds.dhtdb.utils.dht.Key;
 import org.unict.ing.pds.dhtdb.utils.model.GenericValue;
 
@@ -137,6 +138,39 @@ public class Bucket extends GenericValue {
         if (this.leafLabel != null)
             return this.leafLabel.getLabel();
         return null;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 89 * hash + this.recordsCounter;
+        hash = 89 * hash + Objects.hashCode(this.range);
+        hash = 89 * hash + Objects.hashCode(this.leafLabel);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Bucket other = (Bucket) obj;
+        if (this.recordsCounter != other.recordsCounter) {
+            return false;
+        }
+        if (!Objects.equals(this.range, other.range)) {
+            return false;
+        }
+        if (!Objects.equals(this.leafLabel, other.leafLabel)) {
+            return false;
+        }
+        return true;
     }
     
 }
