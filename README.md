@@ -10,7 +10,7 @@
 
 **[The Java Doc and some UML is available here.](https://emarco.github.io/sysmonitoring-dht-chord-mongodb-replica-manager/)**
 
-**Synthetic/Global class diagram images are available in uml/ as [svg](docs/class-diagram.svg) or [jpg](docs/class-diagram.jpg)**
+**Synthetic/Global class diagram images are available in uml/ as [svg](uml/class-diagram.svg) or [jpg](uml/class-diagram.jpg)**
 
 ![Screenshot](docs/img.jpg?raw=true)
 ![Screenshot](docs/img2.jpeg?raw=true)
