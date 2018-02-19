@@ -10,10 +10,12 @@
 
 **[The Java Doc and some UML is available here.](https://emarco.github.io/sysmonitoring-dht-chord-mongodb-replica-manager/)**
 
+**Synthetic/Global class diagram images are available in uml/ as [svg](docs/class-diagram.svg) or [jpg](docs/class-diagram.jpg)**
+
 ![Screenshot](docs/img.jpg?raw=true)
 ![Screenshot](docs/img2.jpeg?raw=true)
 
-Synthetic class diagram available in uml/: [svg](docs/class-diagram.svg) [jpg](docs/class-diagram.jpg)
+
 
 This is a basic implementation of Chord used to manage a MongoDB database with a single collection.\
 Also, it provides indexing based on timestamps for the scenario of a Cloud Monitoring System for Virtual Nodes.
